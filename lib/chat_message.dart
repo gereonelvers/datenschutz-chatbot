@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+part 'chat_message.g.dart';
 
-enum SenderType { user, bot }
+@HiveType(typeId: 1)
+enum SenderType {
+  @HiveField(0)
+  user,
+
+  @HiveField(1)
+  bot
+}
 
 /// this widget is used to show a single chat message
-// TODO: Fix Hive mapping for proper data persistence
 @HiveType(typeId: 0)
 class ChatMessage extends StatelessWidget {
   @HiveField(0)
@@ -29,7 +36,7 @@ class ChatMessage extends StatelessWidget {
                 child: DecoratedBox(
                   // chat bubble decoration
                   decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: const Color(0xFF1C313A),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
@@ -39,7 +46,7 @@ class ChatMessage extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .bodyText1!
-                          .copyWith(color: Colors.white),
+                          .copyWith(color: const Color(0xFFF5F5F5),),
                     ),
                   ),
                 ),
@@ -54,7 +61,7 @@ class ChatMessage extends StatelessWidget {
                 child: DecoratedBox(
                   // chat bubble decoration
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                      color: const Color(0xFFF5F5F5),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(

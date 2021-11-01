@@ -2,6 +2,7 @@ import 'package:datenschutz_chatbot/chat_screen.dart';
 import 'package:datenschutz_chatbot/game_overview_screen.dart';
 import 'package:datenschutz_chatbot/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:lifecycle/lifecycle.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 void main() => runApp(const DataProtectionChatbot());
@@ -31,23 +32,19 @@ class MainStatelessWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PageController controller = PageController(initialPage: 1);
-    return Container(
-      color: const Color(0xffFAFAFA), // for some reason the default background isn't clean white
-      child: Stack(
+    return MaterialApp(
+      navigatorObservers: [defaultLifecycleObserver],
+      home: Stack(
         children: [
           PageView(
             scrollDirection: Axis.horizontal,
             controller: controller,
-            children: const <Widget>[
-              GameOverviewScreen(),
-              ChatScreen(),
-              ProfileScreen()
-            ],
+            children: const <Widget>[GameOverviewScreen(), ChatScreen(), ProfileScreen()],
           ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(8,8,8,24),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 14),
               child: SmoothPageIndicator(
                 controller: controller,
                 count: 3,
@@ -55,8 +52,8 @@ class MainStatelessWidget extends StatelessWidget {
                   controller.animateToPage(index, duration: const Duration(seconds: 1), curve: Curves.ease);
                 },
                 effect: const ExpandingDotsEffect(
-                    activeDotColor: Colors.blue,
-                    dotColor: Colors.blue
+                  dotColor: Color(0xFF718792),
+                  activeDotColor: Color(0xff1c313a),
                 ),
               ),
             ),
