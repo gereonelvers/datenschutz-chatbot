@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:percent_indicator/percent_indicator.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 /// this is is the profile screen widget, currently only shows app info
 class ProfileScreen extends StatefulWidget {
@@ -13,93 +15,109 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateMixin {
   @override
   void initState() {
-    getSessionID();
+    getInfo();
     super.initState();
   }
 
   String sessionID = ""; // Unique, auto-generated session ID for Rasa. Auto-generated if not present.
+  String versionNumber = ""; // Current version and build number
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Material(
-        elevation: 5,
-        type: MaterialType.card,
-        color: const Color(0xFF799EB0),
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 128, 16, 128),
-              child: Material(
-                elevation: 5,
-                type: MaterialType.card,
-                color: const Color(0xfff5f5f5),
-                child: Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.info_outline,
-                      color: Color(0xFF799EB0),
-                      size: 80,
-                    ),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 20, bottom: 20, top: 0, right: 20),
-                        height: 160,
-                        width: double.infinity,
-                        child: const Center(
-                            child: Text(
-                          "\"Botty - der Datenschutz-Chatbot\" ist ein Projekt des Bachelor-Praktikums \n\"IT-basiertes Lernen gestalten\" des \ni17-Lehrstuhls an der TU München.",
-                          style: TextStyle(
-                            fontSize: 16,
-                            // color: Colors.white
-                          ),
-                        )),
-                      ),
-                    ),
-                    Text(
-                      "Rasa session-ID:\n" + sessionID,
-                      textAlign: TextAlign.center,
-                    )
-                  ],
-                )),
+      backgroundColor: const Color(0xFF799EB0),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 64, 16, 16),
+        children: [
+          Material(
+              shape: const CircleBorder(),
+              color: Colors.white,
+              child: CircularPercentIndicator(
+                radius: 100.0,
+                lineWidth: 10.0,
+                percent: 0.6,
+                backgroundColor: Colors.white,
+                progressColor: const Color(0xFF1C313A),
+                center: Image.asset(
+                "assets/img/botty-weiß.png",
+                color: Colors.black,
               ),
             ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                padding: const EdgeInsets.only(left: 50, bottom: 0, top: 20, right: 50),
-                height: 50,
-                width: double.infinity,
-                child: Material(
-                  type: MaterialType.button,
-                  borderRadius: BorderRadius.circular(30),
-                  elevation: 5,
-                  color: const Color(0xfff5f5f5),
-                  child: const Center(
-                      child: Text(
-                    "Profil/Informationen",
+          ),
+          const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20)),
+          Material(
+            type: MaterialType.card,
+            elevation: 5,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            child: Container(
+              padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
+              width: double.infinity,
+              child: Column(
+                children: [
+                  const Text(
+                    "Botty Robotson",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      // color: Colors.white
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
+                    child: Text(
+                      versionNumber,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
+          Material(
+            type: MaterialType.card,
+            elevation: 5,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            child: Container(
+              padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
+              child: Column(
+                children: [
+                  const Text(
+                    "\"Botty - der Datenschutz-Chatbot\" ist ein Projekt des Bachelor-Praktikums \n\"IT-basiertes Lernen gestalten\" des \ni17-Lehrstuhls an der TU München.",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
                       // color: Colors.white
                     ),
-                  )),
-                ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                  ),
+                  Text(
+                    "Rasa session-ID:\n" + sessionID,
+                    textAlign: TextAlign.center,
+                  )
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   // Get sessionID from SharedPreferences
-  getSessionID() async {
+  getInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
       sessionID = prefs.getString("session-id") ?? randomString(32);
+      versionNumber = "Version: v" + packageInfo.version + "+" + packageInfo.buildNumber;
     });
     prefs.setString("session-id", sessionID);
   }

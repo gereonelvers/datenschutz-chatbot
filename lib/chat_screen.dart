@@ -23,8 +23,8 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, WidgetsBindingObserver, LifecycleAware, LifecycleMixin {
   List<ChatMessage> messages = [
-    const ChatMessage("Ansonsten kannst du nach links wischen um dir deine Minispiele anzuschauen, oder nach rechts wischen um dein Profil anzusehen.\nViel Spaß!", SenderType.bot),
-    const ChatMessage("Versuch doch einfach, mit der Tastatur mit mir zu reden", SenderType.bot),
+    const ChatMessage("Ansonsten kannst du nach links wischen um dir die Karte anzuschauen. Rechts gibt es ein paar weitere Infos.\nViel Spaß!", SenderType.bot),
+    const ChatMessage("Versuch doch einfach, mir eine Nachricht zu schreiben!", SenderType.bot),
     const ChatMessage("Hi, ich bin Botty - der Datenschutz-Chatbot. Aktuell kann ich leider noch nicht so viel, aber das wird sich bald ändern :)", SenderType.bot)
   ]; // List of all chat messages
   final TextEditingController textEditingController = TextEditingController(); // Controller managing the text input field
@@ -47,10 +47,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
         child: Stack(
           children: <Widget>[
             ListView.builder(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 110),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 90),
               itemCount: messages.length,
               reverse: true,
               scrollDirection: Axis.vertical,
+              physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 return messages[index];
               },
@@ -58,8 +59,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             Align(
               alignment: Alignment.topCenter,
               child: Container(
-                padding: const EdgeInsets.only(left: 50, bottom: 0, top: 20, right: 50),
-                height: 80,
+                padding: const EdgeInsets.only(left: 50, bottom: 0, top: 40, right: 50),
+                height: 100,
                 width: double.infinity,
                 child: Material(
                   type: MaterialType.button,
@@ -69,10 +70,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
                   child: Row(
                     children: [
                       Align(
-                        alignment: Alignment.centerLeft,
+                        alignment: Alignment.center,
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(4, 4, 0, 4),
-                          child: RawMaterialButton(onPressed: () {}, fillColor: const Color(0xff1c313a), shape: const CircleBorder(), elevation: 0, child: Image.asset("assets/img/botty-weiß.png")),
+                          padding: const EdgeInsets.fromLTRB(36, 4, 16, 4),
+                          child: Image.asset("assets/img/botty-weiß.png", color: Colors.black,),
                         ),
                       ),
                       Column(
@@ -101,8 +102,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                padding: const EdgeInsets.only(left: 10, bottom: 40, top: 10, right: 10),
-                height: 110,
+                padding: const EdgeInsets.only(left: 10, bottom: 20, top: 10, right: 10),
+                height: 90,
                 width: double.infinity,
                 child: Material(
                   type: MaterialType.button,

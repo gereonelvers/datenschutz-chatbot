@@ -33,6 +33,7 @@ class MainStatelessWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final PageController controller = PageController(initialPage: 1);
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // Hiding this as all PageView-children already display one
       navigatorObservers: [defaultLifecycleObserver],
       home: Stack(
         children: [
@@ -42,7 +43,7 @@ class MainStatelessWidget extends StatelessWidget {
             children: const <Widget>[GameOverviewScreen(), ChatScreen(), ProfileScreen()],
           ),
           Align(
-            alignment: Alignment.bottomCenter,
+            alignment: Alignment.topCenter,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(8, 8, 8, 14),
               child: SmoothPageIndicator(
