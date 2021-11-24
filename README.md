@@ -46,6 +46,19 @@ Um danach das Unity-Projekt erfolgreich in die App zu integrieren, führe die fo
 2. In Android Studio einen Build auslösen
    - Hinweis: Unity unterstützt aktuell leider keine Emulation durch Android Studio AVDs.
 
+Hinweis: Damit das Laden der Scene eines Mini-Games korrekt funktioniert, muss **jede** Scene ein Objekt mit Namen `Scene Loader` enthalten, welches über eine `Sceneloader`-Methode die ID der zu ladende Scene entgegennimmt. Beispielimplementierung:
+
+```c#
+    public void Sceneswitcher(string args)
+    {
+        string name = SceneManager.GetActiveScene().name;
+        if (!(String.Equals("GameScene"+args, name)))
+        {
+            SceneManager.LoadSceneAsync (sceneName:"GameScene"+args);
+        }
+    }
+```
+
 Da jeder Build in Android Studio einen Release-Build in Unity auslöst, sind Build-Zeiten von >15 Minuten nicht unüblich. Die gute Nachricht: Der Unity-Build wird gecached, d.h. nachfolgende Builds in Android Studio sind signifikant schneller.
 Extrem langsame Build Zeiten unter Windows 10 & 11: Erstelle in Windows Defender eine Ausnahme für den gesamten `datenschutz-chatbot`-Ordner. [Anleitung dazu](https://support.microsoft.com/en-us/windows/add-an-exclusion-to-windows-security-811816c0-4dfd-af4a-47e4-c301afe13b26).
 

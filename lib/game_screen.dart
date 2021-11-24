@@ -58,11 +58,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   void changeScene() {
     currentScene = ((currentScene + 1) % 4);
-    unityWidgetController.postMessage("Scene Switcher 0", "Sceneswitcher", currentScene.toString());
-    unityWidgetController.postMessage("Scene Switcher 1", "Sceneswitcher", currentScene.toString());
-    unityWidgetController.postMessage("Scene Switcher 2", "Sceneswitcher", currentScene.toString());
-    unityWidgetController.postMessage("Scene Switcher 3", "Sceneswitcher", currentScene.toString());
-    unityWidgetController.postMessage("Scene Switcher 4", "Sceneswitcher", currentScene.toString());
+    loadScene(currentScene);
   }
 
   // Communication from Unity to Flutter
@@ -82,18 +78,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         await unityWidgetController.resume();
       },
     );
-    loadScene();
+    loadScene(gameID);
   }
 
   // This works by telling all possible Unity Scene Switchers to load the current scene
-  void loadScene() async {
-    print("Sending message onUnityCreated to load scene " + gameID.toString()); // TODO: Remove print once Unity scene loading works 100% (including nested scene layouts)
-    // Since we can't be sure which scene is currently loaded, we just spam all Scene Switchers
-    unityWidgetController.postMessage("Scene Switcher 0", "Sceneswitcher", gameID.toString());
-    unityWidgetController.postMessage("Scene Switcher 1", "Sceneswitcher", gameID.toString());
-    unityWidgetController.postMessage("Scene Switcher 2", "Sceneswitcher", gameID.toString());
-    unityWidgetController.postMessage("Scene Switcher 3", "Sceneswitcher", gameID.toString());
-    unityWidgetController.postMessage("Scene Switcher 4", "Sceneswitcher", gameID.toString());
+  void loadScene(int id) async {
+    print("Sending message onUnityCreated to load scene " + id.toString()); // TODO: Remove print once Unity scene loading works 100% (including nested scene layouts)
+    unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", id.toString());
   }
 
   // Leaving callback method in here for now, not currently used for anything though
