@@ -63,7 +63,7 @@ Hinweis: Damit das Laden der Scene eines Mini-Games korrekt funktioniert, muss *
 Da jeder Build in Android Studio einen Release-Build in Unity auslöst, sind Build-Zeiten von >15 Minuten nicht unüblich. Die gute Nachricht: Der Unity-Build wird gecached, d.h. nachfolgende Builds in Android Studio sind signifikant schneller.
 Extrem langsame Build Zeiten unter Windows 10 & 11: Erstelle in Windows Defender eine Ausnahme für den gesamten `datenschutz-chatbot`-Ordner. [Anleitung dazu](https://support.microsoft.com/en-us/windows/add-an-exclusion-to-windows-security-811816c0-4dfd-af4a-47e4-c301afe13b26).
 
-Für Projekte, welche das [Android NDK](https://developer.android.com/ndk) voraussetzen (wie unser eigenes), wirst du im der Datei `./datenschutz_chatbot/android/local.properties` vermutlich den Pfad zu deinem eigenen NDK ändern. Idealerweise kannst du dazu einfach das NDK wiederverwenden, welches bereits in den Unity Android Build Tools installiert wurde. Gehe dazu in Unity auf `Preferences > External Tools` und kopiere den dort unter "Android NDK installed with Unity (recommended)" hinterlegten Pfad in den Eintrag in `local.properties`. Falls du Windows verwendest, denk daran, deinen Path zu escapen. Der korrekte Eintrag sollte so aussehen:
+Für Projekte, welche das [Android NDK](https://developer.android.com/ndk) voraussetzen (wie unser eigenes), wirst du im der Datei `./datenschutz_chatbot/android/local.properties` vermutlich den Pfad zu deinem eigenen NDK ändern müssen. Idealerweise kannst du dazu einfach das NDK wiederverwenden, welches bereits in den Unity Android Build Tools installiert wurde. Gehe dazu in Unity auf `Preferences > External Tools` und kopiere den dort unter "Android NDK installed with Unity (recommended)" hinterlegten Pfad in den Eintrag in `local.properties`. Falls du Windows verwendest, denk daran, deinen Path zu escapen. Der korrekte Eintrag sollte so aussehen:
 
 Linux/Unix:
 
@@ -74,7 +74,7 @@ ndk.dir=/path/to/ndk
 Windows:
 
 ```properties
-ndk.dir=C:\\path\to\ndk
+ndk.dir=C:\\path\\to\\ndk
 ```
 
 ### Rasa
