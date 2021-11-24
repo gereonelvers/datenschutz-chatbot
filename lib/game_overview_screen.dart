@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 /// this is is the game overview/list widget
-// FIXME: There is currently an issue with the ScrollController throwing exceptions when the ListView is scrolled.
 class GameOverviewScreen extends StatefulWidget {
   const GameOverviewScreen({Key? key}) : super(key: key);
 
@@ -95,6 +94,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => GameScreen(index)),
+                              // MaterialPageRoute(builder: (context) => const UnityScreen()),
                             );
                           },
                           child: Row(
@@ -129,7 +129,8 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
               ),
             ),
           ]),
-          body: Image.asset("assets/img/map-placeholder.png", // Attribution: Designed by macrovector_official / Freepik
+          body: Image.asset(
+            "assets/img/map-placeholder.png", // Attribution: Designed by macrovector_official / Freepik
             fit: BoxFit.fitWidth,
             alignment: Alignment.bottomCenter,
           ),

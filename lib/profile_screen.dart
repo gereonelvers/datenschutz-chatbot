@@ -30,16 +30,16 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
         padding: const EdgeInsets.fromLTRB(16, 64, 16, 16),
         children: [
           Material(
-              shape: const CircleBorder(),
-              color: Colors.white,
-              child: CircularPercentIndicator(
-                radius: 100.0,
-                lineWidth: 10.0,
-                percent: 0.6,
-                backgroundColor: Colors.white,
-                progressColor: const Color(0xFF1C313A),
-                center: Image.asset(
-                "assets/img/botty-weiß.png",
+            shape: const CircleBorder(),
+            color: Colors.white,
+            child: CircularPercentIndicator(
+              radius: 100.0,
+              lineWidth: 10.0,
+              percent: 0.6,
+              backgroundColor: Colors.white,
+              progressColor: const Color(0xFF1C313A),
+              center: Image.asset(
+                "assets/img/data-white.png",
                 color: Colors.black,
               ),
             ),
@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
               child: Column(
                 children: [
                   const Text(
-                    "Botty Robotson",
+                    "Botty",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 24,
@@ -95,8 +95,8 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                       // color: Colors.white
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                   ),
                   Text(
                     "Rasa session-ID:\n" + sessionID,
@@ -111,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
     );
   }
 
-  // Get sessionID from SharedPreferences
+  // Get sessionID from SharedPreferences, version number from PackageInfo
   getInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();

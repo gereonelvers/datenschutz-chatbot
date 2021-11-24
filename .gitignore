@@ -9,6 +9,10 @@
 .history
 .svn/
 
+# Unity Integration related
+unity/FlutterUnityDemo
+android/unityLibrary
+
 # IntelliJ related
 *.iml
 *.ipr

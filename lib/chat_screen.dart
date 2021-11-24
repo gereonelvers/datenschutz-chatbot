@@ -25,10 +25,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   List<ChatMessage> messages = [
     const ChatMessage("Ansonsten kannst du nach links wischen um dir die Karte anzuschauen. Rechts gibt es ein paar weitere Infos.\nViel Spaß!", SenderType.bot),
     const ChatMessage("Versuch doch einfach, mir eine Nachricht zu schreiben!", SenderType.bot),
-    const ChatMessage("Hi, ich bin Botty - der Datenschutz-Chatbot. Aktuell kann ich leider noch nicht so viel, aber das wird sich bald ändern :)", SenderType.bot)
+    const ChatMessage("Hi, ich bin Botty — der Datenschutz-Chatbot. Aktuell kann ich leider noch nicht so viel, aber das wird sich bald ändern :)", SenderType.bot)
   ]; // List of all chat messages
   final TextEditingController textEditingController = TextEditingController(); // Controller managing the text input field
-  final String chatRequestUrl = "202.61.246.43"; // Base URL chatbot requests are made to. TODO: Get an URL set up for this ASAP
+  final String chatRequestUrl = "www.botty-chatbot.de"; // Base URL chatbot requests are made to.
   String sessionID = ""; // Unique, auto-generated session ID for Rasa. Auto-generated on first launch.
 
   @override
@@ -73,7 +73,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
                         alignment: Alignment.center,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(36, 4, 16, 4),
-                          child: Image.asset("assets/img/botty-weiß.png", color: Colors.black,),
+                          child: Image.asset(
+                            "assets/img/data-white.png",
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                       Column(
@@ -81,13 +84,13 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text(
-                            "Botty Robotson",
+                            "Botty",
                             style: TextStyle(
                               fontSize: 16,
                             ),
                           ),
                           Text(
-                            "⬤ online",
+                            "⬤ online", // FIXME: The dot is broken on web. Fixable with custom font additions? Maybe add actual status indicator?
                             style: TextStyle(
                               color: Colors.green,
                             ),
@@ -148,7 +151,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   }
 
   sendMessage() {
-    //saveData();
     setState(() {
       String message = textEditingController.text;
       if (message.trim() != "") {
@@ -165,6 +167,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   // This is the method actually sending the message to the rasa instance and fetching a response
   getResponse(String request) async {
     try {
+      // TODO: Replace with HTTPS once SSL is set up
       final Response response = await http.post(Uri.http(chatRequestUrl, "/webhooks/rest/webhook"), body: jsonEncode(<String, String>{'sender': sessionID, 'message': request})).timeout(const Duration(seconds: 6));
       if (response.statusCode == 200) {
         setState(() {
@@ -179,7 +182,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
           }
         });
       } else {
-        // TODO: Toast/ better error handling here
+        // FIXME: better error handling here
         messages.removeAt(0);
         messages.insert(0, const ChatMessage("Tut mir leid, mein Server hat gerade leider Probleme :(", SenderType.bot));
         messages.insert(0, ChatMessage("Falls du einen Admin sehen solltest, kannst du ihm das hier ausrichten:\nStatus Code:" + response.statusCode.toString() + ": " + response.reasonPhrase.toString(), SenderType.bot));
@@ -195,9 +198,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
 
   // Save data to remote sources (SharedPreferences, DBs, ...)
   saveData() async {
+    // Saving sessionID to SP
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("session-id", sessionID);
-
+    // Saving messages to Hive
     var box = await Hive.openBox("messageBox");
     box.put("messages", messages);
   }
@@ -211,7 +215,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     });
     prefs.setString("session-id", sessionID);
 
-    await Hive.initFlutter();
+    await Hive.initFlutter(); // FIXME: This call is made more often than it needs to be. Does that matter?
     if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(ChatMessageAdapter());
     if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(SenderTypeAdapter());
     var box = await Hive.openBox('messageBox');
@@ -230,9 +234,9 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     super.dispose();
   }
 
+  // Save data if the widget becomes inactive or invisible (e.g. when the user exits the app)
   @override
   void onLifecycleEvent(LifecycleEvent event) {
-    // Save data if the widget becomes inactive or invisible (e.g. when the user exits the app)
     if (event == LifecycleEvent.inactive || event == LifecycleEvent.invisible) saveData();
   }
 }
