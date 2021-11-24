@@ -17,7 +17,7 @@ cd ./datenschutz_chatbot
 flutter run
 ```
 
-**Achtung: Aktuell hat das Unity Flutter Integrations-Plugin einen Bug, welcher Builds verhindert, wenn einer der Ordern-Namen ein Leerzeichen enthält! Dies beinhaltet insbesondere auch alle übergeordneten Order-Namen.**
+**Achtung: Aktuell hat das Unity Flutter Integrations-Plugin einen Bug, welcher Builds verhindert, wenn einer der Order-Namen ein Leerzeichen enthält! Dies beinhaltet insbesondere auch alle übergeordneten Order-Namen.**
 
 ## Hinweise
 
@@ -29,13 +29,14 @@ Die Integration der Minispiele wird durch [Unity](https://unity.com/) (und insbe
 - datenschutz-chatbot
 	- unity
 		- <Unity Projekt Ordner>
+			- ...
 		- FlutterUnityIntegration-xxxx.unitypackage
 	- ...
 ```
 
 Um danach das Unity-Projekt erfolgreich in die App zu integrieren, führe die folgenden Schritte aus:
 
-1. In Unity, wähle Flutter > Build Android aus
+1. In Unity, wähle `Flutter > Build` Android aus
    - Hinweis: iOS Build Status ist aktuell ungetestet
    - Denk daran, vorher alle Scenen deines Projects unter `File > Build Settings... ` in `Scenes in Build` auszuwählen. Die oberste Scene wird als erstes vom Unity Player geladen werden (Sortierung via Drag-and-Drop).
    - Solltest du keinen "Flutter"-Eintrag in deiner Menu-Bar haben, musst du vermutlich `FlutterIntegration-xxx.unitypackage` neu hinzufügen. Dazu
