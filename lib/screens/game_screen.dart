@@ -57,7 +57,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   void changeScene() {
-    currentScene = ((currentScene + 1) % 4);
+    currentScene = ((currentScene + 1) % 5);
     loadScene(currentScene);
   }
 

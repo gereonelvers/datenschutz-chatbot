@@ -1,6 +1,6 @@
-import 'package:datenschutz_chatbot/chat_screen.dart';
-import 'package:datenschutz_chatbot/game_overview_screen.dart';
-import 'package:datenschutz_chatbot/profile_screen.dart';
+import 'package:datenschutz_chatbot/screens/chat_screen.dart';
+import 'package:datenschutz_chatbot/screens/game_overview_screen.dart';
+import 'package:datenschutz_chatbot/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lifecycle/lifecycle.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';

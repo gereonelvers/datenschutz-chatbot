@@ -1,4 +1,5 @@
-import 'package:datenschutz_chatbot/game_screen.dart';
+import 'package:datenschutz_chatbot/challenges/challenge_wrapper.dart';
+import 'package:datenschutz_chatbot/screens/game_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -17,11 +18,11 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   }
 
   List<String> gameNames = [
-    "Erstes Spiel",
+    "Challenge Demo",
     "Zweites Spiel",
     "Drittes Spiel",
-    "Viertes Spiel",
-    "Fünftes Spiel",
+    "Unity Cube Demo",
+    "Naninovel",
     "Sechstes Spiel",
   ];
   List<String> gameDescriptions = [
@@ -90,12 +91,17 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                         child: InkWell(
                           splashColor: Colors.blue.withAlpha(30),
                           onTap: () {
+                            print("Opening screen with index: " + index.toString());
                             // TODO: Launch correct unity app here
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => GameScreen(index)),
-                              // MaterialPageRoute(builder: (context) => const UnityScreen()),
-                            );
+                            if (index.toInt() == 0) {
+                              loadQuiz();
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => GameScreen(index)),
+                                // MaterialPageRoute(builder: (context) => const UnityScreen()),
+                              );
+                            }
                           },
                           child: Row(
                             children: [
@@ -142,5 +148,51 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
         ),
       ),
     );
+  }
+
+  double difficulty = 100;
+
+  void loadQuiz() {
+
+    // TODO: Pick difficulty here
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Schwierigkeit wählen'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Slider(
+                  value: difficulty,
+                  onChanged: (double value) => setState(() => difficulty = value),
+                  min: 0,
+                  max: 200,
+                  //divisions: 10,
+                  activeColor: const Color(0xff1c313a),
+                )
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Zurück'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChallengeWrapper(difficulty.round())),
+                  );
+                },
+                child: const Text('Start'),
+              ),
+            ],
+          );
+        });
   }
 }

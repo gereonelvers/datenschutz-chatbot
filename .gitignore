@@ -36,7 +36,7 @@ android/unityLibrary
 /build/
 
 # Web related
-lib/generated_plugin_registrant.dart
+lib/utility_widgets/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
