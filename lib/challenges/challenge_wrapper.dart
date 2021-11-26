@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:datenschutz_chatbot/challenges/challenge.dart';
 import 'package:datenschutz_chatbot/challenges/quiz_challenge.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
@@ -59,7 +57,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
                 ),
                 const Padding(
                   padding: EdgeInsets.fromLTRB(8, 0, 4, 0),
-                  child: Icon(Icons.waves),
+                  child: Icon(Icons.local_fire_department),
                 ),
                 Text(streak.toString())
               ],
@@ -102,7 +100,6 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
                                   ),
                                 ),
                               )
-                              // ElevatedButton(onPressed: () => Navigator.pop(context), child: Text("Zurück"))
                             ],
                           ),
                         )
@@ -116,9 +113,9 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
       // Input: Difficulty, list of available questions
       // Output: List<Challenge> challenges
       // In the meantime, add three QuizChallenges as placeholder
-      challenges.add(QuizChallenge("This is the first test question?", const ["Answer 1", "Answer 2", "Answer 3", "Answer 4"], 0, 5));
-      challenges.add(QuizChallenge("This is the second test question?", const ["Answer 1", "Answer 2", "Answer 3", "Answer 4"], 0, 5));
-      challenges.add(QuizChallenge("This is the third test question?", const ["Answer 1", "Answer 2", "Answer 3", "Answer 4", "Answer 5", "Answer 6"], 0, 5));
+      challenges.add(const QuizChallenge("This is the first test question?", ["Answer 1", "Answer 2", "Answer 3", "Answer 4"], 0, 5));
+      challenges.add(const QuizChallenge("This is the second test question?", ["Answer 1", "Answer 2", "Answer 3", "Answer 4"], 0, 5));
+      challenges.add(const QuizChallenge("This is the third test question?", ["Answer 1", "Answer 2", "Answer 3", "Answer 4", "Answer 5", "Answer 6"], 0, 5));
       // challenges.shuffle(Random());
       challengeCount = challenges.length;
     });

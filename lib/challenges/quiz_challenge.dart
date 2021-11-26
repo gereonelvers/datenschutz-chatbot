@@ -2,19 +2,19 @@ import 'package:datenschutz_chatbot/challenges/challenge.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
 import 'package:flutter/material.dart';
 
-class QuizChallenge extends StatefulWidget implements Challenge {
-  String question;
-  List<String> answers;
-  int correctAnswer;
-  int difficulty;
+class QuizChallenge extends Challenge {
+  final String question;
+  final List<String> answers;
+  final int correctAnswer;
+  final int difficulty;
 
-  QuizChallenge(this.question, this.answers, this.correctAnswer, this.difficulty, {Key? key}) : super(key: key);
+  const QuizChallenge(this.question, this.answers, this.correctAnswer, this.difficulty, {Key? key}) : super(key: key);
 
   @override
   _QuizChallengeState createState() => _QuizChallengeState();
 }
 
-class _QuizChallengeState extends State<QuizChallenge> {
+class _QuizChallengeState extends ChallengeState<QuizChallenge> {
   @override
   void initState() {
     super.initState();
@@ -117,6 +117,7 @@ class _QuizChallengeState extends State<QuizChallenge> {
 
   ChallengeType challengeType = ChallengeType.quiz;
 
+  @override
   void submit() {
     if (!wasChecked) {
       wasChecked = true;
@@ -129,12 +130,12 @@ class _QuizChallengeState extends State<QuizChallenge> {
         }
       });
     } else {
-      // TODO: Submit back to ChallengeWrapper
       ChallengeResultNotification(currentlySelected == correctAnswer).dispatch(context);
       reset();
     }
   }
 
+  @override
   void reset() {
     setState(() {
       currentlySelected = -1;
