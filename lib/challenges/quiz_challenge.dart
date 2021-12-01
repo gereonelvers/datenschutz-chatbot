@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 class QuizChallenge extends Challenge {
   final String question;
   final List<String> answers;
-  final int correctAnswer;
-  final int difficulty;
+  final List<int> correctAnswers;
+  final int difficulty; // Difficulty rating, could be used for challenge list generation
+  final bool singleChoice; // Boolean indicating if challenge should is singleChoice (false indicates multiple choice)
 
-  const QuizChallenge(this.question, this.answers, this.correctAnswer, this.difficulty, {Key? key}) : super(key: key);
+  const QuizChallenge(this.question, this.answers, this.correctAnswers, this.difficulty, this.singleChoice, {Key? key}) : super(key: key);
 
   @override
   _QuizChallengeState createState() => _QuizChallengeState();
@@ -22,26 +23,29 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
 
   String question = "";
   List<String> answers = <String>[];
-  int correctAnswer = -1;
+  List<int> correctAnswers = [];
   int difficulty = -1;
-  int currentlySelected = -1;
-  bool wasChecked = false;
+  List<int> currentlySelected = <int>[]; // List of currently selected fields
+  bool hasSubmitted = false;
   String buttonText = "Überprüfen";
   Color buttonColor = const Color(0xff1c313a);
+  bool singleChoice = true;
 
-  quizChallenge(question, answers, correctAnswer, difficulty) {
+  quizChallenge(question, answers, correctAnswers, difficulty, singleChoice) {
     question = this.question;
     answers = this.answers;
-    correctAnswer = this.correctAnswer;
+    correctAnswers = this.correctAnswers;
     difficulty = this.difficulty;
+    singleChoice = this.singleChoice;
   }
 
   @override
   Widget build(BuildContext context) {
     question = widget.question;
     answers = widget.answers;
-    correctAnswer = widget.correctAnswer;
+    correctAnswers = widget.correctAnswers;
     difficulty = widget.difficulty;
+    singleChoice = widget.singleChoice;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -72,7 +76,7 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
                 childAspectRatio: 5 / 3,
                 children: List.generate(answers.length, (index) {
                   return Card(
-                      color: index == currentlySelected ? buttonColor : Colors.white,
+                      color: currentlySelected.contains(index) ? buttonColor : Colors.white,
                       child: InkWell(
                           onTap: () {
                             updateSelection(index);
@@ -80,7 +84,7 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
                           child: Center(
                               child: Text(
                             answers[index],
-                            style: TextStyle(color: index == currentlySelected ? Colors.white : Colors.black),
+                            style: TextStyle(color: currentlySelected.contains(index) ? Colors.white : Colors.black),
                           ))));
                 })),
           ),
@@ -107,41 +111,54 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
     );
   }
 
-  void updateSelection(int index) {
-    if (!wasChecked) {
-      setState(() {
-        currentlySelected = index;
-      });
-    }
+  void updateSelection(int selection) {
+    setState(() {
+      // Only update selection if user has not submitted yet
+      if (!hasSubmitted) {
+        if (currentlySelected.contains(selection)) {
+          // If item is already selected, deselect it
+          currentlySelected.remove(selection);
+        } else {
+          setState(() {
+            if (singleChoice) {
+              // If challenge is single choice, remove all other selected items
+              currentlySelected.clear();
+            }
+            // Add item to selection
+            currentlySelected.add(selection);
+          });
+        }
+      }
+    });
   }
-
-  ChallengeType challengeType = ChallengeType.quiz;
 
   @override
   void submit() {
-    if (!wasChecked) {
-      wasChecked = true;
+    bool isCorrect = true;
+    for (int element in correctAnswers) {
+      if (!currentlySelected.contains(element)) {
+        isCorrect = false;
+      }
+    }
+    for (int element in currentlySelected) {
+      if (!correctAnswers.contains(element)) {
+        isCorrect = false;
+      }
+    }
+    if (!hasSubmitted) {
       setState(() {
         buttonText = "Weiter";
-        if (currentlySelected == correctAnswer) {
+        if (isCorrect) {
           buttonColor = Colors.green;
         } else {
           buttonColor = Colors.red;
         }
       });
+      hasSubmitted = true;
     } else {
-      ChallengeResultNotification(currentlySelected == correctAnswer).dispatch(context);
-      reset();
+      ChallengeResultNotification(isCorrect).dispatch(context);
+      //reset();
     }
   }
 
-  @override
-  void reset() {
-    setState(() {
-      currentlySelected = -1;
-      wasChecked = false;
-      buttonText = "Überprüfen";
-      buttonColor = const Color(0xff1c313a);
-    });
-  }
 }

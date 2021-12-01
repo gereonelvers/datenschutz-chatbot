@@ -13,16 +13,16 @@ class ChallengeWrapper extends StatefulWidget {
 }
 
 class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProviderStateMixin {
-  int difficulty = 100;
-  int streak = 0;
-  List<Challenge> challenges = <Challenge>[];
-  int challengeCount = 0;
-  bool generatedChallenges = false;
+  int difficulty = 100; // Placeholder value for difficulty
+  int streak = 0; // Streak count
+  List<Challenge> challenges = <Challenge>[]; // Auto-generated list of challenges
+  int challengeCount = 0; // Total number of challenges (used for progress indicator)
+  bool generatedChallenges = false; // Notification valiable used to display placeholder if challenge generation takes longer than expected
 
   @override
   void initState() {
-    difficulty = widget.difficulty;
-    generateChallenges(difficulty);
+    difficulty = widget.difficulty; // This is currently the only value passed through from the game menu screen
+    generateChallenges(difficulty); // Generate challenges from inputs
     super.initState();
   }
 
@@ -32,7 +32,6 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
         appBar: AppBar(
           elevation: 0,
           automaticallyImplyLeading: false,
-          //backgroundColor: const Color(0xff455a64),
           backgroundColor: const Color(0xff1c313a),
           title: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -78,7 +77,8 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
                             children: [
                               const Center(
                                   child: Text(
-                                "Challenges done! 🥳 ",
+                                "Du hast das Quiz beendet.\nGut gemacht! 🥳 ",
+                                textAlign: TextAlign.center,
                                 style: TextStyle(color: Colors.white, fontSize: 24),
                               )),
                               Align(
@@ -90,10 +90,10 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
                                       Expanded(
                                           child: ElevatedButton(
                                               onPressed: () => Navigator.pop(context),
-                                              child: Text("Zurück"),
+                                              child: const Text("Weiter"),
                                               style: ButtonStyle(
                                                 backgroundColor: MaterialStateProperty.all<Color>(
-                                                  Color(0xff455a64),
+                                                  const Color(0xff455a64),
                                                 ),
                                               ))),
                                     ],
@@ -113,10 +113,19 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
       // Input: Difficulty, list of available questions
       // Output: List<Challenge> challenges
       // In the meantime, add three QuizChallenges as placeholder
-      challenges.add(const QuizChallenge("This is the first test question?", ["Answer 1", "Answer 2", "Answer 3", "Answer 4"], 0, 5));
-      challenges.add(const QuizChallenge("This is the second test question?", ["Answer 1", "Answer 2", "Answer 3", "Answer 4"], 0, 5));
-      challenges.add(const QuizChallenge("This is the third test question?", ["Answer 1", "Answer 2", "Answer 3", "Answer 4", "Answer 5", "Answer 6"], 0, 5));
-      // challenges.shuffle(Random());
+      challenges.add(const QuizChallenge(
+        "Wer kann identifizierbar sein? Wähle alle korrekten Antworten aus.",
+        ["Natürliche Person", "Natürliche Person", "Land", "Organisation"],
+        [0],
+        5,
+        false,
+        key: Key("1"),
+      ));
+      // Important: Every challenge must be added with a unique "key" identifier so Flutter knows to refresh the layout as the challenges are removed!
+      challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("2")));
+      challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle alle korrekten Antworten aus.", ["Natürliche Person", "Natürliche Person", "Land", "Organisation"], [0], 5, false, key: Key("3")));
+      challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("4")));
+      // challenges.shuffle(Random()); // Shuffle challenges after generation
       challengeCount = challenges.length;
     });
   }
@@ -125,13 +134,12 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     setState(() {
       if (wasCorrect) {
         streak++;
-        challenges.remove(challenges.first);
       } else {
         streak = 0;
         challenges.add(challenges.first);
         challengeCount++;
-        challenges.removeAt(0);
       }
+      challenges.remove(challenges.first); // Remove current challenge
     });
   }
 }

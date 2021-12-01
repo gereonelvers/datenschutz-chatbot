@@ -18,12 +18,11 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   }
 
   List<String> gameNames = [
-    "Challenge Demo",
-    "Zweites Spiel",
-    "Drittes Spiel",
+    "Challenge/Quiz Demo",
+    "Zweite Szene",
+    "Dritte Szene",
     "Unity Cube Demo",
-    "Naninovel",
-    "Sechstes Spiel",
+    "RPG Demo",
   ];
   List<String> gameDescriptions = [
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
@@ -31,10 +30,8 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
-    "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
   ];
   List<Image> gameImages = [
-    Image.asset("assets/img/quiz-image.png"),
     Image.asset("assets/img/quiz-image.png"),
     Image.asset("assets/img/quiz-image.png"),
     Image.asset("assets/img/quiz-image.png"),

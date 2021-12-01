@@ -14,12 +14,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     gameID = widget.gameID;
-    currentScene = gameID;
     super.initState();
   }
 
   int gameID = -1;
-  int currentScene = -1;
   late UnityWidgetController unityWidgetController;
 
   @override
@@ -32,33 +30,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             onUnityCreated: onUnityCreated,
             onUnityMessage: onUnityMessage,
             onUnitySceneLoaded: onUnitySceneLoaded,
-            fullscreen: false,
+            fullscreen: true,
             borderRadius: BorderRadius.zero,
             placeholder: const Center(
               child: Text("Unity loading..."),
             ),
           ),
-          Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: FloatingActionButton(
-                  onPressed: () {
-                    changeScene();
-                  },
-                  child: const Icon(Icons.arrow_forward),
-                ),
-              ))
         ],
-      )
-          // Center(child: Text("Game Screen\n Game ID: " + gameID.toString())),
-          ),
+      )),
     );
-  }
-
-  void changeScene() {
-    currentScene = ((currentScene + 1) % 5);
-    loadScene(currentScene);
   }
 
   // Communication from Unity to Flutter
@@ -81,14 +61,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     loadScene(gameID);
   }
 
-  // This works by telling all possible Unity Scene Switchers to load the current scene
+  // This works by telling the Scene Switchers item in the currently Unity Scene to load the correct scene
   void loadScene(int id) async {
-    print("Sending message onUnityCreated to load scene " + id.toString()); // TODO: Remove print once Unity scene loading works 100% (including nested scene layouts)
+    print("Sending message telling Unity to load scene " + id.toString()); // TODO: Remove print once Unity scene loading works 100% (including nested scene layouts)
     unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", id.toString());
   }
 
   // Leaving callback method in here for now, not currently used for anything though
-  void onUnitySceneLoaded(SceneLoaded? sceneLoaded) {}
+  void onUnitySceneLoaded(SceneLoaded? sceneLoaded) {
+    print("Loaded scene: " + sceneLoaded!.name.toString());
+  }
 
   @override
   void dispose() {
