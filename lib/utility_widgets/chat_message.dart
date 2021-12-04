@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+
 part 'chat_message.g.dart';
 
 @HiveType(typeId: 1)
@@ -29,10 +30,10 @@ class ChatMessage extends StatelessWidget {
       child: type == SenderType.user
           ?
           // Layout if message is from user
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20,0,0,0),
-            child: Align(
-                alignment: Alignment.centerRight,
+          Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: DecoratedBox(
                   // chat bubble decoration
                   decoration: BoxDecoration(
@@ -43,40 +44,36 @@ class ChatMessage extends StatelessWidget {
                     padding: const EdgeInsets.all(12),
                     child: Text(
                       message,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(color: const Color(0xFFF5F5F5),),
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: const Color(0xFFF5F5F5),
+                          ),
                     ),
                   ),
                 ),
               ),
-          )
+            )
           :
           // Layout if message is from bot
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0,0,20,0),
-            child: Align(
-                alignment: Alignment.centerLeft,
+          Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                 child: DecoratedBox(
                   // chat bubble decoration
                   decoration: BoxDecoration(
-                      color: const Color(0xFFF5F5F5),
+                    color: const Color(0xFFF5F5F5),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Text(
                       message,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(color: Colors.black87),
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.black87),
                     ),
                   ),
                 ),
               ),
-          ),
+            ),
     );
   }
 }

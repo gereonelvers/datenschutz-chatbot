@@ -35,6 +35,7 @@ class MainStatelessWidget extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // Hiding this as all PageView-children already display one
       navigatorObservers: [defaultLifecycleObserver],
+      theme: ThemeData(fontFamily: 'Nexa'),
       home: Stack(
         children: [
           PageView(

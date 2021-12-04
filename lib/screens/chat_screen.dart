@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:datenschutz_chatbot/utility_widgets/chat_message.dart';
 import 'package:flutter/material.dart';
@@ -23,12 +24,13 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, WidgetsBindingObserver, LifecycleAware, LifecycleMixin {
   List<ChatMessage> messages = [
-    const ChatMessage("Ansonsten kannst du nach links wischen um dir die Karte anzuschauen. Rechts gibt es ein paar weitere Infos.\nViel Spaß!", SenderType.bot),
-    const ChatMessage("Versuch doch einfach, mir eine Nachricht zu schreiben!", SenderType.bot),
-    const ChatMessage("Hi, ich bin Botty — der Datenschutz-Chatbot. Aktuell kann ich leider noch nicht so viel, aber das wird sich bald ändern :)", SenderType.bot)
+    // TODO: Remove placeholders entirely once state management / message insertion is implemented
+    // const ChatMessage("Ansonsten kannst du nach links wischen um dir die Karte anzuschauen. Rechts gibt es ein paar weitere Infos.\nViel Spaß!", SenderType.bot),
+    // const ChatMessage("Versuch doch einfach, mir eine Nachricht zu schreiben!", SenderType.bot),
+    // const ChatMessage("Hi, ich bin Botty — der Datenschutz-Chatbot. Aktuell kann ich leider noch nicht so viel, aber das wird sich bald ändern :)", SenderType.bot)
   ]; // List of all chat messages
   final TextEditingController textEditingController = TextEditingController(); // Controller managing the text input field
-  final String chatRequestUrl = "www.botty-chatbot.de"; // Base URL chatbot requests are made to.
+  final String chatRequestUrl = "botty-chatbot.de"; // Base URL chatbot requests are made to.
   String sessionID = ""; // Unique, auto-generated session ID for Rasa. Auto-generated on first launch.
 
   @override
@@ -46,61 +48,21 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
         color: const Color(0xff455a64),
         child: Stack(
           children: <Widget>[
-            ListView.builder(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 90),
-              itemCount: messages.length,
-              reverse: true,
-              scrollDirection: Axis.vertical,
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                return messages[index];
-              },
-            ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                padding: const EdgeInsets.only(left: 50, bottom: 0, top: 40, right: 50),
-                height: 100,
-                width: double.infinity,
-                child: Material(
-                  type: MaterialType.button,
-                  borderRadius: BorderRadius.circular(30),
-                  elevation: 5,
-                  color: const Color(0xfff5f5f5),
-                  child: Row(
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(36, 4, 16, 4),
-                          child: Image.asset(
-                            "assets/img/data-white.png",
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            "Botty",
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            "⬤ online", // FIXME: The dot is broken on web. Fixable with custom font additions? Maybe add actual status indicator?
-                            style: TextStyle(
-                              color: Colors.green,
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
+            messages.isEmpty
+                ? const Center(child: Text("No message placeholder"))
+                : ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 90),
+                    itemCount: messages.length,
+                    reverse: true,
+                    scrollDirection: Axis.vertical,
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return messages[index];
+                    },
                   ),
-                ),
-              ),
+            const Align(
+              alignment: Alignment.topCenter,
+              child: ChatContactBar(),
             ),
             Align(
               alignment: Alignment.bottomCenter,
@@ -113,33 +75,38 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
                   borderRadius: BorderRadius.circular(30),
                   elevation: 5,
                   color: const Color(0xff1c313a),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 5, 5, 5),
-                          child: TextField(
-                            onSubmitted: (String message) => sendMessage(),
-                            controller: textEditingController,
-                            textInputAction: TextInputAction.send,
-                            cursorColor: Colors.white,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(contentPadding: EdgeInsets.zero, hintText: "Nachricht", hintStyle: TextStyle(color: Colors.white), border: InputBorder.none),
+                  child: InkWell(
+                    splashColor: Colors.blue.withAlpha(30),
+                    onTap: () {},
+                    borderRadius: BorderRadius.circular(30),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 5, 5, 5),
+                            child: TextField(
+                              onSubmitted: (String message) => sendMessage(),
+                              controller: textEditingController,
+                              textInputAction: TextInputAction.send,
+                              cursorColor: Colors.white,
+                              style: const TextStyle(color: Colors.white),
+                              decoration: const InputDecoration(contentPadding: EdgeInsets.zero, hintText: "Nachricht", hintStyle: TextStyle(color: Colors.white), border: InputBorder.none),
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 5, 15, 5),
-                        child: GestureDetector(
-                          onTap: () => sendMessage(),
-                          child: const Icon(
-                            Icons.send,
-                            color: Colors.white,
-                            size: 25,
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(5, 5, 15, 5),
+                          child: GestureDetector(
+                            onTap: () => sendMessage(),
+                            child: const Icon(
+                              Icons.send,
+                              color: Colors.white,
+                              size: 25,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -157,7 +124,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
         // New messages are appended to front to make storing&displaying large amounts of messages economical
         messages.insert(0, ChatMessage(textEditingController.text, SenderType.user));
         messages.insert(0, const ChatMessage("...", SenderType.bot));
-
         getResponse(message);
       }
       textEditingController.clear();
@@ -167,20 +133,25 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   // This is the method actually sending the message to the rasa instance and fetching a response
   getResponse(String request) async {
     try {
-      // TODO: Replace with HTTPS once SSL is set up
-      final Response response = await http.post(Uri.http(chatRequestUrl, "/webhooks/rest/webhook"), body: jsonEncode(<String, String>{'sender': sessionID, 'message': request})).timeout(const Duration(seconds: 6));
+      final Response response = await http.post(Uri.https(chatRequestUrl, "/webhooks/rest/webhook"), body: jsonEncode(<String, String>{'sender': sessionID, 'message': request})).timeout(const Duration(seconds: 6));
       if (response.statusCode == 200) {
-        setState(() {
-          messages.removeAt(0);
-          // TODO: This is a mess lmao -> better json decoding (incl. image support)
-          List<dynamic> responseItems = jsonDecode(response.body);
-          for (var element in responseItems) {
-            var map = Map<String, dynamic>.from(element);
-            if (map.containsKey('text')) {
-              messages.insert(0, ChatMessage(map['text'], SenderType.bot));
-            }
+        bool firstMessage = true;
+        // TODO: This is a mess lmao -> better json decoding (incl. image support)
+        List<dynamic> responseItems = jsonDecode(response.body);
+        for (var element in responseItems) {
+          var map = Map<String, dynamic>.from(element);
+          if (map.containsKey('text')) {
+            insertMessageRandom(ChatMessage(map['text'], SenderType.bot));
+            // Remove '...' after first message is added
+            // This needs to be done here instead of above so artificial delay works correctly
+            setState(() {
+              if (firstMessage) {
+                firstMessage = false;
+                messages.removeAt(0);
+              }
+            });
           }
-        });
+        }
       } else {
         // FIXME: better error handling here
         messages.removeAt(0);
@@ -227,6 +198,24 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     });
   }
 
+  // Inserts a message with a random delay (to make response more realistic)
+  void insertMessageRandom(ChatMessage message) {
+    Future.delayed(Duration(milliseconds: 200 + Random().nextInt(1000 - 200)), () {
+      setState(() {
+        messages.insert(0, message);
+      });
+    });
+  }
+
+  // Inserts a message with a fixed delay (for realistic scripted interactions)
+  void insertMessageFixed(ChatMessage message, int delayInMs) {
+    Future.delayed(Duration(milliseconds: delayInMs), () {
+      setState(() {
+        messages.insert(0, message);
+      });
+    });
+  }
+
   // If the widget is destroyed, dispose of controllers to prevente memory leaks
   @override
   void dispose() {
@@ -238,5 +227,63 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   @override
   void onLifecycleEvent(LifecycleEvent event) {
     if (event == LifecycleEvent.inactive || event == LifecycleEvent.invisible) saveData();
+  }
+}
+
+class ChatContactBar extends StatelessWidget {
+  const ChatContactBar({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(left: 50, bottom: 0, top: 40, right: 50),
+      height: 100,
+      width: double.infinity,
+      child: Material(
+        type: MaterialType.button,
+        borderRadius: BorderRadius.circular(30),
+        elevation: 5,
+        color: const Color(0xfff5f5f5),
+        child: InkWell(
+          splashColor: Colors.blue.withAlpha(30),
+          onTap: () {},
+          borderRadius: BorderRadius.circular(30),
+          child: Row(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(36, 4, 16, 4),
+                  child: Image.asset(
+                    "assets/img/data-white.png",
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    "Botty",
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    "⬤ online", // FIXME: The dot is broken on web. Fixable with custom font additions? Maybe add actual status indicator?
+                    style: TextStyle(
+                      color: Colors.green,
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

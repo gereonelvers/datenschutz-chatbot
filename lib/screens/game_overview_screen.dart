@@ -31,13 +31,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
   ];
-  List<Image> gameImages = [
-    Image.asset("assets/img/quiz-image.png"),
-    Image.asset("assets/img/quiz-image.png"),
-    Image.asset("assets/img/quiz-image.png"),
-    Image.asset("assets/img/quiz-image.png"),
-    Image.asset("assets/img/quiz-image.png")
-  ];
+  List<Image> gameImages = [Image.asset("assets/img/quiz-image.png"), Image.asset("assets/img/quiz-image.png"), Image.asset("assets/img/quiz-image.png"), Image.asset("assets/img/quiz-image.png"), Image.asset("assets/img/quiz-image.png")];
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +77,9 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
                       child: Card(
-                        //color: const Color(0xFFE0E0E0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                         color: Colors.white,
                         child: InkWell(
                           splashColor: Colors.blue.withAlpha(30),
@@ -132,10 +128,11 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
               ),
             ),
           ]),
+          // TODO: Replace with actual map
           body: Image.asset(
-            "assets/img/map-placeholder.png", // Attribution: Designed by macrovector_official / Freepik
-            fit: BoxFit.fitWidth,
-            alignment: Alignment.bottomCenter,
+            "assets/img/map-placeholder.png",
+            fit: BoxFit.fitHeight,
+            alignment: Alignment.topCenter,
           ),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(24.0),
@@ -150,8 +147,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   double difficulty = 100;
 
   void loadQuiz() {
-
-    // TODO: Pick difficulty here
+    // TODO: Make this work, pretty & useful :)
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -164,6 +160,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                 Slider(
                   value: difficulty,
                   onChanged: (double value) => setState(() => difficulty = value),
+                  // TODO: setState() does not work to update UI here
                   min: 0,
                   max: 200,
                   //divisions: 10,
