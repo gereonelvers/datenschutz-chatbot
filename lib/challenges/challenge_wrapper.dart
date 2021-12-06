@@ -1,5 +1,6 @@
 import 'package:datenschutz_chatbot/challenges/challenge.dart';
 import 'package:datenschutz_chatbot/challenges/quiz_challenge.dart';
+import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +33,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
         appBar: AppBar(
           elevation: 0,
           automaticallyImplyLeading: false,
-          backgroundColor: const Color(0xff1c313a),
+          backgroundColor: BottyColors.darkBlue,
           title: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -47,9 +48,10 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                       child: LinearProgressIndicator(
+                        // If not challenges are provided, provide 0.1 as challengeCount to prevent division by 0
                         value: ((challengeCount - challenges.length) / (challengeCount == 0 ? 0.1 : challengeCount)),
-                        valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF799EB0)),
-                        backgroundColor: const Color(0xfff5f5f5),
+                        valueColor: AlwaysStoppedAnimation<Color>(BottyColors.lightestBlue),
+                        backgroundColor: BottyColors.greyWhite,
                       ),
                     ),
                   ),
@@ -64,7 +66,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
           ),
         ),
         body: Container(
-          color: const Color(0xff1c313a),
+          color: BottyColors.darkBlue,
           child: NotificationListener<ChallengeResultNotification>(
               onNotification: (n) {
                 updateChallenge(n.result);
@@ -93,7 +95,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
                                               child: const Text("Weiter"),
                                               style: ButtonStyle(
                                                 backgroundColor: MaterialStateProperty.all<Color>(
-                                                  const Color(0xff455a64),
+                                                  BottyColors.blue,
                                                 ),
                                               ))),
                                     ],

@@ -1,5 +1,6 @@
 import 'package:datenschutz_chatbot/challenges/challenge_wrapper.dart';
 import 'package:datenschutz_chatbot/screens/game_screen.dart';
+import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -39,15 +40,15 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
       body: Material(
         elevation: 5,
         type: MaterialType.card,
-        color: const Color(0xFF799EB0),
+        color: BottyColors.lightestBlue,
         child: SlidingUpPanel(
           panel: Column(children: [
             Align(
               alignment: Alignment.topCenter,
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xfff5f5f5),
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: BottyColors.greyWhite,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(24.0),
                     topRight: Radius.circular(24.0),
                   ),
@@ -67,7 +68,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
             ),
             Expanded(
               child: Container(
-                color: const Color(0xfff5f5f5),
+                color: BottyColors.greyWhite,
                 child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -83,6 +84,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                         color: Colors.white,
                         child: InkWell(
                           splashColor: Colors.blue.withAlpha(30),
+                          borderRadius: BorderRadius.circular(30),
                           onTap: () {
                             print("Opening screen with index: " + index.toString());
                             // TODO: Launch correct unity app here

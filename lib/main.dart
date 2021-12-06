@@ -1,6 +1,7 @@
 import 'package:datenschutz_chatbot/screens/chat_screen.dart';
 import 'package:datenschutz_chatbot/screens/game_overview_screen.dart';
 import 'package:datenschutz_chatbot/screens/profile_screen.dart';
+import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:lifecycle/lifecycle.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -11,14 +12,13 @@ void main() => runApp(const DataProtectionChatbot());
 class DataProtectionChatbot extends StatelessWidget {
   const DataProtectionChatbot({Key? key}) : super(key: key);
 
-  static const String _title = 'Datenschutz Chatbot';
+  static const String _title = 'Botty';
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: _title,
       home: SafeArea(
-        //appBar: AppBar(title: const Text(_title)),
         child: MainStatelessWidget(),
       ),
     );
@@ -53,9 +53,9 @@ class MainStatelessWidget extends StatelessWidget {
                 onDotClicked: (index) {
                   controller.animateToPage(index, duration: const Duration(seconds: 1), curve: Curves.ease);
                 },
-                effect: const ExpandingDotsEffect(
-                  dotColor: Color(0xFF718792),
-                  activeDotColor: Color(0xff1c313a),
+                effect: ExpandingDotsEffect(
+                  dotColor: BottyColors.lightBlue,
+                  activeDotColor: BottyColors.darkBlue,
                 ),
               ),
             ),

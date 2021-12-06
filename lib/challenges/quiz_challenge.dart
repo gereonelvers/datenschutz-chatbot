@@ -1,4 +1,5 @@
 import 'package:datenschutz_chatbot/challenges/challenge.dart';
+import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +19,11 @@ class QuizChallenge extends Challenge {
 class _QuizChallengeState extends ChallengeState<QuizChallenge> {
   @override
   void initState() {
+    question = widget.question;
+    answers = widget.answers;
+    correctAnswers = widget.correctAnswers;
+    difficulty = widget.difficulty;
+    singleChoice = widget.singleChoice;
     super.initState();
   }
 
@@ -28,29 +34,16 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
   List<int> currentlySelected = <int>[]; // List of currently selected fields
   bool hasSubmitted = false;
   String buttonText = "Überprüfen";
-  Color buttonColor = const Color(0xff1c313a);
+  Color buttonColor = BottyColors.darkBlue;
   bool singleChoice = true;
-
-  quizChallenge(question, answers, correctAnswers, difficulty, singleChoice) {
-    question = this.question;
-    answers = this.answers;
-    correctAnswers = this.correctAnswers;
-    difficulty = this.difficulty;
-    singleChoice = this.singleChoice;
-  }
 
   @override
   Widget build(BuildContext context) {
-    question = widget.question;
-    answers = widget.answers;
-    correctAnswers = widget.correctAnswers;
-    difficulty = widget.difficulty;
-    singleChoice = widget.singleChoice;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
         elevation: 15,
-        color: const Color(0xfff5f5f5),
+        color: BottyColors.greyWhite,
         child: Column(children: [
           Expanded(
             flex: 4,
@@ -59,10 +52,10 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
               child: Align(alignment: Alignment.center, child: Text(question, style: const TextStyle(color: Colors.black, fontSize: 28))),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Divider(
-              color: Color(0xff455a64),
+              color: BottyColors.blue,
               thickness: 1,
               height: 20,
             ),
@@ -135,11 +128,13 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
   @override
   void submit() {
     bool isCorrect = true;
+    // Check that all correct answers are selected
     for (int element in correctAnswers) {
       if (!currentlySelected.contains(element)) {
         isCorrect = false;
       }
     }
+    // Check that no false answers are selected
     for (int element in currentlySelected) {
       if (!correctAnswers.contains(element)) {
         isCorrect = false;
@@ -156,8 +151,8 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
       });
       hasSubmitted = true;
     } else {
+      // Dispatch notification to let ChallengeWrapper know of challenge result
       ChallengeResultNotification(isCorrect).dispatch(context);
-      //reset();
     }
   }
 

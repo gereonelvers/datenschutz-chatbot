@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/chat_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,7 +46,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
       body: Material(
         elevation: 5,
         type: MaterialType.card,
-        color: const Color(0xff455a64),
+        color: BottyColors.blue,
         child: Stack(
           children: <Widget>[
             messages.isEmpty
@@ -74,7 +75,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
                   type: MaterialType.button,
                   borderRadius: BorderRadius.circular(30),
                   elevation: 5,
-                  color: const Color(0xff1c313a),
+                  color: BottyColors.darkBlue,
                   child: InkWell(
                     splashColor: Colors.blue.withAlpha(30),
                     onTap: () {},
@@ -231,9 +232,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
 }
 
 class ChatContactBar extends StatelessWidget {
-  const ChatContactBar({
-    Key? key,
-  }) : super(key: key);
+  const ChatContactBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -245,7 +244,7 @@ class ChatContactBar extends StatelessWidget {
         type: MaterialType.button,
         borderRadius: BorderRadius.circular(30),
         elevation: 5,
-        color: const Color(0xfff5f5f5),
+        color: BottyColors.greyWhite,
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {},
@@ -268,15 +267,11 @@ class ChatContactBar extends StatelessWidget {
                 children: const [
                   Text(
                     "Botty",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(fontSize: 16),
                   ),
                   Text(
                     "⬤ online", // FIXME: The dot is broken on web. Fixable with custom font additions? Maybe add actual status indicator?
-                    style: TextStyle(
-                      color: Colors.green,
-                    ),
+                    style: TextStyle(color: Colors.green),
                   )
                 ],
               ),

@@ -1,3 +1,4 @@
+import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -37,16 +38,13 @@ class ChatMessage extends StatelessWidget {
                 child: DecoratedBox(
                   // chat bubble decoration
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1C313A),
+                    color: BottyColors.darkBlue,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Text(
-                      message,
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            color: const Color(0xFFF5F5F5),
-                          ),
+                      message, style: const TextStyle(color: Colors.white)
                     ),
                   ),
                 ),
@@ -61,14 +59,13 @@ class ChatMessage extends StatelessWidget {
                 child: DecoratedBox(
                   // chat bubble decoration
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF5F5F5),
+                    color: BottyColors.greyWhite,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Text(
-                      message,
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.black87),
+                      message, style: const TextStyle(color: Colors.black)
                     ),
                   ),
                 ),

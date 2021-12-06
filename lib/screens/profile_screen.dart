@@ -1,3 +1,4 @@
+import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF799EB0),
+      backgroundColor: BottyColors.lightestBlue,
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 64, 16, 16),
         children: [
@@ -37,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
               lineWidth: 10.0,
               percent: 0.6,
               backgroundColor: Colors.white,
-              progressColor: const Color(0xFF1C313A),
+              progressColor: BottyColors.darkBlue,
               center: Image.asset(
                 "assets/img/data-white.png",
                 color: Colors.black,
