@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:datenschutz_chatbot/screens/intro_screen.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/chat_message.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,31 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
         child: Stack(
           children: <Widget>[
             messages.isEmpty
-                ? const Center(child: Text("No message placeholder"))
+                ? Center(
+                    child: Column(
+                    children: [
+                      ClipRRect(
+                        child: Container(
+                          child: Image.asset(
+                            "assets/img/data-white.png",
+                            height: 180,
+                            width: 180,
+                            color: BottyColors.darkBlue,
+                          ),
+                          color: Colors.white,
+                        ),
+                        borderRadius: BorderRadius.circular(180.0),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(8, 32, 8, 0),
+                        child: Text(
+                          "Hi, ich bin Botty!\nWie geht es dir?",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                      )
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  ))
                 : ListView.builder(
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 90),
                     itemCount: messages.length,
@@ -182,6 +207,15 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   getData() async {
     // Doing this through SharedPreferences to avoid having to init Hive on other screens
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Check if intro screen needs to get launched
+    // TODO: Move this somewhere more appropriate (main.dart)
+    if (prefs.getBool("isFirstLaunch") ?? true) {
+      prefs.setBool("isFirstLaunch", false);
+      //Future.microtask(() => Navigator.push(context, MaterialPageRoute(builder: (context) => const IntroScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const IntroScreen()));
+    }
+
     setState(() {
       sessionID = prefs.getString("session-id") ?? randomString(32);
     });

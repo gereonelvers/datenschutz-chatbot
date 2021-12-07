@@ -1,5 +1,6 @@
 import 'package:datenschutz_chatbot/challenges/challenge_wrapper.dart';
 import 'package:datenschutz_chatbot/screens/game_screen.dart';
+import 'package:datenschutz_chatbot/screens/intro_screen.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -19,11 +20,12 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   }
 
   List<String> gameNames = [
-    "Challenge/Quiz Demo",
-    "Zweite Szene",
-    "Dritte Szene",
+    "Challenge/Quiz",
+    "Intro Screen",
+    "Survey Screen",
     "Unity Cube Demo",
     "RPG Demo",
+    "Racing Game",
   ];
   List<String> gameDescriptions = [
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
@@ -31,8 +33,16 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
+    "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
   ];
-  List<Image> gameImages = [Image.asset("assets/img/quiz-image.png"), Image.asset("assets/img/quiz-image.png"), Image.asset("assets/img/quiz-image.png"), Image.asset("assets/img/quiz-image.png"), Image.asset("assets/img/quiz-image.png")];
+  List<Image> gameImages = [
+    Image.asset("assets/img/quiz-image.png"),
+    Image.asset("assets/img/quiz-image.png"),
+    Image.asset("assets/img/quiz-image.png"),
+    Image.asset("assets/img/quiz-image.png"),
+    Image.asset("assets/img/quiz-image.png"),
+    Image.asset("assets/img/quiz-image.png")
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +97,14 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                           borderRadius: BorderRadius.circular(30),
                           onTap: () {
                             print("Opening screen with index: " + index.toString());
-                            // TODO: Launch correct unity app here
+                            // TODO: Move this to the right place & make it pretty
                             if (index.toInt() == 0) {
                               loadQuiz();
+                            } else if (index.toInt() == 1) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const IntroScreen()),
+                              );
                             } else {
                               Navigator.push(
                                 context,
