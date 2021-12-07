@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:survey_kit/survey_kit.dart';
-import 'package:flutter/services.dart';
-import 'dart:convert';
 
 /// This screen contains the survey the user takes at the beginning and end of the campaign/lesson
 /// TODO: Everything :)
@@ -61,13 +59,13 @@ class _SurveyScreenState extends State<SurveyScreen> {
                             Size(150.0, 60.0),
                           ),
                           side: MaterialStateProperty.resolveWith(
-                                (Set<MaterialState> state) {
+                            (Set<MaterialState> state) {
                               if (state.contains(MaterialState.disabled)) {
-                                return BorderSide(
+                                return const BorderSide(
                                   color: Colors.grey,
                                 );
                               }
-                              return BorderSide(
+                              return const BorderSide(
                                 color: Colors.cyan,
                               );
                             },
@@ -78,21 +76,21 @@ class _SurveyScreenState extends State<SurveyScreen> {
                             ),
                           ),
                           textStyle: MaterialStateProperty.resolveWith(
-                                (Set<MaterialState> state) {
+                            (Set<MaterialState> state) {
                               if (state.contains(MaterialState.disabled)) {
                                 return Theme.of(context)
                                     .textTheme
                                     .button
                                     ?.copyWith(
-                                  color: Colors.grey,
-                                );
+                                      color: Colors.grey,
+                                    );
                               }
                               return Theme.of(context)
                                   .textTheme
                                   .button
                                   ?.copyWith(
-                                color: Colors.cyan,
-                              );
+                                    color: Colors.cyan,
+                                  );
                             },
                           ),
                         ),
@@ -101,15 +99,15 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         style: ButtonStyle(
                           textStyle: MaterialStateProperty.all(
                             Theme.of(context).textTheme.button?.copyWith(
-                              color: Colors.cyan,
-                            ),
+                                  color: Colors.cyan,
+                                ),
                           ),
                         ),
                       ),
                     ),
                   );
                 }
-                return CircularProgressIndicator.adaptive();
+                return const CircularProgressIndicator.adaptive();
               },
             ),
           ),
@@ -147,7 +145,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
         QuestionStep(
           title: 'Tell us about you',
           text:
-          'Tell us about yourself and why you want to improve your health.',
+              'Tell us about yourself and why you want to improve your health.',
           answerFormat: TextAnswerFormat(
             maxLines: 5,
             validationRegEx: "^(?!\s*\$).+",
@@ -230,7 +228,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
     return Future.value(task);
   }
 
-  /*Future<Task> getJsonTask() async {
+/*Future<Task> getJsonTask() async {
     final taskJson = await rootBundle.loadString('assets/example_json.json');
     final taskMap = json.decode(taskJson);
 
