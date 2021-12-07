@@ -27,7 +27,6 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "Unity Cube Demo",
     "RPG Demo",
     "Racing Game",
-    "Survey Screen",
   ];
   List<String> gameDescriptions = [
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
@@ -36,10 +35,8 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
-    "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
   ];
   List<Image> gameImages = [
-    Image.asset("assets/img/quiz-image.png"),
     Image.asset("assets/img/quiz-image.png"),
     Image.asset("assets/img/quiz-image.png"),
     Image.asset("assets/img/quiz-image.png"),
@@ -109,7 +106,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                                 context,
                                 MaterialPageRoute(builder: (context) => IntroScreen()),
                               );
-                            } else if (index.toInt() == 6) {
+                            } else if (index.toInt() == 2) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => SurveyScreen()),
