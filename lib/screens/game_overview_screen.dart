@@ -1,6 +1,7 @@
 import 'package:datenschutz_chatbot/challenges/challenge_wrapper.dart';
 import 'package:datenschutz_chatbot/screens/game_screen.dart';
 import 'package:datenschutz_chatbot/screens/intro_screen.dart';
+import 'package:datenschutz_chatbot/screens/survey_screen.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -26,6 +27,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "Unity Cube Demo",
     "RPG Demo",
     "Racing Game",
+    "Survey Screen",
   ];
   List<String> gameDescriptions = [
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
@@ -34,8 +36,10 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
+    "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
   ];
   List<Image> gameImages = [
+    Image.asset("assets/img/quiz-image.png"),
     Image.asset("assets/img/quiz-image.png"),
     Image.asset("assets/img/quiz-image.png"),
     Image.asset("assets/img/quiz-image.png"),
@@ -96,14 +100,19 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                           splashColor: Colors.blue.withAlpha(30),
                           borderRadius: BorderRadius.circular(30),
                           onTap: () {
-                            print("Opening screen with index: " + index.toString());
+                            // print("Opening screen with index: " + index.toString());
                             // TODO: Move this to the right place & make it pretty
                             if (index.toInt() == 0) {
                               loadQuiz();
                             } else if (index.toInt() == 1) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const IntroScreen()),
+                                MaterialPageRoute(builder: (context) => IntroScreen()),
+                              );
+                            } else if (index.toInt() == 6) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => SurveyScreen()),
                               );
                             } else {
                               Navigator.push(
