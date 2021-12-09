@@ -121,113 +121,97 @@ class _SurveyScreenState extends State<SurveyScreen> {
       id: TaskIdentifier(),
       steps: [
         InstructionStep(
-          title: 'Welcome to the\nQuickBird Studios\nHealth Survey',
-          text: 'Get ready for a bunch of super random questions!',
+          title: 'Welcome to \nBottys survey',
+          text: 'Get ready for a bunch of super interesting questions, so we can get to know each other!',
           buttonText: 'Let\'s go!',
         ),
+
+        //TODO: Add survey questions here
         QuestionStep(
-          title: 'How old are you?',
-          answerFormat: IntegerAnswerFormat(
-            defaultValue: 25,
-            hint: 'Please enter your age',
-          ),
-          isOptional: true,
+            title: 'How old are you?',
+            answerFormat: IntegerAnswerFormat(),
         ),
         QuestionStep(
-          title: 'Medication?',
-          text: 'Are you using any medication',
-          answerFormat: BooleanAnswerFormat(
-            positiveAnswer: 'Yes',
-            negativeAnswer: 'No',
-            result: BooleanResult.POSITIVE,
-          ),
-        ),
-        QuestionStep(
-          title: 'Tell us about you',
-          text:
-              'Tell us about yourself and why you want to improve your health.',
-          answerFormat: TextAnswerFormat(
-            maxLines: 5,
-            validationRegEx: "^(?!\s*\$).+",
-          ),
-        ),
-        QuestionStep(
-          title: 'Select your body type',
-          answerFormat: ScaleAnswerFormat(
-            step: 1,
-            minimumValue: 1,
-            maximumValue: 5,
-            defaultValue: 3,
-            minimumValueDescription: '1',
-            maximumValueDescription: '5',
-          ),
-        ),
-        QuestionStep(
-          title: 'Known allergies',
-          text: 'Do you have any allergies that we should be aware of?',
-          answerFormat: MultipleChoiceAnswerFormat(
+          title: 'How do you identify yourself?',
+          answerFormat: const SingleChoiceAnswerFormat(
             textChoices: [
-              TextChoice(text: 'Penicillin', value: 'Penicillin'),
-              TextChoice(text: 'Latex', value: 'Latex'),
-              TextChoice(text: 'Pet', value: 'Pet'),
-              TextChoice(text: 'Pollen', value: 'Pollen'),
+              TextChoice(text: 'female', value: 'female'),
+              TextChoice(text: 'male', value: 'male'),
+              TextChoice(text: 'divers', value: 'divers'),
             ],
           ),
         ),
         QuestionStep(
-          title: 'Done?',
-          text: 'We are done, do you mind to tell us more about yourself?',
-          answerFormat: SingleChoiceAnswerFormat(
-            textChoices: [
-              TextChoice(text: 'Yes', value: 'Yes'),
-              TextChoice(text: 'No', value: 'No'),
-            ],
-            defaultSelection: TextChoice(text: 'No', value: 'No'),
-          ),
-        ),
-        QuestionStep(
-          title: 'When did you wake up?',
-          answerFormat: TimeAnswerFormat(
-            defaultValue: TimeOfDay(
-              hour: 12,
-              minute: 0,
+            title: 'Where do you see your data protection knowledge?',
+            answerFormat: const ScaleAnswerFormat(
+              step: 1,
+              minimumValue: 1,
+              maximumValue: 10,
+              defaultValue: 5,
+              minimumValueDescription: '1',
+              maximumValueDescription: '10'
             ),
-          ),
         ),
         QuestionStep(
-          title: 'When was your last holiday?',
-          answerFormat: DateAnswerFormat(
-            minDate: DateTime.utc(1970),
-            defaultDate: DateTime.now(),
-            maxDate: DateTime.now(),
-          ),
+          title: 'Wie oft bist du mit dem Thema schon in Kontakt gekommen',
+            answerFormat: const SingleChoiceAnswerFormat(
+              textChoices: [
+                TextChoice(text: 'nie', value: 'nie'),
+                TextChoice(text: 'selten', value: 'selten'),
+                TextChoice(text: 'manchmal', value: 'manchmal'),
+                TextChoice(text: 'oft', value: 'oft'),
+                TextChoice(text: 'ständig', value: 'ständig'),
+              ],
+            ),
         ),
+        QuestionStep(
+            title: 'Hast du je ein (Lern-)Spiel mit einem Chatbot gespielt?',
+            answerFormat: const SingleChoiceAnswerFormat(
+              textChoices: [
+                TextChoice(text: 'ja', value: 'ja'),
+                TextChoice(text: 'nö', value: 'nö'),
+              ],
+            ),
+        ),
+        QuestionStep(
+            title: 'Please tell us a bit about it ;D',
+            answerFormat: const TextAnswerFormat(
+              maxLines: 5,
+              validationRegEx: "^(?!\s*\$).+",
+            ),
+        ),
+
         CompletionStep(
           stepIdentifier: StepIdentifier(id: '321'),
-          text: 'Thanks for taking the survey, we will contact you soon!',
+          text: 'Thanks for taking the survey, sounds like you are a cool person!',
           title: 'Done!',
           buttonText: 'Submit survey',
         ),
       ],
     );
+
+    //TODO: Add navigation rule
     task.addNavigationRule(
-      forTriggerStepIdentifier: task.steps[6].stepIdentifier,
-      navigationRule: ConditionalNavigationRule(
-        resultToStepIdentifierMapper: (input) {
-          switch (input) {
-            case "Yes":
-              return task.steps[0].stepIdentifier;
-            case "No":
-              return task.steps[7].stepIdentifier;
-            default:
-              return null;
-          }
-        },
-      ),
+        forTriggerStepIdentifier: task.steps[5].stepIdentifier,
+        navigationRule: ConditionalNavigationRule(
+            resultToStepIdentifierMapper: (input) {
+              switch(input){
+                case 'ja':
+                  return task.steps[6].stepIdentifier;
+                case 'nö':
+                  return task.steps[7].stepIdentifier;
+                default:
+                  return null;
+              }
+            },
+        ),
     );
+
     return Future.value(task);
   }
 
+
+//This one may be needed in the future
 /*Future<Task> getJsonTask() async {
     final taskJson = await rootBundle.loadString('assets/example_json.json');
     final taskMap = json.decode(taskJson);
