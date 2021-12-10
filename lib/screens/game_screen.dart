@@ -26,29 +26,35 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       body: SafeArea(
           child: Stack(
         children: [
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: const Text("Zurück")),
+              )),
           UnityWidget(
             onUnityCreated: onUnityCreated,
             onUnityMessage: onUnityMessage,
             onUnitySceneLoaded: onUnitySceneLoaded,
-            fullscreen: true,
+            fullscreen: true, // Setting this to false causes a bunch of issues in release builds
             borderRadius: BorderRadius.zero,
             placeholder: const Center(
               child: Text("Unity loading..."),
             ),
-          ),
+          )
         ],
       )),
     );
   }
 
   // Communication from Unity to Flutter
-  void onUnityMessage(message) {
+  onUnityMessage(message) {
     // TODO: Implement unity->flutter messaging. Remove print afterwards.
     print('Received message from unity: ${message.toString()}');
   }
 
   // Callback that connects the created controller to the unity controller
-  void onUnityCreated(controller) async {
+  onUnityCreated(controller) async {
     unityWidgetController = controller;
     // This is an awful fix: Keep widget paused for .1 second to prevent freezing
     await unityWidgetController.pause();
@@ -62,22 +68,22 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   // This works by telling the Scene Switchers item in the currently Unity Scene to load the correct scene
-  void loadScene(int id) async {
+  loadScene(int id) async {
     print("Sending message telling Unity to load scene " + id.toString()); // TODO: Remove print once Unity scene loading works 100% (including nested scene layouts)
     unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", id.toString());
   }
 
   // Leaving callback method in here for now, not currently used for anything though
-  void onUnitySceneLoaded(SceneLoaded? sceneLoaded) {
+  onUnitySceneLoaded(SceneLoaded? sceneLoaded) {
     print("Loaded scene: " + sceneLoaded!.name.toString());
   }
 
   @override
-  void dispose() {
+  dispose() {
     print("dispose() called!"); // TODO: Remove print once Unity Livecycle implementation works 100%
     // unityWidgetController.unload();  // Android only?!
     // unityWidgetController.quit();    // Quits app?
-    unityWidgetController.dispose();
+    // unityWidgetController.dispose();
     super.dispose();
   }
 }

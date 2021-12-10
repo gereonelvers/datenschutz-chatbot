@@ -1,4 +1,5 @@
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
+import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 
 /// This is the screen that introduces the user to the app on first launch
@@ -44,19 +45,26 @@ class _IntroScreenState extends State<IntroScreen> {
     );
   }
 
-  void backward() {
+  backward() {
     if (controller.page != 0) {
       controller.animateToPage(controller.page!.toInt() - 1, duration: const Duration(milliseconds: 200), curve: Curves.ease);
     }
   }
 
-  void forward() {
+  forward() {
     if (controller.page != 2) {
       controller.animateToPage(controller.page!.toInt() + 1, duration: const Duration(milliseconds: 200), curve: Curves.ease);
     } else {
-      Navigator.of(context).pop();
+      exitIntro();
     }
   }
+
+  exitIntro() async {
+    ProgressModel progress = await ProgressModel.getProgressModel();
+    progress.setValue("finishedIntro", true);
+    Navigator.of(context).pop();
+  }
+
 }
 
 // First Screen

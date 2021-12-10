@@ -2,6 +2,7 @@ import 'package:datenschutz_chatbot/challenges/challenge.dart';
 import 'package:datenschutz_chatbot/challenges/quiz_challenge.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
+import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 
 class ChallengeWrapper extends StatefulWidget {
@@ -21,7 +22,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
   bool generatedChallenges = false; // Notification valiable used to display placeholder if challenge generation takes longer than expected
 
   @override
-  void initState() {
+  initState() {
     difficulty = widget.difficulty; // This is currently the only value passed through from the game menu screen
     generateChallenges(difficulty); // Generate challenges from inputs
     super.initState();
@@ -91,7 +92,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
                                     children: [
                                       Expanded(
                                           child: ElevatedButton(
-                                              onPressed: () => Navigator.pop(context),
+                                              onPressed: () {finishChallenges();},
                                               child: const Text("Weiter"),
                                               style: ButtonStyle(
                                                 backgroundColor: MaterialStateProperty.all<Color>(
@@ -109,7 +110,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
         ));
   }
 
-  void generateChallenges(int difficulty) {
+  generateChallenges(int difficulty) {
     setState(() {
       // TODO: Dynamically generate list of challenges here
       // Input: Difficulty, list of available questions
@@ -132,7 +133,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     });
   }
 
-  void updateChallenge(wasCorrect) {
+  updateChallenge(wasCorrect) {
     setState(() {
       if (wasCorrect) {
         streak++;
@@ -144,4 +145,13 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
       challenges.remove(challenges.first); // Remove current challenge
     });
   }
+
+  finishChallenges() async {
+    print("Starting exit ChallengeWrapper");
+    ProgressModel progress = await ProgressModel.getProgressModel();
+    progress.setValue("finished1", true);
+    print("Exit ChallengeWrapper");
+    Navigator.pop(context);
+  }
+
 }

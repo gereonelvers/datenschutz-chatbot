@@ -122,4 +122,5 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
     });
     prefs.setString("session-id", sessionID);
   }
+
 }

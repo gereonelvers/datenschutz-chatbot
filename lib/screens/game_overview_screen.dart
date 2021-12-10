@@ -3,6 +3,10 @@ import 'package:datenschutz_chatbot/screens/game_screen.dart';
 import 'package:datenschutz_chatbot/screens/intro_screen.dart';
 import 'package:datenschutz_chatbot/screens/survey_screen.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
+import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
+import 'package:datenschutz_chatbot/utility_widgets/quiz_dialog.dart';
+import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
+import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -15,12 +19,28 @@ class GameOverviewScreen extends StatefulWidget {
 }
 
 class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProviderStateMixin {
+  late ProgressModel progress;
+  double difficulty = 100;
+
   @override
   void initState() {
+    initProgressModel();
     super.initState();
   }
 
-  List<String> gameNames = [
+  void initProgressModel() async {
+    progress = await ProgressModel.getProgressModel();
+  }
+
+  // TODO: Replace with final chapter names
+  List<String> chapterNames = [
+    "Start-Survey",
+    "Challenges/Duolingo",
+    "Racing Game",
+    "RPG",
+    "Abschluss-Survey",
+  ];
+  List<String> demoNames = [
     "Challenge/Quiz",
     "Intro Screen",
     "Survey Screen",
@@ -45,6 +65,15 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     Image.asset("assets/img/quiz-image.png")
   ];
 
+  List<Image> questBackgrounds = [
+    Image.asset("assets/img/map-item-placeholder.png"),
+    Image.asset("assets/img/map-item-placeholder.png"),
+    Image.asset("assets/img/map-item-placeholder.png"),
+    Image.asset("assets/img/map-item-placeholder.png"),
+    Image.asset("assets/img/map-item-placeholder.png"),
+    Image.asset("assets/img/map-item-placeholder.png"),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,11 +93,11 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                     topRight: Radius.circular(24.0),
                   ),
                 ),
-                padding: const EdgeInsets.only(left: 0, bottom: 10, top: 10, right: 0),
+                padding: const EdgeInsets.only(left: 0, bottom: 0, top: 25, right: 0),
                 height: 80,
                 width: double.infinity,
                 child: const Text(
-                  "Spielesammlung",
+                  "Bonusinhalte",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
@@ -83,7 +112,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                 child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                  itemCount: gameNames.length,
+                  itemCount: demoNames.length,
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
                     return Padding(
@@ -100,16 +129,20 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                             // print("Opening screen with index: " + index.toString());
                             // TODO: Move this to the right place & make it pretty
                             if (index.toInt() == 0) {
-                              loadQuiz();
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return QuizDialog(difficulty);
+                                  });
                             } else if (index.toInt() == 1) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => IntroScreen()),
+                                MaterialPageRoute(builder: (context) => const IntroScreen()),
                               );
                             } else if (index.toInt() == 2) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SurveyScreen()),
+                                MaterialPageRoute(builder: (context) => const SurveyScreen()),
                               );
                             } else {
                               Navigator.push(
@@ -130,7 +163,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                                       Align(
                                         alignment: Alignment.topLeft,
                                         child: Text(
-                                          gameNames[index],
+                                          demoNames[index],
                                           style: const TextStyle(fontSize: 20),
                                         ),
                                       ),
@@ -151,12 +184,15 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
               ),
             ),
           ]),
-          // TODO: Replace with actual map
-          body: Image.asset(
-            "assets/img/map-placeholder.png",
-            fit: BoxFit.fitHeight,
-            alignment: Alignment.topCenter,
-          ),
+          body: Container(
+              color: const Color(0xFF99CC33),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 90), // Making sure the last element isn't stuck behind the sliding panel
+              child: ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: questBackgrounds.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(onTap: () => startQuest(index), child: questBackgrounds[index]);
+                  })),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(24.0),
             topRight: Radius.circular(24.0),
@@ -167,31 +203,19 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     );
   }
 
-  double difficulty = 100;
-
-  void loadQuiz() {
-    // TODO: Make this work, pretty & useful :)
+  startQuest(int index) async {
+    bool started = progress.getValue("started" + index.toString());
+    returnToMainScreen();
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Schwierigkeit wählen'),
+            title: const Text('Kapitel starten?'),
             content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Slider(
-                  value: difficulty,
-                  onChanged: (double value) => setState(() => difficulty = value),
-                  // TODO: setState() does not work to update UI here
-                  min: 0,
-                  max: 200,
-                  //divisions: 10,
-                  activeColor: const Color(0xff1c313a),
-                )
-              ],
-            ),
-            actions: <Widget>[
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [Text("Möchtest du \"" + demoNames[index] + "\" starten?"), if (started) const Text("Du hast das Kapitel bereits gestartet") else const Text("Du hast das Kapitel noch nicht gestartet")]),
+            actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -200,6 +224,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
               ),
               TextButton(
                 onPressed: () {
+                  if (!progress.getValue("started" + index.toString())) progress.setValue("started" + index.toString(), true);
                   Navigator.of(context).pop();
                   Navigator.push(
                     context,
@@ -211,5 +236,10 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
             ],
           );
         });
+  }
+
+  returnToMainScreen() {
+    UpdateProgressNotification().dispatch(context);
+    ScrollPageViewNotification(1).dispatch(context);
   }
 }

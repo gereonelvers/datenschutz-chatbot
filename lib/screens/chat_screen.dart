@@ -5,7 +5,12 @@ import 'dart:math';
 
 import 'package:datenschutz_chatbot/screens/intro_screen.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
+import 'package:datenschutz_chatbot/utility_widgets/chat_chip.dart';
+import 'package:datenschutz_chatbot/utility_widgets/chat_contact_bar.dart';
 import 'package:datenschutz_chatbot/utility_widgets/chat_message.dart';
+import 'package:datenschutz_chatbot/utility_widgets/message_list_empty_view.dart';
+import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
+import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -16,7 +21,7 @@ import 'package:random_string/random_string.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lifecycle/lifecycle.dart';
 
-/// This is the chat screen widget that displays the main chat windows with the rasa bot
+/// This is the chat screen widget that displays the main chat with Botty. Messages controlled by Rasa back end + conditionally through state management
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
 
@@ -25,24 +30,23 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, WidgetsBindingObserver, LifecycleAware, LifecycleMixin {
-  List<ChatMessage> messages = [
-    // TODO: Remove placeholders entirely once state management / message insertion is implemented
-    // const ChatMessage("Ansonsten kannst du nach links wischen um dir die Karte anzuschauen. Rechts gibt es ein paar weitere Infos.\nViel Spaß!", SenderType.bot),
-    // const ChatMessage("Versuch doch einfach, mir eine Nachricht zu schreiben!", SenderType.bot),
-    // const ChatMessage("Hi, ich bin Botty — der Datenschutz-Chatbot. Aktuell kann ich leider noch nicht so viel, aber das wird sich bald ändern :)", SenderType.bot)
-  ]; // List of all chat messages
+  List<ChatMessage> messages = []; // List of all chat messages
   final TextEditingController textEditingController = TextEditingController(); // Controller managing the text input field
   final String chatRequestUrl = "botty-chatbot.de"; // Base URL chatbot requests are made to.
   String sessionID = ""; // Unique, auto-generated session ID for Rasa. Auto-generated on first launch.
+  bool freeInputEnabled = false; // Is the user allowed to input free text or are there still more quests to complete first?
+  late ProgressModel progress; // This class holds a hashmap of progress "checkpoints"
+  List<String> chipStrings = ["Wer bist du?","Weiter","Hilfe","DSGVO"];
 
   @override
-  void initState() {
+  initState() {
     getData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print("Rebuild ChatScreen");
     return Scaffold(
       body: Material(
         elevation: 5,
@@ -51,33 +55,9 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
         child: Stack(
           children: <Widget>[
             messages.isEmpty
-                ? Center(
-                    child: Column(
-                    children: [
-                      ClipRRect(
-                        child: Container(
-                          child: Image.asset(
-                            "assets/img/data-white.png",
-                            height: 180,
-                            width: 180,
-                            color: BottyColors.darkBlue,
-                          ),
-                          color: Colors.white,
-                        ),
-                        borderRadius: BorderRadius.circular(180.0),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(8, 32, 8, 0),
-                        child: Text(
-                          "Hi, ich bin Botty!\nWie geht es dir?",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                      )
-                    ],
-                    mainAxisAlignment: MainAxisAlignment.center,
-                  ))
+                ? const MessageListEmptyView()
                 : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 90),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 115),
                     itemCount: messages.length,
                     reverse: true,
                     scrollDirection: Axis.vertical,
@@ -93,47 +73,71 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                padding: const EdgeInsets.only(left: 10, bottom: 20, top: 10, right: 10),
-                height: 90,
+                padding: const EdgeInsets.only(left: 0, bottom: 10, top: 0, right: 0),
+                height: 115,
                 width: double.infinity,
-                child: Material(
-                  type: MaterialType.button,
-                  borderRadius: BorderRadius.circular(30),
-                  elevation: 5,
-                  color: BottyColors.darkBlue,
-                  child: InkWell(
-                    splashColor: Colors.blue.withAlpha(30),
-                    onTap: () {},
-                    borderRadius: BorderRadius.circular(30),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 5, 5, 5),
-                            child: TextField(
-                              onSubmitted: (String message) => sendMessage(),
-                              controller: textEditingController,
-                              textInputAction: TextInputAction.send,
-                              cursorColor: Colors.white,
-                              style: const TextStyle(color: Colors.white),
-                              decoration: const InputDecoration(contentPadding: EdgeInsets.zero, hintText: "Nachricht", hintStyle: TextStyle(color: Colors.white), border: InputBorder.none),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(5, 5, 15, 5),
-                          child: GestureDetector(
-                            onTap: () => sendMessage(),
-                            child: const Icon(
-                              Icons.send,
-                              color: Colors.white,
-                              size: 25,
-                            ),
-                          ),
-                        ),
-                      ],
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: chipStrings.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              child: ChatChip(chipStrings[index]),
+                              onTap: () => sendMessageChip(chipStrings[index]),
+                            );
+                          }),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: Material(
+                        type: MaterialType.button,
+                        borderRadius: BorderRadius.circular(30),
+                        elevation: 5,
+                        color: BottyColors.darkBlue,
+                        child: InkWell(
+                          splashColor: Colors.blue.withAlpha(30),
+                          onTap: () {
+                            if (!freeInputEnabled) sendMessage();
+                          },
+                          borderRadius: BorderRadius.circular(30),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(15, 5, 5, 5),
+                                  child: TextField(
+                                    onSubmitted: (String message) => sendMessage(),
+                                    controller: textEditingController,
+                                    textInputAction: TextInputAction.send,
+                                    cursorColor: Colors.white,
+                                    style: const TextStyle(color: Colors.white),
+                                    enabled: freeInputEnabled,
+                                    textAlign: freeInputEnabled ? TextAlign.start : TextAlign.center,
+                                    decoration: InputDecoration(contentPadding: EdgeInsets.zero, hintText: freeInputEnabled ? "Nachricht" : "Zur Kapitelübersicht 🗺️", hintStyle: const TextStyle(color: Colors.white), border: InputBorder.none),
+                                  ),
+                                ),
+                              ),
+                              if (freeInputEnabled)
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 15, 5),
+                                  child: GestureDetector(
+                                    onTap: () => sendMessage(),
+                                    child: const Icon(
+                                      Icons.send,
+                                      color: Colors.white,
+                                      size: 25,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -144,15 +148,35 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   }
 
   sendMessage() {
+    if (freeInputEnabled) {
+      setState(() {
+        String message = textEditingController.text.trim();
+        if (message != "") {
+          // Commands!
+          if (message == "/clear") {
+            setState(() => messages.clear());
+            textEditingController.clear();
+            return;
+          }
+
+          // New messages are appended to front to make storing&displaying large amounts of messages economical
+          messages.insert(0, ChatMessage(textEditingController.text, SenderType.user));
+          messages.insert(0, const ChatMessage("...", SenderType.bot));
+          getResponse(message);
+        }
+        textEditingController.clear();
+      });
+    } else {
+      ScrollPageViewNotification(0).dispatch(context);
+    }
+  }
+
+  sendMessageChip(String message) {
     setState(() {
-      String message = textEditingController.text;
-      if (message.trim() != "") {
-        // New messages are appended to front to make storing&displaying large amounts of messages economical
-        messages.insert(0, ChatMessage(textEditingController.text, SenderType.user));
-        messages.insert(0, const ChatMessage("...", SenderType.bot));
-        getResponse(message);
-      }
-      textEditingController.clear();
+      // New messages are appended to front to make storing&displaying large amounts of messages economical
+      messages.insert(0, ChatMessage(message, SenderType.user));
+      messages.insert(0, const ChatMessage("...", SenderType.bot));
+      getResponse(message);
     });
   }
 
@@ -207,20 +231,16 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   getData() async {
     // Doing this through SharedPreferences to avoid having to init Hive on other screens
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     // Check if intro screen needs to get launched
-    // TODO: Move this somewhere more appropriate (main.dart)
     if (prefs.getBool("isFirstLaunch") ?? true) {
       prefs.setBool("isFirstLaunch", false);
       //Future.microtask(() => Navigator.push(context, MaterialPageRoute(builder: (context) => const IntroScreen()));
       Navigator.push(context, MaterialPageRoute(builder: (context) => const IntroScreen()));
     }
-
     setState(() {
       sessionID = prefs.getString("session-id") ?? randomString(32);
     });
     prefs.setString("session-id", sessionID);
-
     await Hive.initFlutter(); // FIXME: This call is made more often than it needs to be. Does that matter?
     if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(ChatMessageAdapter());
     if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(SenderTypeAdapter());
@@ -229,12 +249,109 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     setState(() {
       if (m != null) messages = m.cast<ChatMessage>();
       // If, for some reason, there is a "..." placeholder message stuck in the list, remove it here
-      if (messages.first.message == "..." && messages.first.type == SenderType.bot) messages.removeAt(0);
+      if (messages.isNotEmpty && messages.first.message == "..." && messages.first.type == SenderType.bot) messages.removeAt(0);
     });
+    await setProgressState();
+  }
+
+  // This feels really stupid, but idk where else all this content should go ¯\_(ツ)_/¯
+  // Reminder:
+  // - The chapters are: 0 - Start Survey, 1 - Challenges/Duolingo, 2 - Racing Game, 3 - Naninovel RPG, 4 - End Survey
+  // - The checkpoints per chapter are started, messagedStarted, finished, messagedFinished
+  // Since all chapters are walked through chronologically, we can walk backwards until we find the first started chapter
+  // TODO: Move this to a different file to increase legibility, change Chip content based on progress (prompts about chapter content), custom messages for starting but not finishing a quest (messageStartedn)
+  setProgressState() async {
+    progress = await ProgressModel.getProgressModel();
+
+    // Check if player started chapter 4
+    if (progress.getValue("started4")) {
+      if (progress.getValue("finished4")) {
+        // Player finished last chapter, unlock free input
+        setState(() {
+          freeInputEnabled = true;
+        });
+        if (progress.getValue("messagedFinished4")){
+          // Player finished last chapter and was already messaged about it
+          return;
+        } else {
+          insertMessageFixed(const ChatMessage("Glückwunsch, du hast das Spiel durchgespielt", SenderType.bot), 1000);
+          progress.setValue("messagedFinished4", true);
+        }
+      }
+      return;
+    }
+
+    // Check if player started chapter 3
+    if (progress.getValue("started3")) {
+      if (progress.getValue("finished3")) {
+        // Player finished chapter 3
+        if (progress.getValue("messagedFinished3")){
+          // Player finished chapter 3 and was already told about it
+          return;
+        } else {
+          insertMessageFixed(const ChatMessage("Gute Arbeit in Kapitel 3, spiel doch Kapitel 4", SenderType.bot), 1000);
+          progress.setValue("messagedFinished3", true);
+        }
+      }
+      return;
+    }
+
+    // Check if player started chapter 2
+    if (progress.getValue("started2")) {
+      if (progress.getValue("finished2")) {
+        // Player finished chapter 2
+        if (progress.getValue("messagedFinished2")){
+          // Player finished chapter 2 and was already told about it
+          return;
+        } else {
+          insertMessageFixed(const ChatMessage("Gute Arbeit in Kapitel 2, spiel doch Kapitel 3", SenderType.bot), 1000);
+          progress.setValue("messagedFinished2", true);
+        }
+      }
+      return;
+    }
+
+    // Check if player started chapter 1
+    if (progress.getValue("started1")) {
+      if (progress.getValue("finished1")) {
+        // Player finished chapter 1
+        if (progress.getValue("messagedFinished1")){
+          // Player finished chapter 1 and was already told about it
+          return;
+        } else {
+          insertMessageFixed(const ChatMessage("Gute Arbeit in Kapitel 1, spiel doch Kapitel 2", SenderType.bot), 1000);
+          progress.setValue("messagedFinished1", true);
+        }
+      }
+      return;
+    }
+
+    // Check if player started chapter 0
+    if (progress.getValue("started0")) {
+      if (progress.getValue("finished0")) {
+        // Player finished chapter 0
+        if (progress.getValue("messagedFinished0")){
+          // Player finished chapter 0 and was already told about it
+          return;
+        } else {
+          insertMessageFixed(const ChatMessage("Gute Arbeit in Kapitel 0, spiel doch Kapitel 0", SenderType.bot), 1000);
+          progress.setValue("messagedFinished0", true);
+        }
+      }
+      return;
+    }
+
+    // Check if player finished the intro
+    if (progress.getValue("finishedIntro")) {
+      if (!progress.getValue("messagedIntro")) {
+          insertMessageFixed(const ChatMessage("Dies ist der Intro-Text, willkommen im Spiel :)", SenderType.bot), 1000);
+          progress.setValue("messagedIntro", true);
+      }
+    }
   }
 
   // Inserts a message with a random delay (to make response more realistic)
-  void insertMessageRandom(ChatMessage message) {
+  insertMessageRandom(ChatMessage message) {
     Future.delayed(Duration(milliseconds: 200 + Random().nextInt(1000 - 200)), () {
       setState(() {
         messages.insert(0, message);
@@ -243,7 +360,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   }
 
   // Inserts a message with a fixed delay (for realistic scripted interactions)
-  void insertMessageFixed(ChatMessage message, int delayInMs) {
+  insertMessageFixed(ChatMessage message, int delayInMs) {
     Future.delayed(Duration(milliseconds: delayInMs), () {
       setState(() {
         messages.insert(0, message);
@@ -253,66 +370,15 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
 
   // If the widget is destroyed, dispose of controllers to prevente memory leaks
   @override
-  void dispose() {
+  dispose() {
     textEditingController.dispose();
     super.dispose();
   }
 
   // Save data if the widget becomes inactive or invisible (e.g. when the user exits the app)
   @override
-  void onLifecycleEvent(LifecycleEvent event) {
+  onLifecycleEvent(LifecycleEvent event) {
     if (event == LifecycleEvent.inactive || event == LifecycleEvent.invisible) saveData();
   }
-}
 
-class ChatContactBar extends StatelessWidget {
-  const ChatContactBar({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 50, bottom: 0, top: 40, right: 50),
-      height: 100,
-      width: double.infinity,
-      child: Material(
-        type: MaterialType.button,
-        borderRadius: BorderRadius.circular(30),
-        elevation: 5,
-        color: BottyColors.greyWhite,
-        child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
-          onTap: () {},
-          borderRadius: BorderRadius.circular(30),
-          child: Row(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(36, 4, 16, 4),
-                  child: Image.asset(
-                    "assets/img/data-white.png",
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    "Botty",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                    "⬤ online", // FIXME: The dot is broken on web. Fixable with custom font additions? Maybe add actual status indicator?
-                    style: TextStyle(color: Colors.green),
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
