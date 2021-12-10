@@ -25,7 +25,6 @@ class ProgressModel {
   Future<bool> reload() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.getString("checkpoints");
-
     String checkpointString = sp.getString("checkpoints") ?? "";
     if (checkpointString.isNotEmpty) _checkpoints = jsonDecode(checkpointString);
     return true;

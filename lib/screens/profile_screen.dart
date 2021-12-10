@@ -1,4 +1,5 @@
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
+import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +23,10 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
 
   String sessionID = ""; // Unique, auto-generated session ID for Rasa. Auto-generated if not present.
   String versionNumber = ""; // Current version and build number
+  String started = "Started:\n";
+  String messagedStarted = "messagedStarted:\n";
+  String finished = "Finished:\n";
+  String messagedFinished = "messagedFinished:\n";
 
   @override
   Widget build(BuildContext context) {
@@ -101,8 +106,26 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
                   ),
                   Text(
                     "Rasa session-ID:\n" + sessionID,
-                    textAlign: TextAlign.center,
-                  )
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    started,
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    messagedStarted,
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    finished,
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    messagedFinished,
+                    textAlign: TextAlign.left,
+                  ),
+                  ElevatedButton(onPressed: (){getInfo();}, child: const Text("force reload"))
+
                 ],
               ),
             ),
@@ -116,11 +139,23 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
   getInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    prefs.setString("session-id", sessionID);
+    ProgressModel progress = await ProgressModel.getProgressModel();
+    started = "Started:\n";
+    messagedStarted = "messagedStarted:\n";
+    finished = "Finished:\n";
+    messagedFinished = "messagedFinished:\n";
     setState(() {
       sessionID = prefs.getString("session-id") ?? randomString(32);
       versionNumber = "Version: v" + packageInfo.version + "+" + packageInfo.buildNumber;
+      for(int i = 0; i<5;i++) {
+        started += i.toString() + ":" + progress.getValue("started" + i.toString()).toString() + ", ";
+        messagedStarted += i.toString() + ":" + progress.getValue("messagedStarted" + i.toString()).toString() + ", ";
+        finished += i.toString() + ":" + progress.getValue("finished" + i.toString()).toString() + " // ";
+        messagedFinished += i.toString() + ":" + progress.getValue("messagedFinished" + i.toString()).toString() + ", ";
+      }
     });
-    prefs.setString("session-id", sessionID);
+
   }
 
 }

@@ -32,7 +32,6 @@ class _QuizDialogState extends State<QuizDialog> {
           Slider(
             value: difficulty,
             onChanged: (double value) => setState(() => difficulty = value),
-            // TODO: setState() does not work to update UI here
             min: 0,
             max: 200,
             //divisions: 10,

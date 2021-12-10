@@ -36,7 +36,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   String sessionID = ""; // Unique, auto-generated session ID for Rasa. Auto-generated on first launch.
   bool freeInputEnabled = false; // Is the user allowed to input free text or are there still more quests to complete first?
   late ProgressModel progress; // This class holds a hashmap of progress "checkpoints"
-  List<String> chipStrings = ["Wer bist du?","Weiter","Hilfe","DSGVO"];
+  List<String> chipStrings = ["Wer bist du?","Weiter","Hilfe","DSGVO", "/clear", "/reset"];
 
   @override
   initState() {
@@ -151,14 +151,18 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     if (freeInputEnabled) {
       setState(() {
         String message = textEditingController.text.trim();
-        if (message != "") {
+        if (message.isEmpty) {
           // Commands!
           if (message == "/clear") {
             setState(() => messages.clear());
             textEditingController.clear();
             return;
           }
-
+          if (message == "/reset") {
+            setState(() => progress.reset());
+            textEditingController.clear();
+            return;
+          }
           // New messages are appended to front to make storing&displaying large amounts of messages economical
           messages.insert(0, ChatMessage(textEditingController.text, SenderType.user));
           messages.insert(0, const ChatMessage("...", SenderType.bot));
@@ -174,6 +178,16 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   sendMessageChip(String message) {
     setState(() {
       // New messages are appended to front to make storing&displaying large amounts of messages economical
+      if (message == "/clear") {
+        setState(() => messages.clear());
+        textEditingController.clear();
+        return;
+      }
+      if (message == "/reset") {
+        setState(() => progress.reset());
+        textEditingController.clear();
+        return;
+      }
       messages.insert(0, ChatMessage(message, SenderType.user));
       messages.insert(0, const ChatMessage("...", SenderType.bot));
       getResponse(message);
@@ -334,7 +348,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
           // Player finished chapter 0 and was already told about it
           return;
         } else {
-          insertMessageFixed(const ChatMessage("Gute Arbeit in Kapitel 0, spiel doch Kapitel 0", SenderType.bot), 1000);
+          insertMessageFixed(const ChatMessage("Gute Arbeit in Kapitel 0, spiel doch Kapitel 1", SenderType.bot), 1000);
           progress.setValue("messagedFinished0", true);
         }
       }

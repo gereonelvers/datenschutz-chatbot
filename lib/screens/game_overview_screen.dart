@@ -71,7 +71,6 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     Image.asset("assets/img/map-item-placeholder.png"),
     Image.asset("assets/img/map-item-placeholder.png"),
     Image.asset("assets/img/map-item-placeholder.png"),
-    Image.asset("assets/img/map-item-placeholder.png"),
   ];
 
   @override
@@ -191,7 +190,10 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                   physics: const BouncingScrollPhysics(),
                   itemCount: questBackgrounds.length,
                   itemBuilder: (context, index) {
-                    return GestureDetector(onTap: () => startQuest(index), child: questBackgrounds[index]);
+                    return GestureDetector(onTap: () => startQuest(index), child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0,10,0,10), // TODO: Maybe remove this later for "fluent" transition between images
+                      child: questBackgrounds[index],
+                    ));
                   })),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(24.0),
@@ -205,7 +207,6 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
 
   startQuest(int index) async {
     bool started = progress.getValue("started" + index.toString());
-    returnToMainScreen();
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -214,7 +215,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
             content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text("Möchtest du \"" + demoNames[index] + "\" starten?"), if (started) const Text("Du hast das Kapitel bereits gestartet") else const Text("Du hast das Kapitel noch nicht gestartet")]),
+                children: [Text("Möchtest du \"" + chapterNames[index] + "\" starten?"), if (started) const Text("Du hast das Kapitel bereits gestartet") else const Text("Du hast das Kapitel noch nicht gestartet")]),
             actions: [
               TextButton(
                 onPressed: () {
@@ -226,10 +227,53 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                 onPressed: () {
                   if (!progress.getValue("started" + index.toString())) progress.setValue("started" + index.toString(), true);
                   Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ChallengeWrapper(difficulty.round())),
-                  );
+                  // Start appropriate quest
+                  // TODO: set up finish-state once screens work (for all except QuizDialog)
+                  switch (index) {
+                    case 0: // Initial Survey
+                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SurveyScreen())
+                      );
+                      returnToMainScreen();
+                      break;
+                    case 1: // Challenges
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return QuizDialog(difficulty);
+                          });
+                      returnToMainScreen();
+                      break;
+                    case 2: // Racing Game
+                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const GameScreen(3)),
+                        // MaterialPageRoute(builder: (context) => const UnityScreen()),
+                      );
+                      returnToMainScreen();
+                      break;
+                    case 3: // Naninovel RPG
+                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const GameScreen(4)),
+                      // MaterialPageRoute(builder: (context) => const UnityScreen()),
+                      );
+                      returnToMainScreen();
+                      break;
+                    case 4: // Ending Survey
+                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const SurveyScreen())
+                      );
+                      returnToMainScreen();
+                      break;
+
+                  }
                 },
                 child: const Text('Start'),
               ),

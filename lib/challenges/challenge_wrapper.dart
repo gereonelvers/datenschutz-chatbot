@@ -3,6 +3,7 @@ import 'package:datenschutz_chatbot/challenges/quiz_challenge.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
+import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
 
 class ChallengeWrapper extends StatefulWidget {
@@ -146,11 +147,13 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     });
   }
 
+  // TODO: This is still somewhat broken, as the notification is no received (or acted upon) in the main PageView yet.
+  // Progress is changed accurately though
   finishChallenges() async {
-    print("Starting exit ChallengeWrapper");
     ProgressModel progress = await ProgressModel.getProgressModel();
     progress.setValue("finished1", true);
-    print("Exit ChallengeWrapper");
+    if (!progress.getValue("finished1")) progress.setValue("finished1", true);
+    UpdateProgressNotification().dispatch(context);
     Navigator.pop(context);
   }
 
