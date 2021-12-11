@@ -125,6 +125,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                           splashColor: Colors.blue.withAlpha(30),
                           borderRadius: BorderRadius.circular(30),
                           onTap: () {
+
                             // print("Opening screen with index: " + index.toString());
                             // TODO: Move this to the right place & make it pretty
                             if (index.toInt() == 0) {
@@ -224,55 +225,54 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                 child: const Text('Zurück'),
               ),
               TextButton(
-                onPressed: () {
+                // This call is async, meaning that once the player returns from the screen, returnToMainScreen() will be called
+                onPressed: () async {
                   if (!progress.getValue("started" + index.toString())) progress.setValue("started" + index.toString(), true);
                   Navigator.of(context).pop();
                   // Start appropriate quest
                   // TODO: set up finish-state once screens work (for all except QuizDialog)
                   switch (index) {
                     case 0: // Initial Survey
-                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
-                      Navigator.push(
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const SurveyScreen())
                       );
-                      returnToMainScreen();
+                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                      updateProgress();
                       break;
                     case 1: // Challenges
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return QuizDialog(difficulty);
-                          });
-                      returnToMainScreen();
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ChallengeWrapper(100)),
+                      );
+                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                      updateProgress();
                       break;
                     case 2: // Racing Game
-                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
-                      Navigator.push(
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const GameScreen(3)),
-                        // MaterialPageRoute(builder: (context) => const UnityScreen()),
                       );
-                      returnToMainScreen();
+                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                      updateProgress();
                       break;
                     case 3: // Naninovel RPG
-                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
-                      Navigator.push(
+                      await Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const GameScreen(4)),
                       // MaterialPageRoute(builder: (context) => const UnityScreen()),
                       );
-                      returnToMainScreen();
+                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                      updateProgress();
                       break;
                     case 4: // Ending Survey
-                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
-                      Navigator.push(
+                      await Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const SurveyScreen())
                       );
-                      returnToMainScreen();
+                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                      updateProgress();
                       break;
-
                   }
                 },
                 child: const Text('Start'),
@@ -282,8 +282,9 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
         });
   }
 
-  returnToMainScreen() {
-    UpdateProgressNotification().dispatch(context);
-    ScrollPageViewNotification(1).dispatch(context);
+  // Called when the player just finished a chapter
+  updateProgress() {
+    UpdateProgressNotification().dispatch(context); // Tell Flutter to rebuild main PageView children the next time it sees them
+    ScrollPageViewNotification(1).dispatch(context); // Tell the main PageView to scroll to the ChatScreen, causing a rebuild (to refresh progress)
   }
 }

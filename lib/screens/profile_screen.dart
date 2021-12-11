@@ -142,16 +142,16 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
     prefs.setString("session-id", sessionID);
     ProgressModel progress = await ProgressModel.getProgressModel();
     started = "Started:\n";
-    messagedStarted = "messagedStarted:\n";
-    finished = "Finished:\n";
-    messagedFinished = "messagedFinished:\n";
+    messagedStarted = "\nmessagedStarted:\n";
+    finished = "\nFinished:\n";
+    messagedFinished = "\nmessagedFinished:\n";
     setState(() {
       sessionID = prefs.getString("session-id") ?? randomString(32);
       versionNumber = "Version: v" + packageInfo.version + "+" + packageInfo.buildNumber;
       for(int i = 0; i<5;i++) {
         started += i.toString() + ":" + progress.getValue("started" + i.toString()).toString() + ", ";
         messagedStarted += i.toString() + ":" + progress.getValue("messagedStarted" + i.toString()).toString() + ", ";
-        finished += i.toString() + ":" + progress.getValue("finished" + i.toString()).toString() + " // ";
+        finished += i.toString() + ":" + progress.getValue("finished" + i.toString()).toString() + ", ";
         messagedFinished += i.toString() + ":" + progress.getValue("messagedFinished" + i.toString()).toString() + ", ";
       }
     });
