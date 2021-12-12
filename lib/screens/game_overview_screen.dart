@@ -10,8 +10,6 @@ import 'package:datenschutz_chatbot/utility_widgets/quiz_dialog.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:rive/rive.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 /// this is is the game overview/list widget
@@ -74,19 +72,33 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   ];
 
   // TODO: These load really slowly in the current implementation. Maybe need to replace them with pngs if that's not fixable via e.g. caching
-  List<SvgPicture> questBackgrounds = [
-    SvgPicture.asset("assets/svg/map-item-0.svg"),
-    SvgPicture.asset("assets/svg/map-item-1.svg"),
-    SvgPicture.asset("assets/svg/map-item-2.svg"),
-    SvgPicture.asset("assets/svg/map-item-3.svg"),
-    SvgPicture.asset("assets/svg/map-item-4.svg"),
+  // List<SvgPicture> questBackgrounds = [
+  //   SvgPicture.asset("assets/svg/map-item-0.svg"),
+  //   SvgPicture.asset("assets/svg/map-item-1.svg"),
+  //   SvgPicture.asset("assets/svg/map-item-2.svg"),
+  //   SvgPicture.asset("assets/svg/map-item-3.svg"),
+  //   SvgPicture.asset("assets/svg/map-item-4.svg"),
+  // ];
+  // List<SvgPicture> questBackgroundsMarked = [
+  //   SvgPicture.asset("assets/svg/map-item-0-marker.svg"),
+  //   SvgPicture.asset("assets/svg/map-item-1-marker.svg"),
+  //   SvgPicture.asset("assets/svg/map-item-2-marker.svg"),
+  //   SvgPicture.asset("assets/svg/map-item-3-marker.svg"),
+  //   SvgPicture.asset("assets/svg/map-item-4-marker.svg"),
+  // ];
+  List<Image> questBackgrounds = [
+    Image.asset("assets/img/map-item-0.png"),
+    Image.asset("assets/img/map-item-1.png"),
+    Image.asset("assets/img/map-item-2.png"),
+    Image.asset("assets/img/map-item-3.png"),
+    Image.asset("assets/img/map-item-4.png"),
   ];
-  List<SvgPicture> questBackgroundsMarked = [
-    SvgPicture.asset("assets/svg/map-item-0-marker.svg"),
-    SvgPicture.asset("assets/svg/map-item-1-marker.svg"),
-    SvgPicture.asset("assets/svg/map-item-2-marker.svg"),
-    SvgPicture.asset("assets/svg/map-item-3-marker.svg"),
-    SvgPicture.asset("assets/svg/map-item-4-marker.svg"),
+  List<Image> questBackgroundsMarked = [
+    Image.asset("assets/img/map-item-0-marked.png"),
+    Image.asset("assets/img/map-item-1-marked.png"),
+    Image.asset("assets/img/map-item-2-marked.png"),
+    Image.asset("assets/img/map-item-3-marked.png"),
+    Image.asset("assets/img/map-item-4-marked.png"),
   ];
 
   @override

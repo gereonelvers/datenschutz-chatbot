@@ -91,7 +91,9 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
                                     children: [
                                       Expanded(
                                           child: ElevatedButton(
-                                              onPressed: () {finishChallenges();},
+                                              onPressed: () {
+                                                finishChallenges();
+                                              },
                                               child: const Text("Weiter"),
                                               style: ButtonStyle(
                                                 backgroundColor: MaterialStateProperty.all<Color>(
@@ -127,6 +129,166 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
       challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("2")));
       challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle alle korrekten Antworten aus.", ["Natürliche Person", "Natürliche Person", "Land", "Organisation"], [0], 5, false, key: Key("3")));
       challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("4")));
+
+      challenges.add(const QuizChallenge(
+          "Du gibst deine Adresse zur Zusendung einer einmalige Bestellungeines Online-Händler. Muss deine Adresse nach der Zusendung gelöscht werden?",
+          [
+            "Nein, da der Online-Händler noch ein berechtigtes Interesse anmeinen Daten hat(z.B. für Werbezwecke)",
+            "Nein, da du deine Zustimmung zur Verarbeitung deiner Daten gegeben hast und diese weiter besteht",
+            "Ja, aber nach einer Haltefrist von 10 Jahren, da sie noch für steuerliche Zwecke benötigt werden",
+            "Ja, unverzüglich, da der Zweck der Erhebung nicht mehr besteht"
+          ],
+          [2],
+          5,
+          true,
+          key: Key("2")));
+      challenges.add(const QuizChallenge("Kannst du durch einen Widerruf deiner Einwilligung die unverzügliche Löschung deiner Daten erwirken?",
+          ["Nein, da ich meine Einwilligung nicht widerrufen kann", "Ja, wenn sonst kein Recht die Verarbeitung meiner Daten rechtfertigt"], [1], 5, true,
+          key: Key("3")));
+      challenges.add(const QuizChallenge(
+          "Du hast bei einem Gewinnspiel teilgenommen und dein Name wird als Gewinner auf Instagram veröffentlicht. Muss der Verantwortliche sich, wenn du die Löschung deiner Daten forderst, sich auch um die unverzügliche Löschung aller Links & Backups der Daten kümmern?",
+          [
+            "Ja, er ist schließlich für die Daten verantwortlich",
+            "Nein, das ist technisch nicht möglich",
+            "Jein, er muss zumindest die Verantwortlichen der Links & Backups über die Löschaufforderung informieren, falls technisch möglich und angemessen",
+            "Jein, er muss selbst, falls technisch möglich und angemessen, alle Links & Backups entfernen"
+          ],
+          [2],
+          5,
+          true,
+          key: Key("4")));
+
+      challenges.add(const QuizChallenge(
+        "Welche Merkmalszuordnung zu einer Person könnte sie identifizierbar machen?",
+        [
+          "Namen",
+          "Kennnummer",
+          "Standortdaten",
+          "Online-Kennung(IP-Adresse)",
+          "physische Merkmale",
+          "physiologischen Merkmal",
+          "genetische Merkmale",
+          "psychischen Merkmale",
+          "wirtschaftliche Merkmale",
+          "kulturelle Identität",
+          "soziale Identität",
+          "randomisierte Nummer",
+          "fiktiver Avatar, den auch mehrere Spieler gleichzeitig spielen können"
+        ],
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        5,
+        false,
+        key: Key("5"),
+      ));
+      challenges.add(const QuizChallenge(
+        "Was muss dir bei der Erhebung deiner Daten alles mitgeteilt werden?",
+        [
+          "Name und Kontakt des Verantwortlichen",
+          "Kontakt des Datenschutzbeauftragten",
+          "Zweck der Verarbeitung",
+          "Empfänger",
+          "Absicht des Verantwortlichen",
+          "Dauer der Speicherung",
+          "sämtliche Rechte",
+          "technische Verarbeitungsweise",
+          "Standort des Speichermediums",
+          "Hardwareinfo des Verantwortlichen",
+          "Kategorien der Daten",
+          "wenn sie indirekt von dir erhoben werden"
+        ],
+        [0, 1, 2, 3, 4, 5, 6, 10, 11],
+        5,
+        false,
+        key: Key("6"),
+      ));
+      challenges.add(const QuizChallenge(
+        "Über was muss dir vom Verantwortlichen Auskunft gegeben werden, wenn du das willst?",
+        [
+          "Verarbeitungszweck",
+          "Kategorien der Daten",
+          "Dauer",
+          "Empfänger",
+          "bestehende Rechte",
+          "Bestätigung, ob betreffende Daten verarbeitet werden",
+          "Kopie der personenbezogenen Daten",
+          "technische Verarbeitungsweise",
+          "Standort des Speichermediums",
+          "Hardwareinfo des Verantwortlichen",
+          "Kategorien der Daten"
+        ],
+        [0, 1, 2, 3, 4, 5, 6, 10],
+        5,
+        false,
+        key: Key("7"),
+      ));
+      challenges.add(const QuizChallenge(
+        "Was wird alles unter Verarbeitung verstanden? ",
+        [
+          "Erheben",
+          "Erfassen",
+          "Organisation",
+          "Ordnen",
+          "Speicherung",
+          "Anpassung",
+          "Veränderung",
+          "Auslesen",
+          "Abfragen",
+          "Verwendung",
+          "Offenlegung",
+          "Übermittlung",
+          "Bereitstellung",
+          "Abgleich",
+          "Verknüpfung",
+          "Einschränkung",
+          "das Löschen",
+          "Vernichtung"
+        ],
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+        5,
+        false,
+        key: Key("8"),
+      ));
+
+      challenges.add(const QuizChallenge(
+        "Zur Datenverarbeitung ist die Einwilligung der betroffenen Person notwendig.",
+        ["richtig", "falsch"],
+        [0],
+        5,
+        true,
+        key: Key("9"),
+      ));
+      challenges.add(const QuizChallenge(
+        "Die Datenverarbeitung ist erlaubt, falls sie zur Erfüllung eines Vertrages notwendig ist.",
+        ["richtig", "falsch"],
+        [0],
+        5,
+        true,
+        key: Key("8"),
+      ));
+      challenges.add(const QuizChallenge(
+        "Die Datenverarbeitung ist nicht erlaubt, falls lebenswichtige Interessen zu schützen sind.",
+        ["richtig", "falsch"],
+        [1],
+        5,
+        true,
+        key: Key("10"),
+      ));
+      challenges.add(const QuizChallenge(
+        "Die Datenverarbeitung ist erlaubt, falls sie für eine Aufgabe im privaten Interesse notwendig ist.",
+        ["richtig", "falsch"],
+        [1],
+        5,
+        true,
+        key: Key("11"),
+      ));
+      challenges.add(const QuizChallenge(
+        "Die Datenverarbeitung ist erlaubt, falls ein berechtigtes Interesse der Verantwortlichen vorliegt, solange die Grundrechte nicht überwiegen..",
+        ["richtig", "falsch"],
+        [1],
+        5,
+        true,
+        key: Key("12"),
+      ));
       // challenges.shuffle(Random()); // Shuffle challenges after generation
       challengeCount = challenges.length;
     });
@@ -145,10 +307,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     });
   }
 
-  // TODO: This is still somewhat broken, as the notification is no received (or acted upon) in the main PageView yet.
-  // Progress is changed accurately though
   finishChallenges() async {
     Navigator.pop(context); // TODO: Return result https://docs.flutter.dev/cookbook/navigation/returning-data
   }
-
 }
