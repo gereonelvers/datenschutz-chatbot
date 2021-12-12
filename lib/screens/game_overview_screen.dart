@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:datenschutz_chatbot/challenges/challenge_wrapper.dart';
 import 'package:datenschutz_chatbot/screens/game_screen.dart';
 import 'package:datenschutz_chatbot/screens/intro_screen.dart';
@@ -8,6 +10,8 @@ import 'package:datenschutz_chatbot/utility_widgets/quiz_dialog.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:rive/rive.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 /// this is is the game overview/list widget
@@ -21,6 +25,7 @@ class GameOverviewScreen extends StatefulWidget {
 class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProviderStateMixin {
   late ProgressModel progress;
   double difficulty = 100;
+  int currentQuest = 0;
 
   @override
   void initState() {
@@ -30,6 +35,9 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
 
   void initProgressModel() async {
     progress = await ProgressModel.getProgressModel();
+    setState(() {
+      currentQuest = progress.getCurrent();
+    });
   }
 
   // TODO: Replace with final chapter names
@@ -65,12 +73,20 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     Image.asset("assets/img/quiz-image.png")
   ];
 
-  List<Image> questBackgrounds = [
-    Image.asset("assets/img/map-item-placeholder.png"),
-    Image.asset("assets/img/map-item-placeholder.png"),
-    Image.asset("assets/img/map-item-placeholder.png"),
-    Image.asset("assets/img/map-item-placeholder.png"),
-    Image.asset("assets/img/map-item-placeholder.png"),
+  // TODO: These load really slowly in the current implementation. Maybe need to replace them with pngs if that's not fixable via e.g. caching
+  List<SvgPicture> questBackgrounds = [
+    SvgPicture.asset("assets/svg/map-item-0.svg"),
+    SvgPicture.asset("assets/svg/map-item-1.svg"),
+    SvgPicture.asset("assets/svg/map-item-2.svg"),
+    SvgPicture.asset("assets/svg/map-item-3.svg"),
+    SvgPicture.asset("assets/svg/map-item-4.svg"),
+  ];
+  List<SvgPicture> questBackgroundsMarked = [
+    SvgPicture.asset("assets/svg/map-item-0-marker.svg"),
+    SvgPicture.asset("assets/svg/map-item-1-marker.svg"),
+    SvgPicture.asset("assets/svg/map-item-2-marker.svg"),
+    SvgPicture.asset("assets/svg/map-item-3-marker.svg"),
+    SvgPicture.asset("assets/svg/map-item-4-marker.svg"),
   ];
 
   @override
@@ -125,9 +141,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                           splashColor: Colors.blue.withAlpha(30),
                           borderRadius: BorderRadius.circular(30),
                           onTap: () {
-
-                            // print("Opening screen with index: " + index.toString());
-                            // TODO: Move this to the right place & make it pretty
+                            // TODO: Leaving these in to make content testing easier. Remove once no longer needed
                             if (index.toInt() == 0) {
                               showDialog(
                                   context: context,
@@ -191,10 +205,9 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                   physics: const BouncingScrollPhysics(),
                   itemCount: questBackgrounds.length,
                   itemBuilder: (context, index) {
-                    return GestureDetector(onTap: () => startQuest(index), child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0,10,0,10), // TODO: Maybe remove this later for "fluent" transition between images
-                      child: questBackgrounds[index],
-                    ));
+                    return GestureDetector(onTap: () => startQuest(index), child: AspectRatio(
+                      aspectRatio: 900/420,
+                        child: index==currentQuest?questBackgroundsMarked[index]:questBackgrounds[index]));
                   })),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(24.0),

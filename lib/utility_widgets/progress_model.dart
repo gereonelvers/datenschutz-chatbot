@@ -53,4 +53,13 @@ class ProgressModel {
     await p.reload();
     return p;
   }
+
+  int getCurrent() {
+    if (getValue("finished4")) return 5;
+    if (getValue("finished3")) return 4;
+    if (getValue("finished2")) return 3;
+    if (getValue("finished1")) return 2;
+    if (getValue("finished0")) return 1;
+    return 0;
+  }
 }
