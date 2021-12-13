@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:another_flushbar/flushbar.dart';
 import 'package:datenschutz_chatbot/challenges/challenge_wrapper.dart';
 import 'package:datenschutz_chatbot/screens/game_screen.dart';
 import 'package:datenschutz_chatbot/screens/intro_screen.dart';
@@ -23,7 +22,7 @@ class GameOverviewScreen extends StatefulWidget {
 class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProviderStateMixin {
   late ProgressModel progress;
   double difficulty = 100;
-  int currentQuest = 0;
+  int currentChapter = 0;
 
   @override
   void initState() {
@@ -34,17 +33,17 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   void initProgressModel() async {
     progress = await ProgressModel.getProgressModel();
     setState(() {
-      currentQuest = progress.getCurrent();
+      currentChapter = progress.getCurrentChapter();
     });
   }
 
   // TODO: Replace with final chapter names
   List<String> chapterNames = [
-    "Start-Survey",
-    "Challenges/Duolingo",
-    "Racing Game",
-    "RPG",
-    "Abschluss-Survey",
+    "die Start-Umfrage",
+    "das Treffen mit Meta",
+    "die Fahrt",
+    "den ersten Schultag",
+    "die Abschluss-Umfrage",
   ];
   List<String> demoNames = [
     "Challenge/Quiz",
@@ -71,21 +70,6 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     Image.asset("assets/img/quiz-image.png")
   ];
 
-  // TODO: These load really slowly in the current implementation. Maybe need to replace them with pngs if that's not fixable via e.g. caching
-  // List<SvgPicture> questBackgrounds = [
-  //   SvgPicture.asset("assets/svg/map-item-0.svg"),
-  //   SvgPicture.asset("assets/svg/map-item-1.svg"),
-  //   SvgPicture.asset("assets/svg/map-item-2.svg"),
-  //   SvgPicture.asset("assets/svg/map-item-3.svg"),
-  //   SvgPicture.asset("assets/svg/map-item-4.svg"),
-  // ];
-  // List<SvgPicture> questBackgroundsMarked = [
-  //   SvgPicture.asset("assets/svg/map-item-0-marker.svg"),
-  //   SvgPicture.asset("assets/svg/map-item-1-marker.svg"),
-  //   SvgPicture.asset("assets/svg/map-item-2-marker.svg"),
-  //   SvgPicture.asset("assets/svg/map-item-3-marker.svg"),
-  //   SvgPicture.asset("assets/svg/map-item-4-marker.svg"),
-  // ];
   List<Image> questBackgrounds = [
     Image.asset("assets/img/map-item-0.png"),
     Image.asset("assets/img/map-item-1.png"),
@@ -121,7 +105,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                   ),
                 ),
                 padding: const EdgeInsets.only(left: 0, bottom: 0, top: 25, right: 0),
-                height: 80,
+                height: 85,
                 width: double.infinity,
                 child: const Text(
                   "Bonusinhalte",
@@ -212,14 +196,14 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
           ]),
           body: Container(
               color: const Color(0xFF99CC33),
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 90), // Making sure the last element isn't stuck behind the sliding panel
               child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   itemCount: questBackgrounds.length,
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 130), // Making sure the last element isn't stuck behind the sliding panel
                   itemBuilder: (context, index) {
                     return GestureDetector(onTap: () => startQuest(index), child: AspectRatio(
                       aspectRatio: 900/420,
-                        child: index==currentQuest?questBackgroundsMarked[index]:questBackgrounds[index]));
+                        child: index==currentChapter?questBackgroundsMarked[index]:questBackgrounds[index]));
                   })),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(24.0),
@@ -232,79 +216,117 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   }
 
   startQuest(int index) async {
-    bool started = progress.getValue("started" + index.toString());
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Kapitel starten?'),
-            content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text("Möchtest du \"" + chapterNames[index] + "\" starten?"), if (started) const Text("Du hast das Kapitel bereits gestartet") else const Text("Du hast das Kapitel noch nicht gestartet")]),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Zurück'),
-              ),
-              TextButton(
-                // This call is async, meaning that once the player returns from the screen, returnToMainScreen() will be called
-                onPressed: () async {
-                  if (!progress.getValue("started" + index.toString())) progress.setValue("started" + index.toString(), true);
-                  Navigator.of(context).pop();
-                  // Start appropriate quest
-                  // TODO: set up finish-state once screens work (for all except QuizDialog)
-                  switch (index) {
-                    case 0: // Initial Survey
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SurveyScreen())
-                      );
-                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
-                      updateProgress();
-                      break;
-                    case 1: // Challenges
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ChallengeWrapper(100)),
-                      );
-                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
-                      updateProgress();
-                      break;
-                    case 2: // Racing Game
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const GameScreen(3)),
-                      );
-                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
-                      updateProgress();
-                      break;
-                    case 3: // Naninovel RPG
-                      await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const GameScreen(4)),
-                      // MaterialPageRoute(builder: (context) => const UnityScreen()),
-                      );
-                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
-                      updateProgress();
-                      break;
-                    case 4: // Ending Survey
-                      await Navigator.push(
+    bool started = progress.getBool("started" + index.toString());
+    if(index<currentChapter) {
+      await Flushbar(
+        margin: const EdgeInsets.fromLTRB(15,10,15,10),
+        borderRadius: BorderRadius.circular(20),
+        backgroundColor: BottyColors.greyWhite,
+        titleColor: Colors.black,
+        messageColor: Colors.black,
+        animationDuration: const Duration(milliseconds: 200),
+        icon: Image.asset("assets/img/data-white.png", color: Colors.black),
+        flushbarPosition: FlushbarPosition.TOP,
+        title: 'Sorry!',
+        message:
+        "Du hast dieses Kapitel bereits erfolgreich beendet 😁",
+        duration: const Duration(milliseconds: 1500),
+      ).show(context);
+    } else if (index>currentChapter) {
+      await Flushbar(
+        margin: const EdgeInsets.fromLTRB(15,10,15,10),
+        borderRadius: BorderRadius.circular(30),
+        backgroundColor: BottyColors.greyWhite,
+        titleColor: Colors.black,
+        messageColor: Colors.black,
+        animationDuration: const Duration(milliseconds: 200),
+        icon: Image.asset("assets/img/data-white.png", color: Colors.black),
+        flushbarPosition: FlushbarPosition.TOP,
+        title: 'Sorry!',
+        message:
+        "Du hast dieses Kapitel noch nicht freigeschaltet 🔜🤔",
+        duration: const Duration(milliseconds: 1500),
+      ).show(context);
+    }
+    else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Kapitel starten?'),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30))),
+              content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [if (started) Text("Möchtest du " + chapterNames[index] + " fortsetzen?") else
+                    Text("Möchtest du " + chapterNames[index] + " starten?")
+                  ]),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Zurück', style: TextStyle(color: BottyColors.darkBlue)),
+                ),
+                TextButton(
+                child: Text('Start', style: TextStyle(color: BottyColors.darkBlue)),
+                  // This call is async, meaning that once the player returns from the screen, returnToMainScreen() will be called
+                  onPressed: () async {
+                    if (!progress.getBool("started" + index.toString())) progress.setValue("started" + index.toString(), true);
+                    Navigator.of(context).pop();
+                    // Start appropriate quest
+                    // TODO: set up finish-state once screens work (for all except QuizDialog)
+                    switch (index) {
+                      case 0: // Initial Survey
+                        await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SurveyScreen())
+                        );
+                        if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                        updateProgress();
+                        break;
+                      case 1: // Challenges
+                        bool finished = await Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const SurveyScreen())
-                      );
-                      if (!progress.getValue("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
-                      updateProgress();
-                      break;
+                          MaterialPageRoute(builder: (context) => const ChallengeWrapper(100)),
+                        );
+                        if (finished) {
+                          if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                        }
+                        updateProgress();
+                        break;
+                      case 2: // Racing Game
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const GameScreen(3)),
+                        );
+                        if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                        updateProgress();
+                        break;
+                      case 3: // Naninovel RPG
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const GameScreen(4)),
+                        );
+                        if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                        updateProgress();
+                        break;
+                      case 4: // Ending Survey
+                        await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SurveyScreen())
+                        );
+                        if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                        updateProgress();
+                        break;
+                    }
                   }
-                },
-                child: const Text('Start'),
-              ),
-            ],
-          );
-        });
+                ),
+              ],
+            );
+          });
+    }
   }
 
   // Called when the player just finished a chapter

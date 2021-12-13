@@ -12,8 +12,6 @@ import 'package:datenschutz_chatbot/utility_widgets/message_list_empty_view.dart
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -46,7 +44,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
 
   @override
   Widget build(BuildContext context) {
-    print("Rebuild ChatScreen");
     return Scaffold(
       body: Material(
         elevation: 5,
@@ -255,16 +252,14 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
       sessionID = prefs.getString("session-id") ?? randomString(32);
     });
     prefs.setString("session-id", sessionID);
-
     await setProgressState();
     // Check if intro screen needs to get launched
-    if (!progress.getValue("finishedIntro")) {
+    // TODO: This sometimes launches IntroScreen twice. Why?
+    if (!progress.getBool("finishedIntro")) {
       await Navigator.push(context, MaterialPageRoute(builder: (context) => const IntroScreen()));
       progress.setValue("finishedIntro", true);
       setProgressState();
     }
-
-    await Hive.initFlutter(); // FIXME: This call is made more often than it needs to be. Does that matter?
     if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(ChatMessageAdapter());
     if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(SenderTypeAdapter());
     var box = await Hive.openBox('messageBox');
@@ -283,17 +278,16 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   // Since all chapters are walked through chronologically, we can walk backwards until we find the first started chapter
   // TODO: Move this to a different file to increase legibility, change Chip content based on progress (prompts about chapter content), custom messages for starting but not finishing a quest (messageStartedn)
   setProgressState() async {
-    print("Refreshed ProgressState in ChatScreen! :)");
     progress = await ProgressModel.getProgressModel();
 
     // Check if player started chapter 4
-    if (progress.getValue("started4")) {
-      if (progress.getValue("finished4")) {
+    if (progress.getBool("started4")) {
+      if (progress.getBool("finished4")) {
         // Player finished last chapter, unlock free input
         setState(() {
           freeInputEnabled = true;
         });
-        if (progress.getValue("messagedFinished4")) {
+        if (progress.getBool("messagedFinished4")) {
           // Player finished last chapter and was already messaged about it
           return;
         } else {
@@ -308,10 +302,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     }
 
     // Check if player started chapter 3
-    if (progress.getValue("started3")) {
-      if (progress.getValue("finished3")) {
+    if (progress.getBool("started3")) {
+      if (progress.getBool("finished3")) {
         // Player finished chapter 3
-        if (progress.getValue("messagedFinished3")) {
+        if (progress.getBool("messagedFinished3")) {
           // Player finished chapter 3 and was already told about it
           return;
         } else {
@@ -325,10 +319,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     }
 
     // Check if player started chapter 2
-    if (progress.getValue("started2")) {
-      if (progress.getValue("finished2")) {
+    if (progress.getBool("started2")) {
+      if (progress.getBool("finished2")) {
         // Player finished chapter 2
-        if (progress.getValue("messagedFinished2")) {
+        if (progress.getBool("messagedFinished2")) {
           // Player finished chapter 2 and was already told about it
           return;
         } else {
@@ -342,10 +336,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     }
 
     // Check if player started chapter 1
-    if (progress.getValue("started1")) {
-      if (progress.getValue("finished1")) {
+    if (progress.getBool("started1")) {
+      if (progress.getBool("finished1")) {
         // Player finished chapter 1
-        if (progress.getValue("messagedFinished1")) {
+        if (progress.getBool("messagedFinished1")) {
           // Player finished chapter 1 and was already told about it
           return;
         } else {
@@ -360,10 +354,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     }
 
     // Check if player started chapter 0
-    if (progress.getValue("started0")) {
-      if (progress.getValue("finished0")) {
+    if (progress.getBool("started0")) {
+      if (progress.getBool("finished0")) {
         // Player finished chapter 0
-        if (progress.getValue("messagedFinished0")) {
+        if (progress.getBool("messagedFinished0")) {
           // Player finished chapter 0 and was already told about it
           return;
         } else {
@@ -378,12 +372,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     }
 
     // Check if player finished the intro
-    if (progress.getValue("finishedIntro")) {
-      if (!progress.getValue("messagedIntro")) {
+    if (progress.getBool("finishedIntro")) {
+      if (!progress.getBool("messagedIntro")) {
         insertMessageFixed(const ChatMessage("Hi, ich bin Botty. Ich freue mich, dich kennenzulernen!", SenderType.bot), 100);
         insertMessageFixed(const ChatMessage("Heute werden wir uns zusammen mit dem Thema Datenschutz auseinandersetzen. Ich freue mich schon 😊", SenderType.bot), 1000);
-        insertMessageFixed(const ChatMessage("Bevor wir loslegen können, haben meine Eltern mich darum gebeten, dass du bitte die gleich folgende Umfrage ausfüllst. Keine Sorge, es ist auch kein Test 😊", SenderType.bot), 2000);
-        insertMessageFixed(const ChatMessage("Wische einfach nach links oder drücke auf den Knopf unten um loszulegen!", SenderType.bot), 3000);
+        insertMessageFixed(const ChatMessage("Bevor wir loslegen können, haben meine Eltern mich darum gebeten, dass du bitte noch eine kleine Umfrage ausfüllst. Keine Sorge, es ist auch kein Test 😊", SenderType.bot), 2000);
+        insertMessageFixed(const ChatMessage("Wische einfach nach links oder drücke auf den Knopf und wähle auf der Karte das Testzentrum aus!", SenderType.bot), 3000);
         progress.setValue("messagedIntro", true);
       }
     }

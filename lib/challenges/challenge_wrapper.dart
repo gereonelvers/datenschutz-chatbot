@@ -2,6 +2,7 @@ import 'package:datenschutz_chatbot/challenges/challenge.dart';
 import 'package:datenschutz_chatbot/challenges/quiz_challenge.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
+import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 
 class ChallengeWrapper extends StatefulWidget {
@@ -34,35 +35,31 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
           elevation: 0,
           automaticallyImplyLeading: false,
           backgroundColor: BottyColors.darkBlue,
-          title: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                  child: Text((challengeCount - challenges.length).toString() + "/" + challengeCount.toString()),
-                ),
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      child: LinearProgressIndicator(
-                        // If not challenges are provided, provide 0.1 as challengeCount to prevent division by 0
-                        value: ((challengeCount - challenges.length) / (challengeCount == 0 ? 0.1 : challengeCount)),
-                        valueColor: AlwaysStoppedAnimation<Color>(BottyColors.lightestBlue),
-                        backgroundColor: BottyColors.greyWhite,
-                      ),
+          title: Row(
+            children: [
+              IconButton(onPressed: showCancelDialog, icon: const Icon(Icons.close)),
+
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    child: LinearProgressIndicator(
+                      minHeight: 8,
+                      // If not challenges are provided, provide 0.1 as challengeCount to prevent division by 0
+                      value: ((challengeCount - challenges.length) / (challengeCount == 0 ? 0.1 : challengeCount)),
+                      valueColor: AlwaysStoppedAnimation<Color>(BottyColors.lightestBlue),
+                      backgroundColor: BottyColors.greyWhite,
                     ),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(8, 0, 4, 0),
-                  child: Icon(Icons.local_fire_department),
-                ),
-                Text(streak.toString())
-              ],
-            ),
+              ),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(8, 0, 4, 0),
+                child: Icon(Icons.local_fire_department),
+              ),
+              Text(streak.toString())
+            ],
           ),
         ),
         body: Container(
@@ -126,9 +123,9 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
         key: Key("1"),
       ));
       // Important: Every challenge must be added with a unique "key" identifier so Flutter knows to refresh the layout as the challenges are removed!
-      challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("2")));
-      challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle alle korrekten Antworten aus.", ["Natürliche Person", "Natürliche Person", "Land", "Organisation"], [0], 5, false, key: Key("3")));
-      challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("4")));
+      // challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("2")));
+      // challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle alle korrekten Antworten aus.", ["Natürliche Person", "Natürliche Person", "Land", "Organisation"], [0], 5, false, key: Key("3")));
+      // challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("4")));
 
       challenges.add(const QuizChallenge(
           "Du gibst deine Adresse zur Zusendung einer einmalige Bestellungeines Online-Händler. Muss deine Adresse nach der Zusendung gelöscht werden?",
@@ -307,7 +304,52 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     });
   }
 
+  showCancelDialog(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Abbrechen?"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text("Dein bisheriges Fortschritt geht verloren!"),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Ja", style: TextStyle(color: BottyColors.darkBlue)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text("Nein", style: TextStyle(color: BottyColors.darkBlue)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Win", style: TextStyle(color: BottyColors.darkBlue)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                finishChallenges();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   finishChallenges() async {
-    Navigator.pop(context); // TODO: Return result https://docs.flutter.dev/cookbook/navigation/returning-data
+    ProgressModel p = await ProgressModel.getProgressModel();
+    // TODO: These are placeholders. Fix!
+    p.setValue("challengeMaxStreak", streak);
+    p.setValue("challengeFastestComplete", 1);
+    p.setValue("challengeTotalXP", 102);
+    Navigator.pop(context, true); // TODO: Return result https://docs.flutter.dev/cookbook/navigation/returning-data
   }
 }

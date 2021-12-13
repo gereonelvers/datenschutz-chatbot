@@ -47,6 +47,8 @@ dependencies:
   flutter_unity_widget: ^4.2.3
   flutter_svg: ^1.0.0
   auto_size_text: ^3.0.0
+  another_flushbar: ^1.10.28
+  bubble: ^1.2.1
 
 dev_dependencies:
   flutter_test:

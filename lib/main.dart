@@ -5,10 +5,14 @@ import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lifecycle/lifecycle.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-main() => runApp(const BottyMainStatelessWidget());
+main() async {
+  await Hive.initFlutter();
+  runApp(const BottyMainStatelessWidget());
+}
 
 /// This is the stateless widget that the main application instantiates.
 class BottyMainStatelessWidget extends StatelessWidget {
@@ -21,7 +25,7 @@ class BottyMainStatelessWidget extends StatelessWidget {
     final PageController controller = PageController(initialPage: 1);
     GameOverviewScreen g = GameOverviewScreen(key: UniqueKey());
     ChatScreen c = ChatScreen(key: UniqueKey());
-    ProfileScreen p = ProfileScreen(key: UniqueKey());
+    ProgressScreen p = ProgressScreen(key: UniqueKey());
     return MaterialApp(
       title: _title,
       home: SafeArea(
@@ -38,10 +42,9 @@ class BottyMainStatelessWidget extends StatelessWidget {
                   },
                   child: NotificationListener<UpdateProgressNotification>(
                     onNotification: (n) {
-                      print("Told widgets to rebuild");
                       g = GameOverviewScreen(key: UniqueKey());
                       c = ChatScreen(key: UniqueKey());
-                      p = ProfileScreen(key: UniqueKey());
+                      p = ProgressScreen(key: UniqueKey());
                       return true;
                     },
                     child: PageView(

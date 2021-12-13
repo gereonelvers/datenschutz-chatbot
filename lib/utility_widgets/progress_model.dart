@@ -1,10 +1,8 @@
-import 'dart:convert';
-
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive/hive.dart';
 
 /// This class manages the state of player progression throughout the main quests/campaign
+/// It does this by basically acting like a convenience wrapper around a Hive box containing all values.
 /// TODO: Make observable to make refreshing affected layouts easier?!
-/// TODO: Find more scalable way to deal with saving?
 ///
 /// Current checkpoint structure for chapter n:
 /// - "startedn" if player started chapter n
@@ -12,39 +10,28 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// - "finishedn" if player finished chapter n
 /// - "messagedFinishedn" if player was messaged after finishing chapter n
 ///
-/// Usage:
-/// - Get an instance through ProgressModel.getProgressModel() in an async method
-/// - Get values through getValue() -> This is cheap!
-/// - Set values through setValue() -> This is expensive! Check if it really needs to be done!
 class ProgressModel {
-  Map<String, dynamic> _checkpoints = {};
+  late Box progress;
 
   // Private constructor to prevent direct instantiation
   ProgressModel._();
 
   Future<bool> reload() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.getString("checkpoints");
-    String checkpointString = sp.getString("checkpoints") ?? "";
-    if (checkpointString.isNotEmpty) _checkpoints = jsonDecode(checkpointString);
+    progress = await Hive.openBox('progressBox');
     return true;
   }
 
-  save() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setString("checkpoints", jsonEncode(_checkpoints));
+
+  setValue(String key, var value) {
+    progress.put(key, value);
   }
 
-  setValue(String key, bool value) {
-    _checkpoints[key] = value;
-    save();
-  }
-
-  bool getValue(String key) => _checkpoints[key] ?? false;
+  bool getBool(String key) => progress.get(key, defaultValue: false);
+  int getInt(String key) => progress.get(key, defaultValue: 0);
+  String getString(String key) => progress.get(key, defaultValue: "");
 
   reset(){
-    _checkpoints = {};
-    save();
+    progress.clear();
   }
 
   // Make ProgressModel available through factory method to force data initialization through SharedPreferences
@@ -54,12 +41,12 @@ class ProgressModel {
     return p;
   }
 
-  int getCurrent() {
-    if (getValue("finished4")) return 5;
-    if (getValue("finished3")) return 4;
-    if (getValue("finished2")) return 3;
-    if (getValue("finished1")) return 2;
-    if (getValue("finished0")) return 1;
+  int getCurrentChapter() {
+    if (getBool("finished4")) return 5;
+    if (getBool("finished3")) return 4;
+    if (getBool("finished2")) return 3;
+    if (getBool("finished1")) return 2;
+    if (getBool("finished0")) return 1;
     return 0;
   }
 }

@@ -1,161 +1,349 @@
+import 'package:datenschutz_chatbot/screens/settings_screen.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
-import 'package:random_string/random_string.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
-/// this is is the profile screen widget, currently only shows app info
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+
+/// this is is the profile screen, which shows player progress and achievements
+/// TODO: Very much WIP, code is somewhat of a mess right now :)
+class ProgressScreen extends StatefulWidget {
+  const ProgressScreen({Key? key}) : super(key: key);
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _ProgressScreenState createState() => _ProgressScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateMixin {
+class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStateMixin {
+
+  late ProgressModel progress;
+
+  String name = "Botty";
+  int currentChapter = 0;
+  List<int> challengeValues = [0,0,0];
+
   @override
   void initState() {
-    getInfo();
     super.initState();
   }
 
-  String sessionID = ""; // Unique, auto-generated session ID for Rasa. Auto-generated if not present.
-  String versionNumber = ""; // Current version and build number
-  String started = "Started:\n";
-  String messagedStarted = "messagedStarted:\n";
-  String finished = "Finished:\n";
-  String messagedFinished = "messagedFinished:\n";
-
   @override
   Widget build(BuildContext context) {
+    // For some reason this needs to be done in the build method instead of initState like the other pages
+    // Should not significantly impact performance though, as Hive heavily caches for this exact scenario
+    initProgressModel();
     return Scaffold(
-      backgroundColor: BottyColors.lightestBlue,
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 64, 16, 16),
+      backgroundColor: BottyColors.darkBlue,
+      body: Stack(
         children: [
-          Material(
-            shape: const CircleBorder(),
-            color: Colors.white,
-            child: CircularPercentIndicator(
-              radius: 100.0,
-              lineWidth: 10.0,
-              percent: 0.6,
-              backgroundColor: Colors.white,
-              progressColor: BottyColors.darkBlue,
-              center: Image.asset(
-                "assets/img/data-white.png",
-                color: Colors.black,
-              ),
-            ),
-          ),
-          const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20)),
-          Material(
-            type: MaterialType.card,
-            elevation: 5,
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
+          SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Container(
-              padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
-              width: double.infinity,
+              color: BottyColors.darkBlue,
               child: Column(
-                children: [
-                  const Text(
-                    "Botty",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      // color: Colors.white
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
-                    child: Text(
-                      versionNumber,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 12,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Padding(padding: EdgeInsets.only(top: 20, bottom: 40)),
+                  Material(
+                    elevation: 10,
+                    shape: const CircleBorder(),
+                    color: Colors.white,
+                    child: CircularPercentIndicator(
+                      radius: 100.0,
+                      lineWidth: 10.0,
+                      percent: ((currentChapter+1)/6),
+                      backgroundColor: Colors.white,
+                      progressColor: currentChapter == 5?Colors.green:Colors.grey,
+                      center:
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          "assets/img/data-white.png",
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
-          Material(
-            type: MaterialType.card,
-            elevation: 5,
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
-            child: Container(
-              padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
-              child: Column(
-                children: [
-                  const Text(
-                    "\"Botty - der Datenschutz-Chatbot\" ist ein Projekt des Bachelor-Praktikums \n\"IT-basiertes Lernen gestalten\" des \ni17-Lehrstuhls an der TU München.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      // color: Colors.white
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(name,
+                    style: const TextStyle(color: Colors.white, fontSize: 24),),
+                  ),
+                  const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 0)),
+                  Card(
+                    elevation: 10,
+                    //margin: EdgeInsets.zero,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30))),
+                        //borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Freischaltbare Inhalte',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 150,
+                          child: ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 15,
+                            itemBuilder: (BuildContext context, int index) {
+                              return
+                              Card(
+                                elevation: 5,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(30))),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 16, bottom: 16),
+                                    child: Image.asset("assets/img/data-white.png", color: Colors.black),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: const [
+                                        Text('Dummy Card Text'),
+                                        Text("Dummy Card Text"),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            },
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Challenges',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 150,
+                          child: ListView(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            children:[
+                                Card(
+                                  elevation: 5,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Align(
+                                          alignment: Alignment.topRight,
+                                            child: Icon(Icons.local_fire_department, color: BottyColors.darkBlue, size: 64,)),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.fromLTRB(8,0,8,8),
+                                        child: Text("Maximale Streak"),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(8,0,8,8),
+                                        child: Text(challengeValues[0].toString()),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              Card(
+                                elevation: 5,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(30))),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Align(
+                                          alignment: Alignment.topRight,
+                                          child: Icon(Icons.timer, color: BottyColors.darkBlue, size: 64,)),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.fromLTRB(8,0,8,8),
+                                      child: Text("Schnellster Run"),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(8,0,8,8),
+                                      child: Text(challengeValues[1].toString() + ":00"),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Card(
+                                elevation: 5,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(30))),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Align(
+                                          alignment: Alignment.topRight,
+                                          child: Icon(Icons.timer, color: BottyColors.darkBlue, size: 64,)),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.fromLTRB(8,0,8,8),
+                                      child: Text("Gesamte XP"),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(8,0,8,8),
+                                      child: Text(challengeValues[1].toString()),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ]
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Racing Game',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 150,
+                          child: ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 15,
+                            itemBuilder: (BuildContext context, int index) {
+                              return
+                                Card(
+                                  elevation: 5,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 16, bottom: 16),
+                                        child: Image.asset("assets/img/data-white.png", color: Colors.black),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: const [
+                                            Text('Dummy Card Text'),
+                                            Text("Dummy Card Text"),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+
+                            },
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'RPG',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 150,
+                          child: ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 15,
+                            itemBuilder: (BuildContext context, int index) {
+                              return
+                                Card(
+                                  elevation: 5,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 16, bottom: 16),
+                                        child: Image.asset("assets/img/data-white.png", color: Colors.black),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: const [
+                                            Text('Dummy Card Text'),
+                                            Text("Dummy Card Text"),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                            },
+                          ),
+                        ),
+                        const Padding(padding: EdgeInsets.only(top: 10, bottom: 30),)
+                      ],
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                  ),
-                  Text(
-                    "Rasa session-ID:\n" + sessionID,
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    started,
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    messagedStarted,
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    finished,
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    messagedFinished,
-                    textAlign: TextAlign.left,
-                  ),
-                  ElevatedButton(onPressed: (){getInfo();}, child: const Text("force reload"))
-
                 ],
               ),
             ),
           ),
+          Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                  );
+                }, icon: const Icon(Icons.settings, color: Colors.white,)),
+              )),
         ],
       ),
     );
   }
 
-  // Get sessionID from SharedPreferences, version number from PackageInfo
-  getInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    prefs.setString("session-id", sessionID);
-    ProgressModel progress = await ProgressModel.getProgressModel();
-    started = "Started:\n";
-    messagedStarted = "\nmessagedStarted:\n";
-    finished = "\nFinished:\n";
-    messagedFinished = "\nmessagedFinished:\n";
+  initProgressModel() async {
+    progress = await ProgressModel.getProgressModel();
     setState(() {
-      sessionID = prefs.getString("session-id") ?? randomString(32);
-      versionNumber = "Version: v" + packageInfo.version + "+" + packageInfo.buildNumber;
-      for(int i = 0; i<5;i++) {
-        started += i.toString() + ":" + progress.getValue("started" + i.toString()).toString() + ", ";
-        messagedStarted += i.toString() + ":" + progress.getValue("messagedStarted" + i.toString()).toString() + ", ";
-        finished += i.toString() + ":" + progress.getValue("finished" + i.toString()).toString() + ", ";
-        messagedFinished += i.toString() + ":" + progress.getValue("messagedFinished" + i.toString()).toString() + ", ";
-      }
+      String n = progress.getString("username");
+      if (n != "") name = n;
+      currentChapter = progress.getCurrentChapter();
+      challengeValues[0] = progress.getInt("challengeMaxStreak");
+      challengeValues[1] = progress.getInt("challengeFastestComplete");
+      challengeValues[2] = progress.getInt("challengeTotalXP");
     });
-
   }
-
 }
