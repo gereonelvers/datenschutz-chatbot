@@ -28,9 +28,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
                     snapshot.data != null) {
                   final task = snapshot.data!;
                   return SurveyKit(
-                    onResult: (SurveyResult result) {
+                    onResult: (SurveyResult result) async {
                       if (result.finishReason == FinishReason.COMPLETED) {
-                        postResult(result);
+                        await postResult(result);
+                        goBack();
                       }
                     },
                     task: task,
@@ -125,32 +126,33 @@ class _SurveyScreenState extends State<SurveyScreen> {
       steps: [
         InstructionStep(
           stepIdentifier: StepIdentifier(id: 'hello'),
-          title: 'Welcome to \nBottys survey',
+          title: 'Willkommen zur \nBotty Umfrage',
           text:
-              'Get ready for a bunch of super interesting questions, so we can get to know each other!',
-          buttonText: 'Let\'s go!',
+              'Mach dich bereit für einen Haufen interessanter Fragen, damit wir dich kennenlernen können!',
+          buttonText: 'Los geht\'s!',
         ),
 
         //TODO: Add survey questions here
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'age'),
-          title: 'How old are you?',
+          title: 'Wie alt bist du?',
           answerFormat: IntegerAnswerFormat(),
         ),
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'gender'),
-          title: 'How do you identify yourself?',
+          title: 'Wie identifizierst du dich?',
           answerFormat: const SingleChoiceAnswerFormat(
             textChoices: [
-              TextChoice(text: 'female', value: 'female'),
-              TextChoice(text: 'male', value: 'male'),
-              TextChoice(text: 'divers', value: 'divers'),
+              TextChoice(text: 'Schülerin', value: 'female'),
+              TextChoice(text: 'Schüler', value: 'male'),
+              TextChoice(text: 'Sonstige', value: 'divers'),
+              TextChoice(text: 'Keine Angabe', value: 'n/a'),
             ],
           ),
         ),
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'knowledge'),
-          title: 'Where do you see your data protection knowledge?',
+          title: 'Wie schätzt du deine Vorwissen über Datenschutz ein?',
           answerFormat: const ScaleAnswerFormat(
               step: 1,
               minimumValue: 1,
@@ -184,7 +186,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
         ),
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'tellus'),
-          title: 'Please tell us a bit about it ;D',
+          title: 'Bitte erzähle uns mehr ;D',
           answerFormat: const TextAnswerFormat(
             maxLines: 5,
             validationRegEx: "^(?!\s*\$).+",
@@ -194,9 +196,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
         CompletionStep(
           stepIdentifier: StepIdentifier(id: 'completion'),
           text:
-              'Thanks for taking the survey, sounds like you are a cool person!',
-          title: 'Done!',
-          buttonText: 'Submit survey',
+              'Danke für die Teilnahme an der Umfrage!',
+          title: 'Fertig!',
+          buttonText: 'Umfrage abschicken',
         ),
       ],
     );
@@ -235,6 +237,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
             'https://botty-datenschutz.de/wp-json/contact-form-7/v1/contact-forms/155/feedback'),
         body: map);
   }
+
+  goBack()=> Navigator.pop(context);
 
 //This one may be needed in the future
 /*Future<Task> getJsonTask() async {
