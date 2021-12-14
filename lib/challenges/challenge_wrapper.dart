@@ -20,6 +20,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
   List<Challenge> challenges = <Challenge>[]; // Auto-generated list of challenges
   int challengeCount = 0; // Total number of challenges (used for progress indicator)
   bool generatedChallenges = false; // Notification valiable used to display placeholder if challenge generation takes longer than expected
+  Stopwatch stopwatch = Stopwatch()..start();
 
   @override
   initState() {
@@ -348,8 +349,8 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     ProgressModel p = await ProgressModel.getProgressModel();
     // TODO: These are placeholders. Fix!
     p.setValue("challengeMaxStreak", streak);
-    p.setValue("challengeFastestComplete", 1);
-    p.setValue("challengeTotalXP", 102);
+    p.setValue("challengeFastestComplete", stopwatch.elapsed.inSeconds);
+    p.setValue("challengeTotalXP", p.getInt("challengeTotalXP")+5);
     Navigator.pop(context, true); // TODO: Return result https://docs.flutter.dev/cookbook/navigation/returning-data
   }
 }

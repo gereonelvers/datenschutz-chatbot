@@ -43,16 +43,19 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       ),
                       primaryColor: Colors.cyan,
                       backgroundColor: Colors.white,
-                      appBarTheme: const AppBarTheme(
+                      appBarTheme: AppBarTheme(
                         color: Colors.white,
-                        iconTheme: IconThemeData(
+                        iconTheme: const IconThemeData(
                           color: Colors.cyan,
-                        ),
-                        textTheme: TextTheme(
+                        ), toolbarTextStyle: const TextTheme(
                           button: TextStyle(
                             color: Colors.cyan,
                           ),
-                        ),
+                        ).bodyText2, titleTextStyle: const TextTheme(
+                          button: TextStyle(
+                            color: Colors.cyan,
+                          ),
+                        ).headline6,
                       ),
                       iconTheme: const IconThemeData(
                         color: Colors.cyan,
@@ -60,7 +63,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       outlinedButtonTheme: OutlinedButtonThemeData(
                         style: ButtonStyle(
                           minimumSize: MaterialStateProperty.all(
-                            Size(150.0, 60.0),
+                            const Size(150.0, 60.0),
                           ),
                           side: MaterialStateProperty.resolveWith(
                             (Set<MaterialState> state) {
@@ -136,7 +139,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'age'),
           title: 'Wie alt bist du?',
-          answerFormat: IntegerAnswerFormat(),
+          answerFormat: const IntegerAnswerFormat(),
         ),
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'gender'),

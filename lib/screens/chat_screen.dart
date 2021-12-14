@@ -35,6 +35,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   bool freeInputEnabled = false; // Is the user allowed to input free text or are there still more quests to complete first?
   late ProgressModel progress; // This class holds a hashmap of progress "checkpoints"
   List<String> chipStrings = ["Wer bist du?", "Weiter", "Hilfe", "DSGVO", "/clear", "/reset", "/refresh"];
+  Color backgroundColor = BottyColors.blue;
 
   @override
   initState() {
@@ -48,7 +49,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
       body: Material(
         elevation: 5,
         type: MaterialType.card,
-        color: BottyColors.blue,
+        color: backgroundColor,
         child: Stack(
           children: <Widget>[
             messages.isEmpty
@@ -279,6 +280,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   // TODO: Move this to a different file to increase legibility, change Chip content based on progress (prompts about chapter content), custom messages for starting but not finishing a quest (messageStartedn)
   setProgressState() async {
     progress = await ProgressModel.getProgressModel();
+
+    setState(() {
+      backgroundColor = progress.getBool("goldenBackgroundActive") ? Colors.amber : BottyColors.blue;
+    });
+
 
     // Check if player started chapter 4
     if (progress.getBool("started4")) {
