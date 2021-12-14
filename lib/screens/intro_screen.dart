@@ -53,7 +53,21 @@ class _IntroScreenState extends State<IntroScreen> {
 
   forward() {
     if (controller.page != 2) {
-      controller.animateToPage(controller.page!.toInt() + 1, duration: const Duration(milliseconds: 200), curve: Curves.ease);
+      if(controller.page == 1) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        if(IntroConsentScreen.DATA_CONSENT) {
+          controller.animateToPage(controller.page!.toInt() + 1,
+              duration: const Duration(milliseconds: 200), curve: Curves.ease);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Bitte akzeptiere den Datenschutz-Consent"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      } else {
+        controller.animateToPage(controller.page!.toInt() + 1,
+            duration: const Duration(milliseconds: 200), curve: Curves.ease);
+      }
     } else {
       exitIntro();
     }
@@ -66,6 +80,9 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
 }
+
+
+
 
 // First Screen
 class IntroWelcomeScreen extends StatelessWidget {
@@ -127,12 +144,16 @@ class IntroWelcomeScreen extends StatelessWidget {
 // Second Screen
 class IntroConsentScreen extends StatefulWidget {
   const IntroConsentScreen({Key? key}) : super(key: key);
+  static bool DATA_CONSENT = false;
 
   @override
   _IntroConsentScreenState createState() => _IntroConsentScreenState();
 }
 
 class _IntroConsentScreenState extends State<IntroConsentScreen> {
+
+  String name = "Anonym";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,17 +172,58 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
             ),
           ),
           Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            child: TextFormField(
+              decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: "Wie heißt du?",
+              ),
+              onChanged: updateName,
+            ),
+          ),
+          Padding(
             padding: const EdgeInsets.fromLTRB(8, 32, 8, 0),
-            child: Text(
-              "Name Input bald hier",
+            child:
+            Text(
+              "Gespeicherter Name: "+name.toString(),
               style: TextStyle(color: BottyColors.darkBlue, fontSize: 20),
             ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 32, 8, 0),
-            child: Text(
-              "Datenschutz-Consent bald hier",
-              style: TextStyle(color: BottyColors.darkBlue, fontSize: 20),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState((){
+                      IntroConsentScreen.DATA_CONSENT = !IntroConsentScreen.DATA_CONSENT;
+                      if(IntroConsentScreen.DATA_CONSENT) {
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      }
+                    });
+                  },
+                  child: Text(
+                    "Datenschutz-Consent bald hier",
+                    style: TextStyle(color: BottyColors.darkBlue, fontSize: 20),
+                  ),
+                ), const Spacer(),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Checkbox(
+                    checkColor: Colors.white,
+                    activeColor: Colors.green,
+                    value: IntroConsentScreen.DATA_CONSENT,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        IntroConsentScreen.DATA_CONSENT = value!;
+                        if(IntroConsentScreen.DATA_CONSENT) {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
           Padding(
@@ -174,6 +236,12 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
         ],
       ),
     ));
+  }
+
+  void updateName(String text) {
+    setState((){
+      name = text;
+    });
   }
 }
 
