@@ -192,6 +192,14 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 32, 8, 0),
+            child:
+            Text(
+              "Datenschutzerklärung",
+              style: TextStyle(color: BottyColors.darkBlue, fontSize: 20),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 1, 8, 0),
             child: Row(
               children: [
                 GestureDetector(
@@ -203,13 +211,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                       }
                     });
                   },
-                  child: Text(
-                    "Datenschutz",
-                    style: TextStyle(color: BottyColors.darkBlue, fontSize: 20),
-                  ),
-                ), const Spacer(),
-                Align(
-                  alignment: Alignment.topRight,
+
                   child: TextButton(
                     onPressed: () => showDialog<String>(
                       context: context,
@@ -223,6 +225,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                               setState(() {
                                 IntroConsentScreen.DATA_CONSENT = true;
                               });
+                              Navigator.pop(context);
                             },
                             color: Colors.green,
                           ),
@@ -232,13 +235,14 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                               setState(() {
                                 IntroConsentScreen.DATA_CONSENT = false;
                               });
+                              Navigator.pop(context);
                             },
                             color: Colors.red,
                           )
                         ],
                       ),
                     ),
-                    child: const Text('Datenschutzerklärung'),
+                    child: const Text('lesen und akzeptieren'),
                   )
                 ),
               ],
