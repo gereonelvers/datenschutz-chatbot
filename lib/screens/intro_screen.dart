@@ -204,26 +204,42 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                     });
                   },
                   child: Text(
-                    "Datenschutz-Consent bald hier",
+                    "Datenschutz",
                     style: TextStyle(color: BottyColors.darkBlue, fontSize: 20),
                   ),
                 ), const Spacer(),
                 Align(
                   alignment: Alignment.topRight,
-                  child: Checkbox(
-                    checkColor: Colors.white,
-                    activeColor: Colors.green,
-                    value: IntroConsentScreen.DATA_CONSENT,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        IntroConsentScreen.DATA_CONSENT = value!;
-                        if(IntroConsentScreen.DATA_CONSENT) {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        }
-                      });
-                    },
-
-                  ),
+                  child: TextButton(
+                    onPressed: () => showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Datenschutzkontent'),
+                        content: const Text('Der ausformulierte Datenschutzkontent wird hier stehen'),
+                        actions: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.thumb_up),
+                            onPressed: () {
+                              setState(() {
+                                IntroConsentScreen.DATA_CONSENT = true;
+                              });
+                            },
+                            color: Colors.green,
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.thumb_down),
+                            onPressed: () {
+                              setState(() {
+                                IntroConsentScreen.DATA_CONSENT = false;
+                              });
+                            },
+                            color: Colors.red,
+                          )
+                        ],
+                      ),
+                    ),
+                    child: const Text('Datenschutzerklärung'),
+                  )
                 ),
               ],
             ),
