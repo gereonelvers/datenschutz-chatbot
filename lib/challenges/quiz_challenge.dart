@@ -5,6 +5,7 @@ import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
 import 'package:flutter/material.dart';
 
+/// Implementation of Challenge that presents a simple single or multiple choice quiz
 class QuizChallenge extends Challenge {
   final String question;
   final List<String> answers;
@@ -74,7 +75,7 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
                         nipRadius: 2,
                         elevation: 1,
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.fromLTRB(8,8,8,0),
                           child: AutoSizeText(question, style: const TextStyle(color: Colors.black, fontSize: 24)),
                         ))),
                   ),
@@ -84,11 +85,23 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-            child: Divider(
-              color: BottyColors.blue,
-              thickness: 1,
-              height: 20,
-            ),
+            child:
+              Column(
+                children: [
+                  Divider(
+                    color: BottyColors.blue,
+                    thickness: 1,
+                    height: 20,
+                  ),
+                  singleChoice?const Text("Wähle die richtige Antwort aus"):const Text("Wähle alle richtigen Antworten aus"),
+                  Divider(
+                    color: BottyColors.blue,
+                    thickness: 1,
+                    height: 20,
+                  ),
+                ],
+              ),
+
           ),
           Expanded(
             flex: 6,

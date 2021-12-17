@@ -1,4 +1,5 @@
 import 'package:datenschutz_chatbot/challenges/challenge.dart';
+import 'package:datenschutz_chatbot/challenges/info_challenge.dart';
 import 'package:datenschutz_chatbot/challenges/quiz_challenge.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
@@ -115,54 +116,57 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
       // Input: Difficulty, list of available questions
       // Output: List<Challenge> challenges
       // In the meantime, add three QuizChallenges as placeholder
-      challenges.add(const QuizChallenge(
+      challenges.add(InfoChallenge(InfoChallenge.auntImage, "Hallo Botty! Ich freue mich, dich zu sehen!", key: UniqueKey()));
+      challenges.add(InfoChallenge(InfoChallenge.bottyImage, "Hallo Meta! Schön, dass du da bist!!", key: UniqueKey()));
+
+      challenges.add(QuizChallenge(
         "Wer kann identifizierbar sein? Wähle alle korrekten Antworten aus.",
-        ["Natürliche Person", "Natürliche Person", "Land", "Organisation"],
-        [0],
+        const ["Natürliche Person", "Natürliche Person", "Land", "Organisation"],
+        const [0],
         5,
         false,
-        key: Key("1"),
+        key: UniqueKey(),
       ));
       // Important: Every challenge must be added with a unique "key" identifier so Flutter knows to refresh the layout as the challenges are removed!
       // challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("2")));
       // challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle alle korrekten Antworten aus.", ["Natürliche Person", "Natürliche Person", "Land", "Organisation"], [0], 5, false, key: Key("3")));
       // challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("4")));
 
-      challenges.add(const QuizChallenge(
+      challenges.add(QuizChallenge(
           "Du gibst deine Adresse zur Zusendung einer einmalige Bestellungeines Online-Händler. Muss deine Adresse nach der Zusendung gelöscht werden?",
-          [
+          const [
             "Nein, da der Online-Händler noch ein berechtigtes Interesse anmeinen Daten hat(z.B. für Werbezwecke)",
             "Nein, da du deine Zustimmung zur Verarbeitung deiner Daten gegeben hast und diese weiter besteht",
             "Ja, aber nach einer Haltefrist von 10 Jahren, da sie noch für steuerliche Zwecke benötigt werden",
             "Ja, unverzüglich, da der Zweck der Erhebung nicht mehr besteht"
           ],
-          [2],
+          const [2],
           5,
           true,
-          key: Key("2")));
-      challenges.add(const QuizChallenge("Kannst du durch einen Widerruf deiner Einwilligung die unverzügliche Löschung deiner Daten erwirken?",
-          ["Nein, da ich meine Einwilligung nicht widerrufen kann", "Ja, wenn sonst kein Recht die Verarbeitung meiner Daten rechtfertigt"], [1], 5, true,
-          key: Key("3")));
-      challenges.add(const QuizChallenge(
+          key: UniqueKey()));
+      challenges.add(QuizChallenge("Kannst du durch einen Widerruf deiner Einwilligung die unverzügliche Löschung deiner Daten erwirken?",
+          const ["Nein, da ich meine Einwilligung nicht widerrufen kann", "Ja, wenn sonst kein Recht die Verarbeitung meiner Daten rechtfertigt"], const [1], 5, true,
+          key: UniqueKey()));
+      challenges.add(QuizChallenge(
           "Du hast bei einem Gewinnspiel teilgenommen und dein Name wird als Gewinner auf Instagram veröffentlicht. Muss der Verantwortliche sich, wenn du die Löschung deiner Daten forderst, sich auch um die unverzügliche Löschung aller Links & Backups der Daten kümmern?",
-          [
+          const [
             "Ja, er ist schließlich für die Daten verantwortlich",
             "Nein, das ist technisch nicht möglich",
             "Jein, er muss zumindest die Verantwortlichen der Links & Backups über die Löschaufforderung informieren, falls technisch möglich und angemessen",
             "Jein, er muss selbst, falls technisch möglich und angemessen, alle Links & Backups entfernen"
           ],
-          [2],
+          const [2],
           5,
           true,
-          key: Key("4")));
+          key: UniqueKey()));
 
-      challenges.add(const QuizChallenge(
+      challenges.add(QuizChallenge(
         "Welche Merkmalszuordnung zu einer Person könnte sie identifizierbar machen?",
-        [
+        const [
           "Namen",
           "Kennnummer",
           "Standortdaten",
-          "Online-Kennung(IP-Adresse)",
+          "Online-Kennung (IP-Adresse)",
           "physische Merkmale",
           "physiologischen Merkmal",
           "genetische Merkmale",
@@ -173,14 +177,14 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
           "randomisierte Nummer",
           "fiktiver Avatar, den auch mehrere Spieler gleichzeitig spielen können"
         ],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         5,
         false,
-        key: Key("5"),
+        key: UniqueKey(),
       ));
-      challenges.add(const QuizChallenge(
+      challenges.add(QuizChallenge(
         "Was muss dir bei der Erhebung deiner Daten alles mitgeteilt werden?",
-        [
+        const [
           "Name und Kontakt des Verantwortlichen",
           "Kontakt des Datenschutzbeauftragten",
           "Zweck der Verarbeitung",
@@ -194,14 +198,14 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
           "Kategorien der Daten",
           "wenn sie indirekt von dir erhoben werden"
         ],
-        [0, 1, 2, 3, 4, 5, 6, 10, 11],
+        const [0, 1, 2, 3, 4, 5, 6, 10, 11],
         5,
         false,
-        key: Key("6"),
+        key: UniqueKey(),
       ));
-      challenges.add(const QuizChallenge(
+      challenges.add(QuizChallenge(
         "Über was muss dir vom Verantwortlichen Auskunft gegeben werden, wenn du das willst?",
-        [
+        const [
           "Verarbeitungszweck",
           "Kategorien der Daten",
           "Dauer",
@@ -214,14 +218,14 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
           "Hardwareinfo des Verantwortlichen",
           "Kategorien der Daten"
         ],
-        [0, 1, 2, 3, 4, 5, 6, 10],
+        const [0, 1, 2, 3, 4, 5, 6, 10],
         5,
         false,
-        key: Key("7"),
+        key: UniqueKey(),
       ));
-      challenges.add(const QuizChallenge(
+      challenges.add(QuizChallenge(
         "Was wird alles unter Verarbeitung verstanden? ",
-        [
+        const [
           "Erheben",
           "Erfassen",
           "Organisation",
@@ -241,51 +245,51 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
           "das Löschen",
           "Vernichtung"
         ],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+        const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
         5,
         false,
-        key: Key("8"),
+        key: UniqueKey(),
       ));
 
-      challenges.add(const QuizChallenge(
+      challenges.add(QuizChallenge(
         "Zur Datenverarbeitung ist die Einwilligung der betroffenen Person notwendig.",
-        ["richtig", "falsch"],
-        [0],
+        const ["richtig", "falsch"],
+        const [0],
         5,
         true,
-        key: Key("9"),
+        key: UniqueKey(),
       ));
-      challenges.add(const QuizChallenge(
+      challenges.add(QuizChallenge(
         "Die Datenverarbeitung ist erlaubt, falls sie zur Erfüllung eines Vertrages notwendig ist.",
-        ["richtig", "falsch"],
-        [0],
+        const ["richtig", "falsch"],
+        const [0],
         5,
         true,
-        key: Key("8"),
+        key: UniqueKey(),
       ));
-      challenges.add(const QuizChallenge(
+      challenges.add(QuizChallenge(
         "Die Datenverarbeitung ist nicht erlaubt, falls lebenswichtige Interessen zu schützen sind.",
-        ["richtig", "falsch"],
-        [1],
+        const ["richtig", "falsch"],
+        const [1],
         5,
         true,
-        key: Key("10"),
+        key: UniqueKey(),
       ));
-      challenges.add(const QuizChallenge(
+      challenges.add(QuizChallenge(
         "Die Datenverarbeitung ist erlaubt, falls sie für eine Aufgabe im privaten Interesse notwendig ist.",
-        ["richtig", "falsch"],
-        [1],
+        const ["richtig", "falsch"],
+        const [1],
         5,
         true,
-        key: Key("11"),
+        key: UniqueKey(),
       ));
-      challenges.add(const QuizChallenge(
+      challenges.add(QuizChallenge(
         "Die Datenverarbeitung ist erlaubt, falls ein berechtigtes Interesse der Verantwortlichen vorliegt, solange die Grundrechte nicht überwiegen..",
-        ["richtig", "falsch"],
-        [1],
+        const ["richtig", "falsch"],
+        const [1],
         5,
         true,
-        key: Key("12"),
+        key: UniqueKey(),
       ));
       // challenges.shuffle(Random()); // Shuffle challenges after generation
       challengeCount = challenges.length;
@@ -314,7 +318,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
-                Text("Dein bisheriges Fortschritt geht verloren!"),
+                Text("Dein bisheriger Fortschritt geht verloren!"),
               ],
             ),
           ),
