@@ -145,6 +145,7 @@ class IntroWelcomeScreen extends StatelessWidget {
 class IntroConsentScreen extends StatefulWidget {
   const IntroConsentScreen({Key? key}) : super(key: key);
   static bool DATA_CONSENT = false;
+  static bool CLASSROOM_TOGGLE = false;
 
   @override
   _IntroConsentScreenState createState() => _IntroConsentScreenState();
@@ -228,11 +229,33 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 32, 8, 0),
-            child: Text(
-              "Classroom toggle bald hier",
-              style: TextStyle(color: BottyColors.darkBlue, fontSize: 20),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState((){
+                      IntroConsentScreen.CLASSROOM_TOGGLE = !IntroConsentScreen.CLASSROOM_TOGGLE;
+                    });
+                  },
+                  child: Text(
+                    "Spielt ihr in der Klasse?",
+                    style: TextStyle(color: BottyColors.darkBlue, fontSize: 20),
+                  ),
+                ), const Spacer(),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Switch(
+                    onChanged: (bool value) {
+                      setState(() {
+                        IntroConsentScreen.CLASSROOM_TOGGLE = value;
+                      });
+                    },
+                    value: IntroConsentScreen.CLASSROOM_TOGGLE,
+                  )
+                ),
+              ],
             ),
-          )
+          ),
         ],
       ),
     ));
