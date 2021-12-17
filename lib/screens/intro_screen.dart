@@ -222,6 +222,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                         }
                       });
                     },
+
                   ),
                 ),
               ],
@@ -251,6 +252,8 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                       });
                     },
                     value: IntroConsentScreen.CLASSROOM_TOGGLE,
+                    activeThumbImage: const AssetImage("assets/img/school-solid.png"),
+                    inactiveThumbImage: const AssetImage("assets/img/school-solid.png"),
                   )
                 ),
               ],
