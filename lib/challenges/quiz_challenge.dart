@@ -83,26 +83,7 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-            child:
-              Column(
-                children: [
-                  Divider(
-                    color: BottyColors.blue,
-                    thickness: 1,
-                    height: 20,
-                  ),
-                  singleChoice?const Text("Wähle die richtige Antwort aus"):const Text("Wähle alle richtigen Antworten aus"),
-                  Divider(
-                    color: BottyColors.blue,
-                    thickness: 1,
-                    height: 20,
-                  ),
-                ],
-              ),
-
-          ),
+          Padding(padding: const EdgeInsets.only(bottom: 16),),
           Expanded(
             flex: 6,
             child: GridView.count(
@@ -132,6 +113,11 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
                             ),
                           ))));
                 })),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child:
+            singleChoice?const Text("Wähle die richtige Antwort aus"):const Text("Wähle alle richtigen Antworten aus"),
           ),
           Expanded(
               flex: 1,

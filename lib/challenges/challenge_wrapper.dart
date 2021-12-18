@@ -1,5 +1,7 @@
 import 'package:datenschutz_chatbot/challenges/challenge.dart';
+import 'package:datenschutz_chatbot/challenges/gap_text_challenge.dart';
 import 'package:datenschutz_chatbot/challenges/info_challenge.dart';
+import 'package:datenschutz_chatbot/challenges/matching_challenge.dart';
 import 'package:datenschutz_chatbot/challenges/quiz_challenge.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
@@ -115,7 +117,15 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
       // TODO: Dynamically generate list of challenges here
       // Input: Difficulty, list of available questions
       // Output: List<Challenge> challenges
-      // In the meantime, add three QuizChallenges as placeholder
+
+      // Demo MatchingChallenge
+      challenges.add(MatchingChallenge(const ["Was ist Botty", "Was ist der Spieler?", "DSGVO steht für..."], const ["Chatbot", "Mensch", "Datenschutz-Grundverordnung"], key: UniqueKey(),),);
+
+      // Demo GapTextChallenge
+      challenges.add(GapTextChallenge(const ["Botty ist ein", ", der heute seinen", "Schultag in der neuen Schule hat."], const ["Chatbot","Mensch","ersten", "letzten"], const ["Chatbot", "ersten"], 5, key: UniqueKey(),));
+
+
+      // Demo InfoChallenges
       challenges.add(InfoChallenge(InfoChallenge.auntImage, "Hallo Botty! Ich freue mich, dich zu sehen!", key: UniqueKey()));
       challenges.add(InfoChallenge(InfoChallenge.bottyImage, "Hallo Meta! Schön, dass du da bist!!", key: UniqueKey()));
 

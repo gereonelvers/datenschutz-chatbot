@@ -334,7 +334,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
         } else {
           insertMessageFixed(const ChatMessage("Was für ein Trip!", SenderType.bot), 100);
           insertMessageFixed(const ChatMessage("Und jetzt noch einmal durchatmen und dann rein ins Abenteuer!", SenderType.bot), 1000);
-          insertMessageFixed(const ChatMessage("Starte den Schultag über die Kapitelübersicht, sobald die bereit bist.", SenderType.bot), 2000);
+          insertMessageFixed(const ChatMessage("Starte den Schultag über die Kapitelübersicht, sobald du bereit bist.", SenderType.bot), 2000);
           progress.setValue("messagedFinished2", true);
         }
       }
