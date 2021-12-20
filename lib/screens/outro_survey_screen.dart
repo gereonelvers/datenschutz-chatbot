@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:survey_kit/survey_kit.dart';
 
-/// This screen contains the survey the user takes at the beginning and end of the campaign/lesson
+/// This screen contains the survey the user takes at the end of the campaign/lesson
 /// TODO: Everything :)
 class SurveyScreen extends StatefulWidget {
   const SurveyScreen({Key? key}) : super(key: key);
@@ -48,14 +48,14 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         iconTheme: const IconThemeData(
                           color: Colors.cyan,
                         ), toolbarTextStyle: const TextTheme(
-                          button: TextStyle(
-                            color: Colors.cyan,
-                          ),
-                        ).bodyText2, titleTextStyle: const TextTheme(
-                          button: TextStyle(
-                            color: Colors.cyan,
-                          ),
-                        ).headline6,
+                        button: TextStyle(
+                          color: Colors.cyan,
+                        ),
+                      ).bodyText2, titleTextStyle: const TextTheme(
+                        button: TextStyle(
+                          color: Colors.cyan,
+                        ),
+                      ).headline6,
                       ),
                       iconTheme: const IconThemeData(
                         color: Colors.cyan,
@@ -66,7 +66,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                             const Size(150.0, 60.0),
                           ),
                           side: MaterialStateProperty.resolveWith(
-                            (Set<MaterialState> state) {
+                                (Set<MaterialState> state) {
                               if (state.contains(MaterialState.disabled)) {
                                 return const BorderSide(
                                   color: Colors.grey,
@@ -83,21 +83,21 @@ class _SurveyScreenState extends State<SurveyScreen> {
                             ),
                           ),
                           textStyle: MaterialStateProperty.resolveWith(
-                            (Set<MaterialState> state) {
+                                (Set<MaterialState> state) {
                               if (state.contains(MaterialState.disabled)) {
                                 return Theme.of(context)
                                     .textTheme
                                     .button
                                     ?.copyWith(
-                                      color: Colors.grey,
-                                    );
+                                  color: Colors.grey,
+                                );
                               }
                               return Theme.of(context)
                                   .textTheme
                                   .button
                                   ?.copyWith(
-                                    color: Colors.cyan,
-                                  );
+                                color: Colors.cyan,
+                              );
                             },
                           ),
                         ),
@@ -106,8 +106,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         style: ButtonStyle(
                           textStyle: MaterialStateProperty.all(
                             Theme.of(context).textTheme.button?.copyWith(
-                                  color: Colors.cyan,
-                                ),
+                              color: Colors.cyan,
+                            ),
                           ),
                         ),
                       ),
@@ -129,95 +129,104 @@ class _SurveyScreenState extends State<SurveyScreen> {
       steps: [
         InstructionStep(
           stepIdentifier: StepIdentifier(id: 'hello'),
-          title: 'Willkommen zur \nBotty Umfrage',
+          title: 'Willkommen zur letzten \nBotty Umfrage',
           text:
-              'Mach dich bereit für einen Haufen interessanter Fragen, damit wir dich kennenlernen können!',
+          'Es war eine Freude, mit dir zu lernen. Erzählst du uns von deinen Erfahrungen?',
           buttonText: 'Los geht\'s!',
         ),
 
         //TODO: Add survey questions here
         QuestionStep(
-          stepIdentifier: StepIdentifier(id: 'age'),
-          title: 'Wie alt bist du?',
-          answerFormat: const IntegerAnswerFormat(),
+          stepIdentifier: StepIdentifier(id: 'time'),
+          title: 'Wie lange hast du unsere App genutzt?',
+          answerFormat: const SingleChoiceAnswerFormat(
+              textChoices: [
+                TextChoice(text: 'zwischen 10 und 20 Minuten', value: 'kurz'),
+                TextChoice(text: 'zwischen 20 und 40 Minuten', value: 'mittellang'),
+                TextChoice(text: 'zwischen 40 und 60 Minuten', value: 'lang'),
+                TextChoice(text: 'zwischen 60 und 90 Minuten', value: 'sehr lang')
+              ]
+          ),
         ),
         QuestionStep(
-          stepIdentifier: StepIdentifier(id: 'gender'),
-          title: 'Wie identifizierst du dich?',
+          stepIdentifier: StepIdentifier(id: 'better_knowledge'),
+          title: 'Hast du mit Hilfe der App mehr über Datenschutz gelernt?',
           answerFormat: const SingleChoiceAnswerFormat(
             textChoices: [
-              TextChoice(text: 'Schülerin', value: 'female'),
-              TextChoice(text: 'Schüler', value: 'male'),
-              TextChoice(text: 'Sonstige', value: 'divers'),
-              TextChoice(text: 'Keine Angabe', value: 'n/a'),
+              TextChoice(text: 'sehr', value: 'sehr'),
+              TextChoice(text: 'ein bisschen', value: 'ein bisschen'),
+              TextChoice(text: 'kaum', value: 'kaum'),
+              TextChoice(text: 'gar nicht', value: 'gar nicht'),
             ],
           ),
         ),
         QuestionStep(
-          stepIdentifier: StepIdentifier(id: 'knowledge'),
-          title: 'Wie hoch schätzt du deine Vorwissen über Datenschutz ein? (1 = niedrig, 10 = sehr hoch)',
+          stepIdentifier: StepIdentifier(id: 'app_grading'),
+          title: 'Welche Schulnote würdest du dem Einsatz des Chatbots geben?',
           answerFormat: const ScaleAnswerFormat(
               step: 1,
               minimumValue: 1,
-              maximumValue: 10,
-              defaultValue: 5,
+              maximumValue: 6,
+              defaultValue: 3,
               minimumValueDescription: '1',
-              maximumValueDescription: '10'),
+              maximumValueDescription: '6'),
         ),
         QuestionStep(
-          stepIdentifier: StepIdentifier(id: 'contacts'),
-          title: 'Wie oft bist du mit dem Thema schon in Kontakt gekommen?',
-          answerFormat: const SingleChoiceAnswerFormat(
-            textChoices: [
-              TextChoice(text: 'nie', value: 'nie'),
-              TextChoice(text: 'selten', value: 'selten'),
-              TextChoice(text: 'manchmal', value: 'manchmal'),
-              TextChoice(text: 'oft', value: 'oft'),
-              TextChoice(text: 'ständig', value: 'ständig'),
-            ],
-          ),
+          stepIdentifier: StepIdentifier(id: 'app_recommendation'),
+          title: 'Wie wahrscheinlich würdest du Botty einem Freund/ einer Freundin empfehlen?',
+          answerFormat: const ScaleAnswerFormat(
+              step: 1,
+              minimumValue: 1,
+              maximumValue: 6,
+              defaultValue: 3,
+              minimumValueDescription: 'sehr unwahrscheinlich',
+              maximumValueDescription: 'sehr wahrscheinlich'),
         ),
         QuestionStep(
-            stepIdentifier: StepIdentifier(id: 'chatbot_contact'),
-            title: 'Hast du schon mal einen Chatbot in Einsatz gesehen? Zum Beispiel auf Websites?',
-            answerFormat: const SingleChoiceAnswerFormat(
-              textChoices: [
-                TextChoice(text: 'ja', value: 'ja'),
-                TextChoice(text: 'nein', value: 'nein'),
-                TextChoice(text: 'bin mir nicht sicher', value: 'bin mir nicht sicher'),
-              ]
-            )
-        ),
-        QuestionStep(
-          stepIdentifier: StepIdentifier(id: 'playedBefore'),
-          title: 'Hast du je ein (Lern-)Spiel mit einem Chatbot gespielt?',
+          stepIdentifier: StepIdentifier(id: 'Botty_advice'),
+          title: 'Würdest du Botty in Zukunft nochmal um Rat fragen?',
           answerFormat: const SingleChoiceAnswerFormat(
             textChoices: [
               TextChoice(text: 'ja', value: 'ja'),
-              TextChoice(text: 'nö', value: 'nö'),
+              TextChoice(text: 'nein', value: 'nein'),
+              TextChoice(text: 'vielleicht', value: 'vielleicht'),
             ],
           ),
         ),
         QuestionStep(
-          stepIdentifier: StepIdentifier(id: 'tellus'),
-          title: 'Bitte erzähle uns mehr über dieses Spiel;D',
-          answerFormat: const TextAnswerFormat(
-            maxLines: 5,
-            validationRegEx: "^(?!\s*\$).+",
+            stepIdentifier: StepIdentifier(id: 'app_complexity'),
+            title: 'Wie komplex fandest du die App?',
+            answerFormat: const ScaleAnswerFormat(
+              step: 1,
+              minimumValue: 1,
+              maximumValue: 6,
+              defaultValue: 3,
+              minimumValueDescription: 'gar nicht komplex',
+              maximumValueDescription: 'viel zu komplex'),
+        ),
+        QuestionStep(
+          stepIdentifier: StepIdentifier(id: 'Erlaubnistatbestände'),
+          title: 'Könntest du jetzt erklären, was Erlaubnistatbestände sind?',
+          answerFormat: const SingleChoiceAnswerFormat(
+            textChoices: [
+              TextChoice(text: 'ja', value: 'ja'),
+              TextChoice(text: 'nein', value: 'nein'),
+              TextChoice(text: 'vielleicht', value: 'vielleicht'),
+            ],
           ),
         ),
 
         CompletionStep(
           stepIdentifier: StepIdentifier(id: 'completion'),
           text:
-              'Danke für die Teilnahme an der Umfrage!',
+          'Danke für die Teilnahme an der Umfrage!',
           title: 'Fertig!',
           buttonText: 'Umfrage abschicken',
         ),
       ],
     );
 
-    //TODO: Add navigation rule
+    /*//TODO: Add navigation rule
     task.addNavigationRule(
       forTriggerStepIdentifier: task.steps[6].stepIdentifier,
       navigationRule: ConditionalNavigationRule(
@@ -232,7 +241,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
           }
         },
       ),
-    );
+    );*/
 
     return Future.value(task);
   }
@@ -254,11 +263,4 @@ class _SurveyScreenState extends State<SurveyScreen> {
 
   goBack()=> Navigator.pop(context);
 
-//This one may be needed in the future
-/*Future<Task> getJsonTask() async {
-    final taskJson = await rootBundle.loadString('assets/example_json.json');
-    final taskMap = json.decode(taskJson);
-
-    return Task.fromJson(taskMap);
-  }*/
 }
