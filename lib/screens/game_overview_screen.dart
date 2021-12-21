@@ -11,6 +11,8 @@ import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import 'outro_survey_screen.dart';
+
 /// this is is the game overview/list widget
 class GameOverviewScreen extends StatefulWidget {
   const GameOverviewScreen({Key? key}) : super(key: key);
@@ -152,7 +154,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                             } else if (index.toInt() == 2) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const SurveyScreen()),
+                                MaterialPageRoute(builder: (context) => const IntroSurveyScreen()),
                               );
                             } else {
                               Navigator.push(
@@ -217,7 +219,8 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
 
   startQuest(int index) async {
     bool started = progress.getBool("started" + index.toString());
-    if(index<currentChapter) {
+    bool classroomToggle = progress.getBool("classroomToggle");
+    if(index<currentChapter && classroomToggle ) {
       await Flushbar(
         margin: const EdgeInsets.fromLTRB(15,10,15,10),
         borderRadius: BorderRadius.circular(20),
@@ -232,7 +235,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
         "Du hast dieses Kapitel bereits erfolgreich beendet 😁",
         duration: const Duration(milliseconds: 1500),
       ).show(context);
-    } else if (index>currentChapter) {
+    } else if (index>currentChapter && classroomToggle) {
       await Flushbar(
         margin: const EdgeInsets.fromLTRB(15,10,15,10),
         borderRadius: BorderRadius.circular(30),
@@ -281,7 +284,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                       case 0: // Initial Survey
                         await Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const SurveyScreen())
+                            MaterialPageRoute(builder: (context) => const IntroSurveyScreen())
                         );
                         if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
                         updateProgress();
@@ -315,7 +318,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                       case 4: // Ending Survey
                         await Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const SurveyScreen())
+                            MaterialPageRoute(builder: (context) => const OutroSurveyScreen())
                         );
                         if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
                         updateProgress();

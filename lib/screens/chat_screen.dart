@@ -237,23 +237,28 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
 
   // Save data to remote sources (SharedPreferences, DBs, ...)
   saveData() async {
-    // Saving sessionID to SP
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("session-id", sessionID);
+    // Saving sessionID
+    progress.setValue("sessionID", sessionID);
+
     // Saving messages to Hive
     var box = await Hive.openBox("messageBox");
     box.put("messages", messages);
+
+
   }
 
   // Get data from remote sources (SharedPreferences, DBs, ...)
   getData() async {
-    // Doing this through SharedPreferences to avoid having to init Hive on other screens
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      sessionID = prefs.getString("session-id") ?? randomString(32);
-    });
-    prefs.setString("session-id", sessionID);
     await setProgressState();
+    String s = progress.getString("sessionID");
+    if (s=="") {
+      s = randomString(32);
+      progress.setValue("sessionID", sessionID);
+    }
+    setState(() {
+      sessionID = s;
+    });
+
     // Check if intro screen needs to get launched
     // TODO: This sometimes launches IntroScreen twice. Why?
     if (!progress.getBool("finishedIntro")) {
@@ -283,8 +288,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
 
     setState(() {
       backgroundColor = progress.getBool("goldenBackgroundActive") ? Colors.amber : BottyColors.blue;
+      freeInputEnabled = !progress.getBool("classroomToggle");
     });
-
 
     // Check if player started chapter 4
     if (progress.getBool("started4")) {

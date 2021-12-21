@@ -18,6 +18,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
     getInfo();
     super.initState();
   }
+  late ProgressModel progress;
 
   String sessionID = ""; // Unique, auto-generated session ID for Rasa. Auto-generated if not present.
   String versionNumber = ""; // Current version and build number
@@ -26,6 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
   String finished = "Finished:\n";
   String messagedFinished = "messagedFinished:\n";
   int currentChapter = -1;
+  bool classroomToggle = false;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +65,27 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
                       ),
                     ),
                   ),
+                ],
+              ),
+            ),
+          ),
+          Material(
+            type: MaterialType.card,
+            elevation: 5,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            child: Container(
+              padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Text("Klassenzimmer-Modus?"),
+                  Switch(value: classroomToggle, onChanged: (value){
+                    setState(() {
+                      classroomToggle = value;
+                      progress.setValue("classroomToggle", value);
+                    });
+                  })
                 ],
               ),
             ),
@@ -125,16 +148,20 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
 
   // Get sessionID from SharedPreferences, version number from PackageInfo
   getInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    prefs.setString("session-id", sessionID);
-    ProgressModel progress = await ProgressModel.getProgressModel();
+    progress = await ProgressModel.getProgressModel();
     started = "Started:\n";
     messagedStarted = "messagedStarted:\n";
     finished = "Finished:\n";
     messagedFinished = "messagedFinished:\n";
     setState(() {
-      sessionID = prefs.getString("session-id") ?? randomString(32);
+      String s = progress.getString("sessionID");
+      if (s==""){
+        s = randomString(32);
+        progress.setValue("sessionID", s);
+      }
+      classroomToggle = progress.getBool("classroomToggle");
+      sessionID = s;
       versionNumber = "Version: v" + packageInfo.version + "+" + packageInfo.buildNumber;
       for(int i = 0; i<5;i++) {
         started += i.toString() + ":" + progress.getBool("started" + i.toString()).toString() + ", ";

@@ -4,14 +4,14 @@ import 'package:survey_kit/survey_kit.dart';
 
 /// This screen contains the survey the user takes at the end of the campaign/lesson
 /// TODO: Everything :)
-class SurveyScreen extends StatefulWidget {
-  const SurveyScreen({Key? key}) : super(key: key);
+class OutroSurveyScreen extends StatefulWidget {
+  const OutroSurveyScreen({Key? key}) : super(key: key);
 
   @override
-  _SurveyScreenState createState() => _SurveyScreenState();
+  _OutroSurveyScreenState createState() => _OutroSurveyScreenState();
 }
 
-class _SurveyScreenState extends State<SurveyScreen> {
+class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

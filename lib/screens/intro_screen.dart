@@ -145,7 +145,7 @@ class IntroWelcomeScreen extends StatelessWidget {
 class IntroConsentScreen extends StatefulWidget {
   const IntroConsentScreen({Key? key}) : super(key: key);
   static bool DATA_CONSENT = false;
-  static bool CLASSROOM_TOGGLE = false;
+
 
   @override
   _IntroConsentScreenState createState() => _IntroConsentScreenState();
@@ -153,7 +153,15 @@ class IntroConsentScreen extends StatefulWidget {
 
 class _IntroConsentScreenState extends State<IntroConsentScreen> {
 
+  @override
+  initState(){
+    getData();
+    super.initState();
+  }
+
   String name = "Anonym";
+  late ProgressModel progress;
+  bool classroomToggle = false;
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +263,8 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                 GestureDetector(
                   onTap: () {
                     setState((){
-                      IntroConsentScreen.CLASSROOM_TOGGLE = !IntroConsentScreen.CLASSROOM_TOGGLE;
+                      classroomToggle = !classroomToggle;
+                      progress.setValue("classroomToggle", classroomToggle);
                     });
                   },
                   child: Text(
@@ -268,10 +277,11 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                   child: Switch(
                     onChanged: (bool value) {
                       setState(() {
-                        IntroConsentScreen.CLASSROOM_TOGGLE = value;
+                        classroomToggle = value;
+                        progress.setValue("classroomToggle", value);
                       });
                     },
-                    value: IntroConsentScreen.CLASSROOM_TOGGLE,
+                    value: classroomToggle,
                     activeThumbImage: const AssetImage("assets/img/school-solid.png"),
                     inactiveThumbImage: const AssetImage("assets/img/school-solid.png"),
                   )
@@ -284,11 +294,19 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
     ));
   }
 
-  void updateName(String text) {
+  updateName(String text) {
     setState((){
       name = text;
     });
   }
+
+  getData() async {
+    progress = await ProgressModel.getProgressModel();
+    setState(() {
+      classroomToggle = progress.getBool("classroomToggle");
+    });
+  }
+
 }
 
 // Third Screen
