@@ -215,7 +215,70 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
             ],
           ),
         ),
-
+        QuestionStep(
+          stepIdentifier: StepIdentifier(id: "Langzeitgedächtnis"),
+          title: 'Glaubst du, dass du das erlernte Wissen auch in zwei Wochen noch abrufen kannst?',
+          answerFormat: const SingleChoiceAnswerFormat(
+              textChoices: [
+                TextChoice(text: 'ja', value: 'ja'),
+                TextChoice(text: 'nein', value: 'nein'),
+                TextChoice(text: 'vielleicht', value: 'vielleicht'),
+              ],
+          ),
+        ),
+        QuestionStep(
+          stepIdentifier: StepIdentifier(id: "Structure"),
+          title: 'Findest du, unsere App war klar strukturiert?',
+          answerFormat: const SingleChoiceAnswerFormat(
+            textChoices: [
+              TextChoice(text: 'ja', value: 'ja'),
+              TextChoice(text: 'nein', value: 'nein'),
+              TextChoice(text: 'was dazwischen', value: 'was dazwischen'),
+            ],
+          ),
+        ),
+        QuestionStep(
+          stepIdentifier: StepIdentifier(id: "text_size"),
+          title: 'Wie fandest du die Länge der Texte?',
+          answerFormat: const SingleChoiceAnswerFormat(
+            textChoices: [
+              TextChoice(text: 'zu kurz', value: 'zu kurz'),
+              TextChoice(text: 'eher zu kurz', value: 'eher zu kurz'),
+              TextChoice(text: 'eher zu lang', value: 'eher zu lang'),
+              TextChoice(text: 'zu lang', value: 'zu lang'),
+            ],
+          ),
+        ),
+        QuestionStep(
+          stepIdentifier: StepIdentifier(id: "emojies"),
+          title: 'Der Einsatz von Emojies...',
+          answerFormat: const SingleChoiceAnswerFormat(
+            textChoices: [
+              TextChoice(text: 'hat mich positiv beeinflusst', value: 'positive'),
+              TextChoice(text: 'hat mich nicht beeinflusst', value: 'neutral'),
+              TextChoice(text: 'hat mich negativ beeinflusst', value: 'negative'),
+            ],
+          ),
+        ),
+        QuestionStep(
+          stepIdentifier: StepIdentifier(id: "motivation"),
+          title: 'Hast du Lust, dich noch mehr mit dem Thema auseinanderzusetzen?',
+          answerFormat: const SingleChoiceAnswerFormat(
+            textChoices: [
+              TextChoice(text: 'ja', value: 'ja'),
+              TextChoice(text: 'nein', value: 'nein'),
+              TextChoice(text: 'vielleicht', value: 'vielleicht'),
+            ],
+          ),
+        ),
+        QuestionStep(
+          stepIdentifier: StepIdentifier(id: 'tellus'),
+          title: 'Wir freuen uns über weiteres Feedback!',
+          answerFormat: const TextAnswerFormat(
+            maxLines: 5,
+            validationRegEx: "^(?!\s*\$).+",
+          ),
+        ),
         CompletionStep(
           stepIdentifier: StepIdentifier(id: 'completion'),
           text:
