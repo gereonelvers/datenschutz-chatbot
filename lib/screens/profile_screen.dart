@@ -2,6 +2,7 @@ import 'package:datenschutz_chatbot/screens/settings_screen.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 /// this is is the profile screen, which shows player progress and achievements
@@ -16,12 +17,24 @@ class ProgressScreen extends StatefulWidget {
 class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStateMixin {
   late ProgressModel progress;
 
+  // Miscellaneous
   String name = "Botty";
   int currentChapter = 0;
+
+  // Unlockables
   List<String> unlockableNames = ["goldenBackground", "freeTextInput"];
+  List<String> unlockableTitle = ["Goldener Hintergrund", "Freitext-Eingabe"];
+  List<Icon> unlockableIcons = [const Icon(Icons.wallpaper), const Icon(Icons.local_fire_department)];
   List<bool> unlockablesAvailable = [false, false];
   List<bool> unlockablesActive = [false, false];
-  List<int> challengeValues = [0, 0, 0];
+
+  List<int> challengeValues = [0,0,0];
+
+  // Racing Game (TODO)
+  Color carColor = Colors.white;
+  int raceTime = 0;
+
+  // RPG (TODO)
 
   @override
   void initState() {
@@ -92,72 +105,21 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                         ),
                         SizedBox(
                           height: 150,
-                          // TODO: Move the layout into its own widget
-                          child: ListView(physics: const BouncingScrollPhysics(), shrinkWrap: true, scrollDirection: Axis.horizontal, children: [
-                            Card(
-                              elevation: 5,
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                              color: unlockablesActive[0]?Colors.amber:Colors.white,
-                              child: InkWell(
-                                splashColor: Colors.blue.withAlpha(30),
-                                borderRadius: BorderRadius.circular(30),
-                                onTap: () => toggleUnlockable(0),
-                                child: Row(
-                                  children: [
-                                    const Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-                                        child: Icon(
-                                          Icons.landscape,
-                                          size: 48,
-                                        )
-                                        //Image.asset("assets/img/data-white.png", color: Colors.black),
-                                        ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: const [
-                                          Text('Goldener Hintergrund'),
-                                          //Text("Freigeschaltet | Aktiv"),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Card(
-                              elevation: 5,
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                              child: InkWell(
-                                splashColor: Colors.blue.withAlpha(30),
-                                borderRadius: BorderRadius.circular(30),
-                                onTap: () => toggleUnlockable(0),
-                                child: Row(
-                                  children: [
-                                    const Padding(
-                                        padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-                                        child: Icon(
-                                          Icons.chat_bubble_outline,
-                                          size: 32,
-                                        )
-                                      //Image.asset("assets/img/data-white.png", color: Colors.black),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: const [
-                                          Text('Freitext-Chat'),
-                                          //Text("Freigeschaltet | Aktiv"),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ]),
+                          child: ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: unlockableNames.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return UnlockableCard(
+                                    unlocked: unlockablesAvailable[index],
+                                    active: unlockablesActive[index],
+                                    title: unlockableTitle[index],
+                                    icon: unlockableIcons[index],
+                                    update: () => toggleUnlockable(index)
+                                );
+                              },
+                          )
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
@@ -172,8 +134,10 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                         ),
                         SizedBox(
                           height: 160,
-                          // TODO: Move the layout into its own widget
-                          child: ListView(physics: const BouncingScrollPhysics(), shrinkWrap: true, scrollDirection: Axis.horizontal, children: [
+                          child: ListView(
+                              physics: const BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal, children: [
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
                               child: Card(
@@ -261,7 +225,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                                         child: Align(
                                             alignment: Alignment.topRight,
                                             child: Icon(
-                                              Icons.waves_rounded,
+                                              Icons.celebration,
                                               color: BottyColors.darkBlue,
                                               size: 64,
                                             )),
@@ -294,35 +258,71 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                         ),
                         SizedBox(
                           height: 150,
-                          child: ListView.builder(
+                          child: ListView(
                             physics: const BouncingScrollPhysics(),
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            itemCount: 15,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Card(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                                child: Card(
+                                  elevation: 5,
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                  child: InkWell(
+                                    splashColor: Colors.blue.withAlpha(30),
+                                    borderRadius: BorderRadius.circular(30),
+                                    onTap: () {},
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: Icon(
+                                                Icons.timer,
+                                                color: BottyColors.darkBlue,
+                                                size: 64,
+                                              )),
+                                        ),
+                                        const Padding(
+                                          padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                          child: Text("Schnellster Run"),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                          child: Text(Duration(seconds: raceTime).toString().split(".").first.padLeft(8, "0")),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Card(
                                 elevation: 5,
                                 shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 16, bottom: 16),
-                                      child: Image.asset("assets/img/data-white.png", color: Colors.black),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: const [
-                                          Text('Dummy Card Text'),
-                                          Text("Dummy Card Text"),
-                                        ],
+                                color: carColor,
+                                child: InkWell(
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(30),
+                                  onTap: pickCarColor,
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Icon(Icons.color_lens, size: 48, color: ThemeData.estimateBrightnessForColor(carColor) == Brightness.dark?Colors.white:Colors.black,)
                                       ),
-                                    ),
-                                  ],
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                        child: Text('Fahrzeug-Farbe wählen', style: TextStyle(color: ThemeData.estimateBrightnessForColor(carColor) == Brightness.dark?Colors.white:Colors.black,)),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              );
-                            },
+                              ),
+
+
+                            ]
                           ),
                         ),
                         const Padding(
@@ -401,14 +401,40 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
   }
 
   toggleUnlockable(int index){
-    // TODO: Finish this
-    //if(unlockablesAvailable[index]) {
-    setState(() {
-      unlockablesActive[index] = !unlockablesActive[index];
-    });
-    //}
+    unlockablesActive[index] = !unlockablesActive[index];
     progress.setValue(unlockableNames[index]+"Active", unlockablesActive[index]);
+  }
 
+  changeColor(Color color) {
+    print("Set color "+carColor.value.toRadixString(16));
+    progress.setValue("carColor", color.value);
+    setState(() => carColor = color);
+  }
+
+  pickCarColor(){
+    // raise the [showDialog] widget
+    showDialog(
+      context: context,
+      builder: (BuildContext context) { return AlertDialog(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(30))),
+        title: const Text('Wähle eine Farbe!'),
+        content: SingleChildScrollView(
+          child: BlockPicker(
+            pickerColor: carColor,
+            onColorChanged: changeColor,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('OK', style: TextStyle(color: BottyColors.darkBlue),),
+            onPressed: () {
+              //setState(() => carColor = carColor);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );},);
   }
 
   // TODO: This feels really ugly
@@ -427,7 +453,55 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
       challengeValues[0] = progress.getInt("challengeMaxStreak");
       challengeValues[1] = progress.getInt("challengeFastestComplete");
       challengeValues[2] = progress.getInt("challengeTotalXP");
+
+      //print("Color: #"+progress.getInt("carColor").toRadixString(16));
+
+      carColor = progress.getInt("carColor")==0?Colors.white:Color(progress.getInt("carColor"));
+      raceTime = progress.getInt("racingTime");
     });
   }
 
+}
+
+class UnlockableCard extends StatelessWidget {
+  const UnlockableCard({Key? key, required this.unlocked, required this.active, required this.title, required this.icon, required this.update }) : super(key: key);
+
+  final bool unlocked;
+  final bool active;
+  final String title;
+  final Icon icon;
+  final VoidCallback update;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+      color: active?Colors.amber:Colors.white,
+      child: InkWell(
+        splashColor: Colors.blue.withAlpha(30),
+        borderRadius: BorderRadius.circular(30),
+        onTap: update,
+        child: Row(
+          children: [
+            Padding(
+                padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+                child: icon
+                //Image.asset("assets/img/data-white.png", color: Colors.black),
+                ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(title),
+                  //Text("Freigeschaltet | Aktiv"),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

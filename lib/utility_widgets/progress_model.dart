@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 /// This class manages the state of player progression throughout the main quests/campaign
@@ -22,17 +25,14 @@ class ProgressModel {
   }
 
 
-  setValue(String key, var value) {
-    progress.put(key, value);
-  }
+  setValue(String key, var value) => progress.put(key, value);
 
   bool getBool(String key) => progress.get(key, defaultValue: false);
   int getInt(String key) => progress.get(key, defaultValue: 0);
   String getString(String key) => progress.get(key, defaultValue: "");
+  Color getColor(String key) => progress.get(key, defaultValue: Colors.white);
 
-  reset(){
-    progress.clear();
-  }
+  reset()=> progress.clear();
 
   // Make ProgressModel available through factory method to force data initialization through SharedPreferences
   static Future<ProgressModel> getProgressModel() async {

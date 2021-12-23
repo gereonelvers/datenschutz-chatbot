@@ -13,7 +13,6 @@ import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:random_string/random_string.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -36,6 +35,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   late ProgressModel progress; // This class holds a hashmap of progress "checkpoints"
   List<String> chipStrings = ["Wer bist du?", "Weiter", "Hilfe", "DSGVO", "/clear", "/reset", "/refresh"];
   Color backgroundColor = BottyColors.blue;
+  String username = "Spieler";
 
   @override
   initState() {
@@ -289,6 +289,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     setState(() {
       backgroundColor = progress.getBool("goldenBackgroundActive") ? Colors.amber : BottyColors.blue;
       freeInputEnabled = !progress.getBool("classroomToggle");
+      username = progress.getString("username")==""?"User":progress.getString("username");
     });
 
     // Check if player started chapter 4
@@ -385,7 +386,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     // Check if player finished the intro
     if (progress.getBool("finishedIntro")) {
       if (!progress.getBool("messagedIntro")) {
-        insertMessageFixed(const ChatMessage("Hi, ich bin Botty. Ich freue mich, dich kennenzulernen!", SenderType.bot), 100);
+        insertMessageFixed(ChatMessage("Hi "+username+", ich bin Botty. Ich freue mich, dich kennenzulernen!", SenderType.bot), 100);
         insertMessageFixed(const ChatMessage("Heute werden wir uns zusammen mit dem Thema Datenschutz auseinandersetzen. Ich freue mich schon 😊", SenderType.bot), 1000);
         insertMessageFixed(const ChatMessage("Bevor wir loslegen können, haben meine Eltern mich darum gebeten, dass du bitte noch eine kleine Umfrage ausfüllst. Keine Sorge, es ist auch kein Test 😊", SenderType.bot), 2000);
         insertMessageFixed(const ChatMessage("Wische einfach nach links oder drücke auf den Knopf und wähle auf der Karte das Testzentrum aus!", SenderType.bot), 3000);

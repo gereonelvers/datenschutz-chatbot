@@ -35,7 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
       appBar: AppBar(backgroundColor: BottyColors.darkBlue,),
       backgroundColor: BottyColors.blue,
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 64, 16, 16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
         children: [
           Material(
             type: MaterialType.card,
@@ -69,6 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
               ),
             ),
           ),
+          const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
           Material(
             type: MaterialType.card,
             elevation: 5,
@@ -79,7 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
               width: double.infinity,
               child: Row(
                 children: [
-                  Text("Klassenzimmer-Modus?"),
+                  Text("Spielst du in der Klasse??"),
                   Switch(value: classroomToggle, onChanged: (value){
                     setState(() {
                       classroomToggle = value;
@@ -107,6 +108,13 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
                       fontSize: 16,
                       // color: Colors.white
                     ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                  ),
+                  Text(
+                    "Es folgen einige technische Informationen, die uns beim finden von Fehlern helfen können:",
+                    textAlign: TextAlign.center,
                   ),
                   const Padding(
                     padding: EdgeInsets.fromLTRB(0, 0, 0, 10),

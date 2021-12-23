@@ -1,3 +1,4 @@
+import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 
@@ -12,13 +13,15 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   @override
-  void initState() {
+  initState() {
     gameID = widget.gameID;
+    initProgressModel();
     super.initState();
   }
 
   int gameID = -1;
   late UnityWidgetController unityWidgetController;
+  late ProgressModel progressModel;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   // Communication from Unity to Flutter
   onUnityMessage(message) {
     // TODO: Implement unity->flutter messaging. Remove print afterwards.
-    print('Received message from unity: ${message.toString()}');
+    print('Received message from unity: $message');
+    if(message.contains("racingTime")){
+      int duration = int.parse(message.split(":")[1]);
+      print("Received duration: "+duration.toString());
+      progressModel.setValue("raceTime", duration);
+    }
   }
 
   // Callback that connects the created controller to the unity controller
@@ -73,6 +81,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     if (id==3) {
       //unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "IntroMenu");
       unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "MainScene");
+
+      // Telling Unity to switch car color to preset value
+      int i = progressModel.getInt("carColor");
+      String carColor = i==0?"#ffffff":"#"+progressModel.getInt("carColor").toRadixString(16).substring(2);
+      unityWidgetController.postMessage("AchievementCarColor", "AchievementChangeColor", carColor); // TODO: This currently only works if unity player is already loaded
+
     } else {
       unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "GameScene4");
     }
@@ -94,4 +108,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     // unityWidgetController.dispose();
     super.dispose();
   }
+
+  initProgressModel() async {
+    progressModel = await ProgressModel.getProgressModel();
+  }
+
 }

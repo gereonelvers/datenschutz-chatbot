@@ -185,17 +185,9 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
             child: TextFormField(
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: "Wie heißt du?",
+                labelText: "Wie sollen wir dich nennen?",
               ),
               onChanged: updateName,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 32, 8, 0),
-            child:
-            Text(
-              "Gespeicherter Name: "+name.toString(),
-              style: TextStyle(color: BottyColors.darkBlue, fontSize: 20),
             ),
           ),
           Padding(
@@ -297,6 +289,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
   updateName(String text) {
     setState((){
       name = text;
+      progress.setValue("username", name);
     });
   }
 
