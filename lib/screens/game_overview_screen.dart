@@ -10,10 +10,11 @@ import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'outro_survey_screen.dart';
 
-/// this is is the game overview/list widget
+/// this is is the game overview/map screen shown on the left of the primary PageView
 class GameOverviewScreen extends StatefulWidget {
   const GameOverviewScreen({Key? key}) : super(key: key);
 
@@ -35,7 +36,11 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   void initProgressModel() async {
     progress = await ProgressModel.getProgressModel();
     setState(() {
-      currentChapter = progress.getCurrentChapter();
+      int i = progress.getCurrentChapter();
+      if (!progress.getBool("classroomToggle")) {
+        i = -1;
+      }
+      currentChapter = i;
     });
   }
 
@@ -48,6 +53,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "die Abschluss-Umfrage",
   ];
   List<String> demoNames = [
+    "Weitere Informationen",
     "Challenge/Quiz",
     "Intro Screen",
     "Survey Screen",
@@ -56,6 +62,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "Racing Game",
   ];
   List<String> gameDescriptions = [
+    "Vertiefende Informationen kannst du auf der Internetseite des Bundesbeauftragten für den Datenschutz und die Informationsfreiheit finden.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
@@ -63,13 +70,15 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
   ];
-  List<Image> gameImages = [
-    Image.asset("assets/img/quiz-image.png"),
-    Image.asset("assets/img/quiz-image.png"),
-    Image.asset("assets/img/quiz-image.png"),
-    Image.asset("assets/img/quiz-image.png"),
-    Image.asset("assets/img/quiz-image.png"),
-    Image.asset("assets/img/quiz-image.png")
+
+  List<Icon> bonusIcons = [
+    const Icon(Icons.add),
+    const Icon(Icons.bug_report),
+    const Icon(Icons.bug_report),
+    const Icon(Icons.bug_report),
+    const Icon(Icons.bug_report),
+    const Icon(Icons.bug_report),
+    const Icon(Icons.bug_report),
   ];
 
   List<Image> questBackgrounds = [
@@ -138,35 +147,13 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                         child: InkWell(
                           splashColor: Colors.blue.withAlpha(30),
                           borderRadius: BorderRadius.circular(30),
-                          onTap: () {
-                            // TODO: Leaving these in to make content testing easier. Remove once no longer needed
-                            if (index.toInt() == 0) {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return QuizDialog(difficulty);
-                                  });
-                            } else if (index.toInt() == 1) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const IntroScreen()),
-                              );
-                            } else if (index.toInt() == 2) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const IntroSurveyScreen()),
-                              );
-                            } else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => GameScreen(index)),
-                                // MaterialPageRoute(builder: (context) => const UnityScreen()),
-                              );
-                            }
-                          },
+                          onTap: () => launchBonus(index),
                           child: Row(
                             children: [
-                              SizedBox(height: 100, child: gameImages[index]),
+                              SizedBox(height: 100, child: Padding(
+                                padding: const EdgeInsets.fromLTRB(12,8,8,8),
+                                child: bonusIcons[index],
+                              )),
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -203,7 +190,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                   itemCount: questBackgrounds.length,
                   padding: const EdgeInsets.fromLTRB(0, 30, 0, 130), // Making sure the last element isn't stuck behind the sliding panel
                   itemBuilder: (context, index) {
-                    return GestureDetector(onTap: () => startQuest(index), child: AspectRatio(
+                    return GestureDetector(onTap: () => launchQuest(index), child: AspectRatio(
                       aspectRatio: 900/420,
                         child: index==currentChapter?questBackgroundsMarked[index]:questBackgrounds[index]));
                   })),
@@ -217,7 +204,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     );
   }
 
-  startQuest(int index) async {
+  launchQuest(int index) async {
     bool started = progress.getBool("started" + index.toString());
     bool classroomToggle = progress.getBool("classroomToggle");
     if(index<currentChapter && classroomToggle ) {
@@ -231,8 +218,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
         icon: Image.asset("assets/img/data-white.png", color: Colors.black),
         flushbarPosition: FlushbarPosition.TOP,
         title: 'Sorry!',
-        message:
-        "Du hast dieses Kapitel bereits erfolgreich beendet 😁",
+        message: "Du hast dieses Kapitel bereits erfolgreich beendet 😁",
         duration: const Duration(milliseconds: 1500),
       ).show(context);
     } else if (index>currentChapter && classroomToggle) {
@@ -246,8 +232,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
         icon: Image.asset("assets/img/data-white.png", color: Colors.black),
         flushbarPosition: FlushbarPosition.TOP,
         title: 'Sorry!',
-        message:
-        "Du hast dieses Kapitel noch nicht freigeschaltet 🔜🤔",
+        message: "Du hast dieses Kapitel noch nicht freigeschaltet 🔜🤔",
         duration: const Duration(milliseconds: 1500),
       ).show(context);
     }
@@ -336,5 +321,40 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   updateProgress() {
     UpdateProgressNotification().dispatch(context); // Tell Flutter to rebuild main PageView children the next time it sees them
     ScrollPageViewNotification(1).dispatch(context); // Tell the main PageView to scroll to the ChatScreen, causing a rebuild (to refresh progress)
+  }
+
+  launchBonus(int index) async {
+    switch (index) {
+      case 0:
+        await launch("https://www.bfdi.bund.de");
+        break;
+      // TODO: Leaving these in to make content testing easier. Remove once no longer needed
+      case 1:
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return QuizDialog(difficulty);
+            });
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const IntroScreen()),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const IntroSurveyScreen()),
+        );
+        break;
+      default:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GameScreen(index)),
+          // MaterialPageRoute(builder: (context) => const UnityScreen()),
+        );
+        break;
+    }
   }
 }

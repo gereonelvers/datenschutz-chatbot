@@ -292,95 +292,97 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
       username = progress.getString("username")==""?"User":progress.getString("username");
     });
 
-    // Check if player started chapter 4
-    if (progress.getBool("started4")) {
-      if (progress.getBool("finished4")) {
-        // Player finished last chapter, unlock free input
-        setState(() {
-          freeInputEnabled = true;
-        });
-        if (progress.getBool("messagedFinished4")) {
-          // Player finished last chapter and was already messaged about it
-          return;
-        } else {
-          insertMessageFixed(const ChatMessage("Woah, du hast es echt geschafft!", SenderType.bot), 100);
-          insertMessageFixed(const ChatMessage("Du hast alle Kapitel durchgespielt und bist jetzt ein echter Datenschutz-Experte!", SenderType.bot), 1000);
-          insertMessageFixed(const ChatMessage("Ich übrigens auch 😄", SenderType.bot), 2000);
-          insertMessageFixed(const ChatMessage("Solltest du doch noch mal eine Rückfrage haben, kannst du mich jederzeit über das Textfeld unten erreichen!", SenderType.bot), 3000);
-          progress.setValue("messagedFinished4", true);
+    if (progress.getBool("classroomToggle")) {
+      // Check if player started chapter 4
+      if (progress.getBool("started4")) {
+        if (progress.getBool("finished4")) {
+          // Player finished last chapter, unlock free input
+          setState(() {
+            freeInputEnabled = true;
+          });
+          if (progress.getBool("messagedFinished4")) {
+            // Player finished last chapter and was already messaged about it
+            return;
+          } else {
+            insertMessageFixed(const ChatMessage("Woah, du hast es echt geschafft!", SenderType.bot), 100);
+            insertMessageFixed(const ChatMessage("Du hast alle Kapitel durchgespielt und bist jetzt ein echter Datenschutz-Experte!", SenderType.bot), 1000);
+            insertMessageFixed(const ChatMessage("Ich übrigens auch 😄", SenderType.bot), 2000);
+            insertMessageFixed(const ChatMessage("Solltest du doch noch mal eine Rückfrage haben, kannst du mich jederzeit über das Textfeld unten erreichen!", SenderType.bot), 3000);
+            progress.setValue("messagedFinished4", true);
+          }
         }
+        return;
       }
-      return;
-    }
 
-    // Check if player started chapter 3
-    if (progress.getBool("started3")) {
-      if (progress.getBool("finished3")) {
-        // Player finished chapter 3
-        if (progress.getBool("messagedFinished3")) {
-          // Player finished chapter 3 and was already told about it
-          return;
-        } else {
-          insertMessageFixed(const ChatMessage("Großartige Arbeit! Wir haben den ersten Schultag gemeistert!", SenderType.bot), 100);
-          insertMessageFixed(const ChatMessage("Meine Eltern haben noch eine zweite kleine Umfrage... Könntest du die vielleicht auch noch ausfüllen?", SenderType.bot), 1000);
-          insertMessageFixed(const ChatMessage("Damit ich weiß, wie ich in Zukunft noch besser werden kann 😅", SenderType.bot), 2000);
-          progress.setValue("messagedFinished3", true);
+      // Check if player started chapter 3
+      if (progress.getBool("started3")) {
+        if (progress.getBool("finished3")) {
+          // Player finished chapter 3
+          if (progress.getBool("messagedFinished3")) {
+            // Player finished chapter 3 and was already told about it
+            return;
+          } else {
+            insertMessageFixed(const ChatMessage("Großartige Arbeit! Wir haben den ersten Schultag gemeistert!", SenderType.bot), 100);
+            insertMessageFixed(const ChatMessage("Meine Eltern haben noch eine zweite kleine Umfrage... Könntest du die vielleicht auch noch ausfüllen?", SenderType.bot), 1000);
+            insertMessageFixed(const ChatMessage("Damit ich weiß, wie ich in Zukunft noch besser werden kann 😅", SenderType.bot), 2000);
+            progress.setValue("messagedFinished3", true);
+          }
         }
+        return;
       }
-      return;
-    }
 
-    // Check if player started chapter 2
-    if (progress.getBool("started2")) {
-      if (progress.getBool("finished2")) {
-        // Player finished chapter 2
-        if (progress.getBool("messagedFinished2")) {
-          // Player finished chapter 2 and was already told about it
-          return;
-        } else {
-          insertMessageFixed(const ChatMessage("Was für ein Trip!", SenderType.bot), 100);
-          insertMessageFixed(const ChatMessage("Und jetzt noch einmal durchatmen und dann rein ins Abenteuer!", SenderType.bot), 1000);
-          insertMessageFixed(const ChatMessage("Starte den Schultag über die Kapitelübersicht, sobald du bereit bist.", SenderType.bot), 2000);
-          progress.setValue("messagedFinished2", true);
+      // Check if player started chapter 2
+      if (progress.getBool("started2")) {
+        if (progress.getBool("finished2")) {
+          // Player finished chapter 2
+          if (progress.getBool("messagedFinished2")) {
+            // Player finished chapter 2 and was already told about it
+            return;
+          } else {
+            insertMessageFixed(const ChatMessage("Was für ein Trip!", SenderType.bot), 100);
+            insertMessageFixed(const ChatMessage("Und jetzt noch einmal durchatmen und dann rein ins Abenteuer!", SenderType.bot), 1000);
+            insertMessageFixed(const ChatMessage("Starte den Schultag über die Kapitelübersicht, sobald du bereit bist.", SenderType.bot), 2000);
+            progress.setValue("messagedFinished2", true);
+          }
         }
+        return;
       }
-      return;
-    }
 
-    // Check if player started chapter 1
-    if (progress.getBool("started1")) {
-      if (progress.getBool("finished1")) {
-        // Player finished chapter 1
-        if (progress.getBool("messagedFinished1")) {
-          // Player finished chapter 1 and was already told about it
-          return;
-        } else {
-          insertMessageFixed(const ChatMessage("Guten Morgen!☀️", SenderType.bot), 100);
-          insertMessageFixed(ChatMessage("Oh nein, es ist schon " + DateTime.now().hour.toString() + ":" + DateTime.now().minute.toString() + "! Dabei wollte ich doch noch meine Notizen von gestern anschauen...", SenderType.bot), 1000);
-          insertMessageFixed(const ChatMessage("Das muss ich dann wohl unterwegs machen 🤷", SenderType.bot), 4000);
-          insertMessageFixed(const ChatMessage("Starte die Fahrt über die Kapitelübersicht", SenderType.bot), 4500);
-          progress.setValue("messagedFinished1", true);
+      // Check if player started chapter 1
+      if (progress.getBool("started1")) {
+        if (progress.getBool("finished1")) {
+          // Player finished chapter 1
+          if (progress.getBool("messagedFinished1")) {
+            // Player finished chapter 1 and was already told about it
+            return;
+          } else {
+            insertMessageFixed(const ChatMessage("Guten Morgen!☀️", SenderType.bot), 100);
+            insertMessageFixed(ChatMessage("Oh nein, es ist schon " + DateTime.now().hour.toString() + ":" + DateTime.now().minute.toString() + "! Dabei wollte ich doch noch meine Notizen von gestern anschauen...", SenderType.bot), 1000);
+            insertMessageFixed(const ChatMessage("Das muss ich dann wohl unterwegs machen 🤷", SenderType.bot), 4000);
+            insertMessageFixed(const ChatMessage("Starte die Fahrt über die Kapitelübersicht", SenderType.bot), 4500);
+            progress.setValue("messagedFinished1", true);
+          }
         }
+        return;
       }
-      return;
-    }
 
-    // Check if player started chapter 0
-    if (progress.getBool("started0")) {
-      if (progress.getBool("finished0")) {
-        // Player finished chapter 0
-        if (progress.getBool("messagedFinished0")) {
-          // Player finished chapter 0 and was already told about it
-          return;
-        } else {
-          insertMessageFixed(const ChatMessage("Danke! Weißt du, ich bin besonders aufgeregt, weil ich morgen den ersten Tag an meiner neuen Schule habe. Wir sind nämlich gerade erst nach Smartphoningen gezogen.", SenderType.bot), 100);
-          insertMessageFixed(const ChatMessage("In der neuen Schule soll ich Datenschutz sogar als Profilfach belegen - wie spannend 🤩", SenderType.bot), 1000);
-          insertMessageFixed(const ChatMessage("Deshalb kommt gleich auch noch Tante Meta vorbei. Die arbeitet nämlich als Datenschutz-Chatbot und hat mir versprochen, mich auf morgen vorzubereiten.", SenderType.bot), 2000);
-          insertMessageFixed(const ChatMessage("Ah, da kommt sie ja auch schon. Starte in der Kapitelübersicht das Treffen!", SenderType.bot), 4000);
-          progress.setValue("messagedFinished0", true);
+      // Check if player started chapter 0
+      if (progress.getBool("started0")) {
+        if (progress.getBool("finished0")) {
+          // Player finished chapter 0
+          if (progress.getBool("messagedFinished0")) {
+            // Player finished chapter 0 and was already told about it
+            return;
+          } else {
+            insertMessageFixed(const ChatMessage("Danke! Weißt du, ich bin besonders aufgeregt, weil ich morgen den ersten Tag an meiner neuen Schule habe. Wir sind nämlich gerade erst nach Smartphoningen gezogen.", SenderType.bot), 100);
+            insertMessageFixed(const ChatMessage("In der neuen Schule soll ich Datenschutz sogar als Profilfach belegen - wie spannend 🤩", SenderType.bot), 1000);
+            insertMessageFixed(const ChatMessage("Deshalb kommt gleich auch noch Tante Meta vorbei. Die arbeitet nämlich als Datenschutz-Chatbot und hat mir versprochen, mich auf morgen vorzubereiten.", SenderType.bot), 2000);
+            insertMessageFixed(const ChatMessage("Ah, da kommt sie ja auch schon. Starte in der Kapitelübersicht das Treffen!", SenderType.bot), 4000);
+            progress.setValue("messagedFinished0", true);
+          }
         }
+        return;
       }
-      return;
     }
 
     // Check if player finished the intro
@@ -390,6 +392,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
         insertMessageFixed(const ChatMessage("Heute werden wir uns zusammen mit dem Thema Datenschutz auseinandersetzen. Ich freue mich schon 😊", SenderType.bot), 1000);
         insertMessageFixed(const ChatMessage("Bevor wir loslegen können, haben meine Eltern mich darum gebeten, dass du bitte noch eine kleine Umfrage ausfüllst. Keine Sorge, es ist auch kein Test 😊", SenderType.bot), 2000);
         insertMessageFixed(const ChatMessage("Wische einfach nach links oder drücke auf den Knopf und wähle auf der Karte das Testzentrum aus!", SenderType.bot), 3000);
+        if (!progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Übrigens: Falls du die Inhalte der App strukturiert durcharbeiten und gleichzeitig ein Abenteuer mit mir erleben willst, kannst du jederzeit in den Einstellungen den Klassenraum-Modus einschalten!", SenderType.bot), 3000);
         progress.setValue("messagedIntro", true);
       }
     }

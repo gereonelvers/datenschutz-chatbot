@@ -51,6 +51,7 @@ dependencies:
   bubble: ^1.2.1
   survey_kit: ^0.0.12
   flutter_colorpicker: ^1.0.3
+  url_launcher: ^6.0.17
 
 dev_dependencies:
   flutter_test:

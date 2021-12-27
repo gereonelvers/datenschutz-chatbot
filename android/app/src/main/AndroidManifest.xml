@@ -2,6 +2,13 @@
     package="de.tum.in.i17.itbl.datenschutz_chatbot">
     <!-- Required to fetch data from the internet. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <queries>
+        <!-- If your app opens https URLs -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
     <application
         android:icon="@mipmap/launcher_icon"
         android:label="Botty — Datenschutz-Chatbot">
