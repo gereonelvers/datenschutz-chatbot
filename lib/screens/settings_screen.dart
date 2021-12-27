@@ -1,9 +1,10 @@
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
+import 'package:mailto/mailto.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:random_string/random_string.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -36,6 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
       backgroundColor: BottyColors.blue,
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        physics: const BouncingScrollPhysics(),
         children: [
           Material(
             type: MaterialType.card,
@@ -80,7 +82,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
               width: double.infinity,
               child: Row(
                 children: [
-                  Text("Spielst du in der Klasse??"),
+                  Text("Spielst du in der Klasse?"),
                   Switch(value: classroomToggle, onChanged: (value){
                     setState(() {
                       classroomToggle = value;
@@ -149,6 +151,32 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
               ),
             ),
           ),
+          const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
+          Material(
+            type: MaterialType.card,
+            elevation: 5,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(30),
+              onTap: () { sendFeedback(); },
+              child: Container(
+                padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
+                width: double.infinity,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(Icons.feedback_outlined),
+                    ),
+                    Text("Gib uns Feedback!"),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -180,6 +208,15 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
       }
     });
 
+  }
+
+  sendFeedback() async {
+    print("Trying...");
+    final mailtoLink = Mailto(
+      to: ['gereon.elvers@tum.de'],
+      subject: 'Botty: Feedback',
+    );
+    await launch('$mailtoLink');
   }
 
 }

@@ -148,10 +148,6 @@ class _GapTextChallengeState extends ChallengeState<GapTextChallenge> {
     );
   }
 
-  List<Widget> buildAnswerText() {
-    return [Text("lorem"), Text("Ipsum")];
-  }
-
   @override
   void submit() {
     if (!hasSubmitted) {

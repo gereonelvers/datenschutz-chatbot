@@ -52,6 +52,8 @@ dependencies:
   survey_kit: ^0.0.12
   flutter_colorpicker: ^1.0.3
   url_launcher: ^6.0.17
+  mailto: ^2.0.0
+  lottie: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +94,7 @@ flutter:
   assets:
     - assets/img/
     - assets/fonts/
+    - assets/lottie/
     - unity/
 
     # An image asset can refer to one or more resolution-specific "variants", see

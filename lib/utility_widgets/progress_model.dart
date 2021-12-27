@@ -32,7 +32,7 @@ class ProgressModel {
   String getString(String key) => progress.get(key, defaultValue: "");
   Color getColor(String key) => progress.get(key, defaultValue: Colors.white);
 
-  reset()=> progress.clear();
+  reset() => progress.clear();
 
   // Make ProgressModel available through factory method to force data initialization through SharedPreferences
   static Future<ProgressModel> getProgressModel() async {
