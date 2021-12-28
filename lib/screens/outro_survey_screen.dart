@@ -37,28 +37,28 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
                     task: task,
                     themeData: Theme.of(context).copyWith(
                       colorScheme: ColorScheme.fromSwatch(
-                        primarySwatch: Colors.cyan,
+                        primarySwatch: Colors.blueGrey,
                       ).copyWith(
                         onPrimary: Colors.white,
                       ),
-                      primaryColor: Colors.cyan,
+                      primaryColor: Colors.blueGrey,
                       backgroundColor: Colors.white,
                       appBarTheme: AppBarTheme(
                         color: Colors.white,
                         iconTheme: const IconThemeData(
-                          color: Colors.cyan,
+                          color: Colors.blueGrey,
                         ), toolbarTextStyle: const TextTheme(
                         button: TextStyle(
-                          color: Colors.cyan,
+                          color: Colors.blueGrey,
                         ),
                       ).bodyText2, titleTextStyle: const TextTheme(
                         button: TextStyle(
-                          color: Colors.cyan,
+                          color: Colors.blueGrey,
                         ),
                       ).headline6,
                       ),
                       iconTheme: const IconThemeData(
-                        color: Colors.cyan,
+                        color: Colors.blueGrey,
                       ),
                       outlinedButtonTheme: OutlinedButtonThemeData(
                         style: ButtonStyle(
@@ -73,7 +73,7 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
                                 );
                               }
                               return const BorderSide(
-                                color: Colors.cyan,
+                                color: Colors.blueGrey,
                               );
                             },
                           ),
@@ -96,7 +96,7 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
                                   .textTheme
                                   .button
                                   ?.copyWith(
-                                color: Colors.cyan,
+                                color: Colors.blueGrey,
                               );
                             },
                           ),
@@ -106,7 +106,7 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
                         style: ButtonStyle(
                           textStyle: MaterialStateProperty.all(
                             Theme.of(context).textTheme.button?.copyWith(
-                              color: Colors.cyan,
+                              color: Colors.blueGrey,
                             ),
                           ),
                         ),

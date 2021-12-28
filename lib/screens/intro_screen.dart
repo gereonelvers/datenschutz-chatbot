@@ -218,7 +218,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                             shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.0),
                             ))),
-                        child: Padding(
+                        child: const Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Text(
                             'Weiter',
@@ -286,10 +286,10 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                 //state: StepState.complete
               ),
               Step(
-                  title: Text("📜 Datenschutzerklärung", style: TextStyle(fontSize: 18)),
+                  title: const Text("📜 Datenschutzerklärung", style: TextStyle(fontSize: 18)),
                   content: Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 250,
                           child: SingleChildScrollView(
                             physics: BouncingScrollPhysics(),

@@ -1,9 +1,9 @@
+import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:survey_kit/survey_kit.dart';
 
 /// This screen contains the survey the user takes at the beginning and end of the campaign/lesson
-/// TODO: Everything :)
 class IntroSurveyScreen extends StatefulWidget {
   const IntroSurveyScreen({Key? key}) : super(key: key);
 
@@ -37,28 +37,28 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
                     task: task,
                     themeData: Theme.of(context).copyWith(
                       colorScheme: ColorScheme.fromSwatch(
-                        primarySwatch: Colors.cyan,
+                        primarySwatch: Colors.blueGrey,
                       ).copyWith(
                         onPrimary: Colors.white,
                       ),
-                      primaryColor: Colors.cyan,
+                      primaryColor: Colors.blueGrey,
                       backgroundColor: Colors.white,
                       appBarTheme: AppBarTheme(
                         color: Colors.white,
                         iconTheme: const IconThemeData(
-                          color: Colors.cyan,
+                          color: Colors.blueGrey,
                         ), toolbarTextStyle: const TextTheme(
                           button: TextStyle(
-                            color: Colors.cyan,
+                            color: Colors.blueGrey,
                           ),
                         ).bodyText2, titleTextStyle: const TextTheme(
                           button: TextStyle(
-                            color: Colors.cyan,
+                            color: Colors.blueGrey,
                           ),
                         ).headline6,
                       ),
                       iconTheme: const IconThemeData(
-                        color: Colors.cyan,
+                        color: Colors.blueGrey,
                       ),
                       outlinedButtonTheme: OutlinedButtonThemeData(
                         style: ButtonStyle(
@@ -73,7 +73,7 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
                                 );
                               }
                               return const BorderSide(
-                                color: Colors.cyan,
+                                color: Colors.blueGrey,
                               );
                             },
                           ),
@@ -96,7 +96,7 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
                                   .textTheme
                                   .button
                                   ?.copyWith(
-                                    color: Colors.cyan,
+                                    color: Colors.blueGrey,
                                   );
                             },
                           ),
@@ -106,7 +106,7 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
                         style: ButtonStyle(
                           textStyle: MaterialStateProperty.all(
                             Theme.of(context).textTheme.button?.copyWith(
-                                  color: Colors.cyan,
+                                  color: Colors.blueGrey,
                                 ),
                           ),
                         ),
