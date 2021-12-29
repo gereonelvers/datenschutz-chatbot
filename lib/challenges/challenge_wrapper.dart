@@ -118,16 +118,24 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
       // Input: Difficulty, list of available questions
       // Output: List<Challenge> challenges
 
-      // Demo MatchingChallenge
-      challenges.add(MatchingChallenge(const ["Was ist Botty", "Was ist der Spieler?", "DSGVO steht für..."], const ["Chatbot", "Mensch", "Datenschutz-Grundverordnung"], key: UniqueKey(),),);
-
-      // Demo GapTextChallenge
-      challenges.add(GapTextChallenge(const ["Botty ist ein", ", der heute seinen", "Schultag in der neuen Schule hat."], const ["Chatbot","Mensch","ersten", "letzten"], const ["Chatbot", "ersten"], 5, key: UniqueKey(),));
-
-
-      // Demo InfoChallenges
+      // TODO: InfoChallenges
       challenges.add(InfoChallenge(InfoChallenge.auntImage, "Hallo Botty! Ich freue mich, dich zu sehen!", key: UniqueKey()));
       challenges.add(InfoChallenge(InfoChallenge.bottyImage, "Hallo Meta! Schön, dass du da bist!!", key: UniqueKey()));
+
+      // MatchingChallenge
+      challenges.add(MatchingChallenge(const ["Betroffene Person", "Verantwortliche/r", "Dritte/r"], const ["Die Person, auf die sich die Informationen in den personenbezogenen Daten bezieht und jede identifizierbare oder identifizierte Person, deren Daten erhoben und verarbeitet werden", " jede Person/ jede Einrichtung, die personenbezogene Daten für sich oder andere erhebt oder darüber entscheidet (der oder die was mit den Daten macht = Datenverarbeitung)", "jede Person/Einrichtung, außer der betroffenen Person, dem Verantwortlichen, dem Auftragsverarbeiter und den Personen, die unter der unmittelbaren Verantwortung des Verantwortlichen oder des Auftragsverarbeiters befugt sind, die personenbezogenen Daten zu verarbeiten"], key: UniqueKey(),),);
+
+      // GapTextChallenge
+      challenges.add(GapTextChallenge(const ["Wähle Begriffe für die Lücken aus, nicht alle Begriffe gehören zu einer Lücke.     1. ", "hat das Recht, aus Gründen, die sich aus ihrer besonderen Situation ergeben,", "gegen die Verarbeitung","personenbezogener Daten Widerspruch einzulegen      2. ", "muss", "auf dieses Recht hingewiesen werden    3. Ausnahme: ", " "],
+        const ["Die betroffene Person", "jederzeit", "sie betreffender", "ausdrücklich","indirekt(Daten, welche nicht beim Betroffenen selbst erhoben werden) erhobene Daten","Verwendung für Werbezwecke","Der Dritte","Der Dritte","Die betroffene Person","Der Bundesgerichtshof","Der Bundesgerichtshof","allgemeingültiger, auf Nachfrage", "Erfüllung einer öffentlichen Aufgabe","nicht","nicht","Der Verantwortliche","Der Verantwortliche", "am Anfang eines Monats"],
+        const ["Die betroffene Person", "jederzeit", "sie betreffender", "Die betroffene Person", "ausdrücklich", "Erfüllung einer öffentlichen Aufgabe"],
+        5, key: UniqueKey(),));
+
+      challenges.add(GapTextChallenge(const ["Wähle Begriffe für die Lücken aus, nicht alle Begriffe gehören zu einer Lücke.     1. ", "hat das Recht, nicht einer ausschließlich auf einer", "Verarbeitung —","Profiling — beruhenden Entscheidung unterworfen zu werden, die ihr gegenüber rechtliche Wirkungentfaltet oder sie in ähnlicher Weise erheblich","."],
+        const ["Die betroffene Person", "Der Verantwortliche", "automatisierten", "Der Dritte", "einschließlich", "beeinträchtigt"," Der Bundesgerichtshof","außer bei","unterstützt", "in Ausnahmen beim","analoger"],
+        const ["Die betroffene Person", "automatisierten", "einschließlich","beeinträchtigt"],
+        5, key: UniqueKey(),));
+
 
       challenges.add(QuizChallenge(
         "Wer kann identifizierbar sein? Wähle alle korrekten Antworten aus.",
@@ -138,9 +146,6 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
         key: UniqueKey(),
       ));
       // Important: Every challenge must be added with a unique "key" identifier so Flutter knows to refresh the layout as the challenges are removed!
-      // challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("2")));
-      // challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle alle korrekten Antworten aus.", ["Natürliche Person", "Natürliche Person", "Land", "Organisation"], [0], 5, false, key: Key("3")));
-      // challenges.add(const QuizChallenge("Wer kann identifizierbar sein? Wähle die korrekte Antwort aus.", ["Natürliche Person", "Unternehmen", "Land", "Organisation"], [0], 5, true, key: Key("4")));
 
       challenges.add(QuizChallenge(
           "Du gibst deine Adresse zur Zusendung einer einmalige Bestellungeines Online-Händler. Muss deine Adresse nach der Zusendung gelöscht werden?",
