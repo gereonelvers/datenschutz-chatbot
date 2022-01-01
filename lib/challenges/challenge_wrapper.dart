@@ -52,7 +52,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
                       minHeight: 8,
                       // If not challenges are provided, provide 0.1 as challengeCount to prevent division by 0
                       value: ((challengeCount - challenges.length) / (challengeCount == 0 ? 0.1 : challengeCount)),
-                      valueColor: AlwaysStoppedAnimation<Color>(BottyColors.lightestBlue),
+                      valueColor: const AlwaysStoppedAnimation<Color>(BottyColors.lightestBlue),
                       backgroundColor: BottyColors.greyWhite,
                     ),
                   ),
@@ -339,20 +339,20 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
           ),
           actions: <Widget>[
             TextButton(
-              child: Text("Ja", style: TextStyle(color: BottyColors.darkBlue)),
+              child: const Text("Ja", style: TextStyle(color: BottyColors.darkBlue)),
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop(false);
               },
             ),
             TextButton(
-              child: Text("Nein", style: TextStyle(color: BottyColors.darkBlue)),
+              child: const Text("Nein", style: TextStyle(color: BottyColors.darkBlue)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("Win", style: TextStyle(color: BottyColors.darkBlue)),
+              child: const Text("Win", style: TextStyle(color: BottyColors.darkBlue)),
               onPressed: () {
                 Navigator.of(context).pop();
                 finishChallenges();

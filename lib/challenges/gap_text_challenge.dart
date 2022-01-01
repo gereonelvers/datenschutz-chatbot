@@ -154,11 +154,9 @@ class _GapTextChallengeState extends ChallengeState<GapTextChallenge> {
       wasCorrect = true;
       for (int i = 0; i < correctAnswers.length; i++) {
         if (correctAnswers[i] != providedAnswers[i]) {
-          print("Wrong answer provided");
           wasCorrect = false;
         }
       }
-      print("wasCorrect: " + wasCorrect.toString());
       setState(() {
         buttonText = "Weiter";
         if (wasCorrect) {

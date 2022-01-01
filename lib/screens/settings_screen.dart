@@ -82,7 +82,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
               width: double.infinity,
               child: Row(
                 children: [
-                  Text("Spielst du in der Klasse?"),
+                  const Text("Spielst du in der Klasse?"),
                   Switch(value: classroomToggle, onChanged: (value){
                     setState(() {
                       classroomToggle = value;
@@ -114,7 +114,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
                   const Padding(
                     padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                   ),
-                  Text(
+                  const Text(
                     "Es folgen einige technische Informationen, die uns beim finden von Fehlern helfen können:",
                     textAlign: TextAlign.center,
                   ),
@@ -211,7 +211,6 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
   }
 
   sendFeedback() async {
-    print("Trying...");
     final mailtoLink = Mailto(
       to: ['gereon.elvers@tum.de'],
       subject: 'Botty: Feedback',

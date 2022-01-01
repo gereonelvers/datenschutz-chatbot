@@ -9,6 +9,7 @@ import 'package:datenschutz_chatbot/utility_widgets/quiz_dialog.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,6 +25,7 @@ class GameOverviewScreen extends StatefulWidget {
 
 class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProviderStateMixin {
   late ProgressModel progress;
+  PanelController panelController = PanelController();
   double difficulty = 100;
   int currentChapter = 0;
 
@@ -104,13 +106,14 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
         type: MaterialType.card,
         color: BottyColors.lightestBlue,
         child: SlidingUpPanel(
+          controller: panelController,
           panel: Column(children: [
             Align(
               alignment: Alignment.topCenter,
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: BottyColors.greyWhite,
-                  borderRadius: const BorderRadius.only(
+                  borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(24.0),
                     topRight: Radius.circular(24.0),
                   ),
@@ -118,12 +121,17 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                 padding: const EdgeInsets.only(left: 0, bottom: 0, top: 25, right: 0),
                 height: 85,
                 width: double.infinity,
-                child: const Text(
-                  "Bonusinhalte",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    // color: Colors.white
+                child: GestureDetector(
+                  onTap: () {
+                    panelController.isPanelOpen?panelController.close():panelController.open();
+                  },
+                  child: const Text(
+                    "Bonusinhalte",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      // color: Colors.white
+                    ),
                   ),
                 ),
               ),
@@ -255,10 +263,10 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Zurück', style: TextStyle(color: BottyColors.darkBlue)),
+                  child: const Text('Zurück', style: TextStyle(color: BottyColors.darkBlue)),
                 ),
                 TextButton(
-                child: Text('Start', style: TextStyle(color: BottyColors.darkBlue)),
+                child: const Text('Start', style: TextStyle(color: BottyColors.darkBlue)),
                   // This call is async, meaning that once the player returns from the screen, returnToMainScreen() will be called
                   onPressed: () async {
                     if (!progress.getBool("started" + index.toString())) progress.setValue("started" + index.toString(), true);

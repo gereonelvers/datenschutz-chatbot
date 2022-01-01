@@ -93,7 +93,7 @@ class _MatchingChallengeState extends ChallengeState<MatchingChallenge> {
                                         color: candidateData.isNotEmpty ? BottyColors.darkBlue : BottyColors.lightBlue,
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Wrap(children: [Text(answerStrings[index], style: TextStyle(color: BottyColors.greyWhite),)]),
+                                          child: Wrap(children: [Text(answerStrings[index], style: const TextStyle(color: BottyColors.greyWhite),)]),
                                         )
                                     );
                                   },

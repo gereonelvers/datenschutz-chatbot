@@ -3,6 +3,7 @@ import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 /// this is is the profile screen, which shows player progress and achievements
@@ -50,129 +51,220 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
       backgroundColor: BottyColors.darkBlue,
       body: Stack(
         children: [
+          Lottie.asset("assets/lottie/profile-background.json", ),
           SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
-            child: Container(
-              color: BottyColors.darkBlue,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const Padding(padding: EdgeInsets.only(top: 20, bottom: 40)),
-                  Material(
-                    elevation: 10,
-                    shape: const CircleBorder(),
-                    color: Colors.white,
-                    child: CircularPercentIndicator(
-                      radius: 100.0,
-                      lineWidth: 10.0,
-                      percent: ((currentChapter + 1) / 6),
-                      backgroundColor: Colors.white,
-                      progressColor: currentChapter == 5 ? Colors.amber : Colors.green,
-                      center: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(
-                          "assets/img/data-white.png",
-                          color: Colors.black,
-                        ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Padding(padding: EdgeInsets.only(top: 20, bottom: 40)),
+                Material(
+                  elevation: 10,
+                  shape: const CircleBorder(),
+                  color: Colors.white,
+                  child: CircularPercentIndicator(
+                    radius: 100.0,
+                    lineWidth: 10.0,
+                    percent: ((currentChapter + 1) / 6),
+                    backgroundColor: Colors.white,
+                    progressColor: currentChapter == 5 ? Colors.amber : Colors.green,
+                    center: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(
+                        "assets/img/data-white.png",
+                        color: Colors.black,
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text(
-                      name,
-                      style: const TextStyle(color: Colors.white, fontSize: 24),
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    name,
+                    style: const TextStyle(color: Colors.white, fontSize: 24,
+                    shadows: [Shadow(offset: Offset(0.0, 0.5),
+                      blurRadius: 3.0,
+                      color: Color.fromARGB(255, 0, 0, 0),)]),
                   ),
-                  const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 0)),
-                  Card(
-                    elevation: 10,
-                    //margin: EdgeInsets.zero,
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                    //borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30))),
-                    child: Column(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              'Freischaltbare Inhalte',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(fontSize: 18),
-                            ),
+                ),
+                const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 0)),
+                Card(
+                  elevation: 10,
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                  margin: EdgeInsets.zero,
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Freischaltbare Inhalte',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 18),
                           ),
                         ),
-                        SizedBox(
-                          height: 150,
-                          child: ListView.builder(
-                              physics: const BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: unlockableNames.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return UnlockableCard(
-                                    unlocked: unlockablesAvailable[index],
-                                    active: unlockablesActive[index],
-                                    title: unlockableTitle[index],
-                                    icon: unlockableIcons[index],
-                                    update: () => toggleUnlockable(index)
-                                );
-                              },
-                          )
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              'Challenges',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(fontSize: 18),
-                            ),
+                      ),
+                      SizedBox(
+                        height: 150,
+                        child: ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: unlockableNames.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return UnlockableCard(
+                                  unlocked: unlockablesAvailable[index],
+                                  active: unlockablesActive[index],
+                                  title: unlockableTitle[index],
+                                  icon: unlockableIcons[index],
+                                  update: () => toggleUnlockable(index)
+                              );
+                            },
+                        )
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Challenges',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 18),
                           ),
                         ),
-                        SizedBox(
-                          height: 160,
-                          child: ListView(
-                              physics: const BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal, children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                              child: Card(
-                                elevation: 5,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                                child: InkWell(
-                                  splashColor: Colors.blue.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(30),
-                                  onTap: () {},
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: Icon(
-                                              Icons.local_fire_department,
-                                              color: BottyColors.darkBlue,
-                                              size: 64,
-                                            )),
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text("Maximale Streak"),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text(challengeValues[0].toString()),
-                                      ),
-                                    ],
-                                  ),
+                      ),
+                      SizedBox(
+                        height: 160,
+                        child: ListView(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal, children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                            child: Card(
+                              elevation: 5,
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                              child: InkWell(
+                                splashColor: Colors.blue.withAlpha(30),
+                                borderRadius: BorderRadius.circular(30),
+                                onTap: () {},
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Align(
+                                          alignment: Alignment.topRight,
+                                          child: Icon(
+                                            Icons.local_fire_department,
+                                            color: BottyColors.darkBlue,
+                                            size: 64,
+                                          )),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                      child: Text("Maximale Streak"),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                      child: Text(challengeValues[0].toString()),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                            child: Card(
+                              elevation: 5,
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                              child: InkWell(
+                                splashColor: Colors.blue.withAlpha(30),
+                                borderRadius: BorderRadius.circular(30),
+                                onTap: () {},
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Align(
+                                          alignment: Alignment.topRight,
+                                          child: Icon(
+                                            Icons.timer,
+                                            color: BottyColors.darkBlue,
+                                            size: 64,
+                                          )),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                      child: Text("Schnellster Run"),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                      child: Text(Duration(seconds: challengeValues[1]).toString().split(".").first.padLeft(8, "0")),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                            child: Card(
+                              elevation: 5,
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                              child: InkWell(
+                                splashColor: Colors.blue.withAlpha(30),
+                                borderRadius: BorderRadius.circular(30),
+                                onTap: () {},
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Align(
+                                          alignment: Alignment.topRight,
+                                          child: Icon(
+                                            Icons.celebration,
+                                            color: BottyColors.darkBlue,
+                                            size: 64,
+                                          )),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                      child: Text("Gesamte XP"),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                      child: Text(challengeValues[1].toString()),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ]),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Racing Game',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 150,
+                        child: ListView(
+                          physics: const BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          children: [
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
                               child: Card(
@@ -185,8 +277,8 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
                                         child: Align(
                                             alignment: Alignment.topRight,
                                             child: Icon(
@@ -201,182 +293,91 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text(Duration(seconds: challengeValues[1]).toString().split(".").first.padLeft(8, "0")),
+                                        child: Text(Duration(seconds: raceTime).toString().split(".").first.padLeft(8, "0")),
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                              child: Card(
-                                elevation: 5,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                                child: InkWell(
-                                  splashColor: Colors.blue.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(30),
-                                  onTap: () {},
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: Icon(
-                                              Icons.celebration,
-                                              color: BottyColors.darkBlue,
-                                              size: 64,
-                                            )),
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text("Gesamte XP"),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text(challengeValues[1].toString()),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ]),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              'Racing Game',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 150,
-                          child: ListView(
-                            physics: const BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                                child: Card(
-                                  elevation: 5,
-                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                                  child: InkWell(
-                                    splashColor: Colors.blue.withAlpha(30),
-                                    borderRadius: BorderRadius.circular(30),
-                                    onTap: () {},
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Align(
-                                              alignment: Alignment.topRight,
-                                              child: Icon(
-                                                Icons.timer,
-                                                color: BottyColors.darkBlue,
-                                                size: 64,
-                                              )),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                          child: Text("Schnellster Run"),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                          child: Text(Duration(seconds: raceTime).toString().split(".").first.padLeft(8, "0")),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Card(
-                                elevation: 5,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                                color: carColor,
-                                child: InkWell(
-                                  splashColor: Colors.blue.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(30),
-                                  onTap: pickCarColor,
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(16),
-                                        child: Icon(Icons.color_lens, size: 48, color: ThemeData.estimateBrightnessForColor(carColor) == Brightness.dark?Colors.white:Colors.black,)
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                        child: Text('Fahrzeug-Farbe wählen', style: TextStyle(color: ThemeData.estimateBrightnessForColor(carColor) == Brightness.dark?Colors.white:Colors.black,)),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-
-                            ]
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              'RPG',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 150,
-                          child: ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 15,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Card(
-                                elevation: 5,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                            Card(
+                              elevation: 5,
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                              color: carColor,
+                              child: InkWell(
+                                splashColor: Colors.blue.withAlpha(30),
+                                borderRadius: BorderRadius.circular(30),
+                                onTap: pickCarColor,
                                 child: Row(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(top: 16, bottom: 16),
-                                      child: Image.asset("assets/img/data-white.png", color: Colors.black),
+                                      padding: const EdgeInsets.all(16),
+                                      child: Icon(Icons.color_lens, size: 48, color: ThemeData.estimateBrightnessForColor(carColor) == Brightness.dark?Colors.white:Colors.black,)
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: const [
-                                          Text('Dummy Card Text'),
-                                          Text("Dummy Card Text"),
-                                        ],
-                                      ),
+                                      child: Text('Fahrzeug-Farbe wählen', style: TextStyle(color: ThemeData.estimateBrightnessForColor(carColor) == Brightness.dark?Colors.white:Colors.black,)),
                                     ),
                                   ],
                                 ),
-                              );
-                            },
+                              ),
+                            ),
+
+
+                          ]
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'RPG',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 18),
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(top: 10, bottom: 30),
-                        )
-                      ],
-                    ),
+                      ),
+                      SizedBox(
+                        height: 150,
+                        child: ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 15,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Card(
+                              elevation: 5,
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 16, bottom: 16),
+                                    child: Image.asset("assets/img/data-white.png", color: Colors.black),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: const [
+                                        Text('Dummy Card Text'),
+                                        Text("Dummy Card Text"),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 30),
+                      )
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           Align(
@@ -406,7 +407,6 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
   }
 
   changeColor(Color color) {
-    print("Set color "+carColor.value.toRadixString(16));
     progress.setValue("carColor", color.value);
     setState(() => carColor = color);
   }
@@ -427,7 +427,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
         ),
         actions: <Widget>[
           TextButton(
-            child: Text('OK', style: TextStyle(color: BottyColors.darkBlue),),
+            child: const Text('OK', style: TextStyle(color: BottyColors.darkBlue),),
             onPressed: () {
               //setState(() => carColor = carColor);
               Navigator.of(context).pop();
@@ -474,32 +474,35 @@ class UnlockableCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-      color: active?Colors.amber:Colors.white,
-      child: InkWell(
-        splashColor: Colors.blue.withAlpha(30),
-        borderRadius: BorderRadius.circular(30),
-        onTap: update,
-        child: Row(
-          children: [
-            Padding(
-                padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-                child: icon
-                //Image.asset("assets/img/data-white.png", color: Colors.black),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4,2,4,8),
+      child: Card(
+        elevation: 5,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+        color: active?Colors.amber:Colors.white,
+        child: InkWell(
+          splashColor: Colors.blue.withAlpha(30),
+          borderRadius: BorderRadius.circular(30),
+          onTap: update,
+          child: Row(
+            children: [
+              Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+                  child: icon
+                  //Image.asset("assets/img/data-white.png", color: Colors.black),
+                  ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(title),
+                    //Text("Freigeschaltet | Aktiv"),
+                  ],
                 ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(title),
-                  //Text("Freigeschaltet | Aktiv"),
-                ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -83,7 +83,7 @@ class _QuizChallengeState extends ChallengeState<QuizChallenge> {
               ],
             ),
           ),
-          Padding(padding: const EdgeInsets.only(bottom: 16),),
+          const Padding(padding: EdgeInsets.only(bottom: 16),),
           Expanded(
             flex: 6,
             child: GridView.count(

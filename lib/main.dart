@@ -5,6 +5,7 @@ import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lifecycle/lifecycle.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -26,6 +27,10 @@ class BottyMainStatelessWidget extends StatelessWidget {
     GameOverviewScreen g = GameOverviewScreen(key: UniqueKey());
     ChatScreen c = ChatScreen(key: UniqueKey());
     ProgressScreen p = ProgressScreen(key: UniqueKey());
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
     return MaterialApp(
       title: _title,
       home: SafeArea(
@@ -61,10 +66,8 @@ class BottyMainStatelessWidget extends StatelessWidget {
                     child: SmoothPageIndicator(
                       controller: controller,
                       count: 3,
-                      onDotClicked: (index) {
-                        controller.animateToPage(index, duration: const Duration(milliseconds: 200), curve: Curves.ease);
-                      },
-                      effect: ExpandingDotsEffect(
+                      onDotClicked: (index) => controller.animateToPage(index, duration: const Duration(milliseconds: 200), curve: Curves.ease),
+                      effect: const ExpandingDotsEffect(
                         dotColor: BottyColors.lightBlue,
                         activeDotColor: BottyColors.darkBlue,
                       ),

@@ -23,14 +23,20 @@ class MessageListEmptyView extends StatelessWidget {
                 ),
                 color: Colors.white,
               ),
-              borderRadius: BorderRadius.circular(180.0),
+              borderRadius: BorderRadius.circular(45.0),
             ),
             const Padding(
-              padding: EdgeInsets.fromLTRB(8, 32, 8, 0),
+              padding: EdgeInsets.fromLTRB(8, 32, 8, 24),
               child: Text(
-                "Hi, ich bin Botty!\nWie geht es dir?",
+                "Noch keine Nachrichten.\nSchreib Botty doch einfach!",
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
+            ),
+            const Text("👈 Die Karte findest du links",
+              style: TextStyle(color: Colors.white, fontSize: 14),
+            ),
+            const Text("Deinen Fortschritt siehst du rechts 👉",
+              style: TextStyle(color: Colors.white, fontSize: 14),
             )
           ],
           mainAxisAlignment: MainAxisAlignment.center,
