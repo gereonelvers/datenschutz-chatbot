@@ -276,6 +276,7 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
           title: 'Wir freuen uns über weiteres Feedback!',
           answerFormat: const TextAnswerFormat(
             maxLines: 5,
+            // ignore: unnecessary_string_escapes
             validationRegEx: "^(?!\s*\$).+",
           ),
         ),

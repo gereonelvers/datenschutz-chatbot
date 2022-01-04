@@ -383,7 +383,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
           Align(
               alignment: Alignment.topRight,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.fromLTRB(8,24,8,8),
                 child: IconButton(
                     onPressed: () {
                       Navigator.push(

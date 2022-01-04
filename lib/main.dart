@@ -31,52 +31,32 @@ class BottyMainStatelessWidget extends StatelessWidget {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return MaterialApp(
       title: _title,
-      home: SafeArea(
-        child: MaterialApp(
-            debugShowCheckedModeBanner: false, // Hiding this as all PageView-children already display one
-            navigatorObservers: [defaultLifecycleObserver],
-            theme: ThemeData(fontFamily: 'Nexa'),
-            home: Stack(
-              children: [
-                NotificationListener<ScrollPageViewNotification>(
-                  onNotification: (n) {
-                    controller.animateToPage(n.page, duration: const Duration(milliseconds: 200), curve: Curves.ease);
-                    return true;
-                  },
-                  child: NotificationListener<UpdateProgressNotification>(
-                    onNotification: (n) {
-                      g = GameOverviewScreen(key: UniqueKey());
-                      c = ChatScreen(key: UniqueKey());
-                      p = ProgressScreen(key: UniqueKey());
-                      return true;
-                    },
-                    child: PageView(
-                        scrollDirection: Axis.horizontal,
-                        controller: controller,
-                        children: <Widget>[g,c,p],
-                      ),
-                  ),
+      home: MaterialApp(
+          debugShowCheckedModeBanner: false, // Hiding this as all PageView-children already display one
+          navigatorObservers: [defaultLifecycleObserver],
+          theme: ThemeData(fontFamily: 'Nexa'),
+          home: NotificationListener<ScrollPageViewNotification>(
+            onNotification: (n) {
+              controller.animateToPage(n.page, duration: const Duration(milliseconds: 200), curve: Curves.ease);
+              return true;
+            },
+            child: NotificationListener<UpdateProgressNotification>(
+              onNotification: (n) {
+                g = GameOverviewScreen(key: UniqueKey());
+                c = ChatScreen(key: UniqueKey());
+                p = ProgressScreen(key: UniqueKey());
+                return true;
+              },
+              child: PageView(
+                  scrollDirection: Axis.horizontal,
+                  controller: controller,
+                  children: <Widget>[g,c,p],
                 ),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 14),
-                    child: SmoothPageIndicator(
-                      controller: controller,
-                      count: 3,
-                      onDotClicked: (index) => controller.animateToPage(index, duration: const Duration(milliseconds: 200), curve: Curves.ease),
-                      effect: const ExpandingDotsEffect(
-                        dotColor: BottyColors.lightBlue,
-                        activeDotColor: BottyColors.darkBlue,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
             ),
-        ),
+          ),
       ),
     );
   }

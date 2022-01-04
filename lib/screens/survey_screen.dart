@@ -202,6 +202,7 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
           title: 'Bitte erzähle uns mehr über dieses Spiel;D',
           answerFormat: const TextAnswerFormat(
             maxLines: 5,
+            // ignore: unnecessary_string_escapes
             validationRegEx: "^(?!\s*\$).+",
           ),
         ),

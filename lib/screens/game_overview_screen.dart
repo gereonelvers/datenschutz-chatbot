@@ -9,7 +9,6 @@ import 'package:datenschutz_chatbot/utility_widgets/quiz_dialog.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -196,7 +195,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
               child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   itemCount: questBackgrounds.length,
-                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 130), // Making sure the last element isn't stuck behind the sliding panel
+                  padding: const EdgeInsets.fromLTRB(0, 50, 0, 130), // Making sure the last element isn't stuck behind the sliding panel
                   itemBuilder: (context, index) {
                     return GestureDetector(onTap: () => launchQuest(index), child: AspectRatio(
                       aspectRatio: 900/420,
@@ -217,7 +216,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     bool classroomToggle = progress.getBool("classroomToggle");
     if(index<currentChapter && classroomToggle ) {
       await Flushbar(
-        margin: const EdgeInsets.fromLTRB(15,10,15,10),
+        margin: const EdgeInsets.fromLTRB(15,32,15,10),
         borderRadius: BorderRadius.circular(20),
         backgroundColor: BottyColors.greyWhite,
         titleColor: Colors.black,
@@ -227,11 +226,12 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
         flushbarPosition: FlushbarPosition.TOP,
         title: 'Sorry!',
         message: "Du hast dieses Kapitel bereits erfolgreich beendet 😁",
+        boxShadows: const [BoxShadow(color: Colors.grey, offset: Offset(0.0, 0.2), blurRadius: 10.0)],
         duration: const Duration(milliseconds: 1500),
       ).show(context);
     } else if (index>currentChapter && classroomToggle) {
       await Flushbar(
-        margin: const EdgeInsets.fromLTRB(15,10,15,10),
+        margin: const EdgeInsets.fromLTRB(15,32,15,10),
         borderRadius: BorderRadius.circular(30),
         backgroundColor: BottyColors.greyWhite,
         titleColor: Colors.black,
@@ -241,6 +241,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
         flushbarPosition: FlushbarPosition.TOP,
         title: 'Sorry!',
         message: "Du hast dieses Kapitel noch nicht freigeschaltet 🔜🤔",
+        boxShadows: const [BoxShadow(color: Colors.grey, offset: Offset(0.0, 0.2), blurRadius: 10.0)],
         duration: const Duration(milliseconds: 1500),
       ).show(context);
     }

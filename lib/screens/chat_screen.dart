@@ -398,6 +398,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     }
   }
 
+  // TODO: The insertions should be done as e.g. CancelableOperation with a global queue so that outstanding messages can be canceled/skipped on dispose
   // Inserts a message with a random delay (to make response more realistic)
   insertMessageRandom(ChatMessage message) {
     Future.delayed(Duration(milliseconds: 200 + Random().nextInt(1000 - 200)), () {

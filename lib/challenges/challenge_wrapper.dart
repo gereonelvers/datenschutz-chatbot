@@ -39,31 +39,33 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
           elevation: 0,
           automaticallyImplyLeading: false,
           backgroundColor: BottyColors.darkBlue,
-          title: Row(
-            children: [
-              IconButton(onPressed: showCancelDialog, icon: const Icon(Icons.close)),
-
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    child: LinearProgressIndicator(
-                      minHeight: 8,
-                      // If not challenges are provided, provide 0.1 as challengeCount to prevent division by 0
-                      value: ((challengeCount - challenges.length) / (challengeCount == 0 ? 0.1 : challengeCount)),
-                      valueColor: const AlwaysStoppedAnimation<Color>(BottyColors.lightestBlue),
-                      backgroundColor: BottyColors.greyWhite,
+          title: Padding(
+            padding: const EdgeInsets.only(top: 32),
+            child: Row(
+              children: [
+                IconButton(onPressed: showCancelDialog, icon: const Icon(Icons.close)),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      child: LinearProgressIndicator(
+                        minHeight: 8,
+                        // If not challenges are provided, provide 0.1 as challengeCount to prevent division by 0
+                        value: ((challengeCount - challenges.length) / (challengeCount == 0 ? 0.1 : challengeCount)),
+                        valueColor: const AlwaysStoppedAnimation<Color>(BottyColors.lightestBlue),
+                        backgroundColor: BottyColors.greyWhite,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(8, 0, 4, 0),
-                child: Icon(Icons.local_fire_department),
-              ),
-              Text(streak.toString())
-            ],
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(8, 0, 4, 0),
+                  child: Icon(Icons.local_fire_department),
+                ),
+                Text(streak.toString())
+              ],
+            ),
           ),
         ),
         body: Container(

@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _IntroScreenState extends State<IntroScreen> {
   initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   }
 
   @override
@@ -28,29 +30,30 @@ class _IntroScreenState extends State<IntroScreen> {
       onWillPop: () async => false,
       child: Container(
         color: BottyColors.greyWhite,
-        child: Column(
+        child: Stack(
           children: [
-            Expanded(
-              child: PageView(
-                scrollDirection: Axis.horizontal,
-                controller: controller,
-                physics: const NeverScrollableScrollPhysics(),
-                children: const <Widget>[IntroWelcomeScreen(), IntroConsentScreen(), IntroFinishScreen()],
-              ),
+            PageView(
+              scrollDirection: Axis.horizontal,
+              controller: controller,
+              physics: const NeverScrollableScrollPhysics(),
+              children: const <Widget>[IntroWelcomeScreen(), IntroConsentScreen(), IntroFinishScreen()],
             ),
-            Row(
-              children: [
-                Expanded(
-                    child: TextButton(
-                      onPressed: backward,
-                      child: const Text("Zurück", style: TextStyle(color: Colors.black)),
-                    )),
-                Expanded(
-                    child: TextButton(
-                  onPressed: forward,
-                  child: const Text("Weiter", style: TextStyle(color: Colors.black)),
-                )),
-              ],
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Row(
+                children: [
+                  Expanded(
+                      child: TextButton(
+                        onPressed: backward,
+                        child: const Text("Zurück", style: TextStyle(color: Colors.black)),
+                      )),
+                  Expanded(
+                      child: TextButton(
+                    onPressed: forward,
+                    child: const Text("Weiter", style: TextStyle(color: Colors.black)),
+                  )),
+                ],
+              ),
             )
           ],
         ),
@@ -66,22 +69,41 @@ class _IntroScreenState extends State<IntroScreen> {
     });
   }
 
-  forward() {
+  forward() async {
     setState(() {
       if (controller.page == 1) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
         if (!IntroConsentScreen.changedName) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Bitte gib deinen Namen an"),
-            backgroundColor: Colors.red,
-          ));
+          Flushbar(
+              margin: const EdgeInsets.fromLTRB(15,32,15,10),
+              borderRadius: BorderRadius.circular(20),
+              backgroundColor: BottyColors.greyWhite,
+              titleColor: Colors.black,
+              messageColor: Colors.black,
+              animationDuration: const Duration(milliseconds: 200),
+              icon: Image.asset("assets/img/data-white.png", color: Colors.black),
+              flushbarPosition: FlushbarPosition.TOP,
+              title: 'Sorry!',
+              message: "Bitte gib deinen Namen ein 🧑‍",
+              boxShadows: const [BoxShadow(color: Colors.grey, offset: Offset(0.0, 0.2), blurRadius: 10.0)],
+              duration: const Duration(milliseconds: 1500),
+              ).show(context);
           return;
         }
         if (!IntroConsentScreen.dataConsent) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Bitte akzeptiere den Datenschutz-Consent"),
-            backgroundColor: Colors.red,
-          ));
+          Flushbar(
+            margin: const EdgeInsets.fromLTRB(15,32,15,10),
+            borderRadius: BorderRadius.circular(20),
+            backgroundColor: BottyColors.greyWhite,
+            titleColor: Colors.black,
+            messageColor: Colors.black,
+            animationDuration: const Duration(milliseconds: 200),
+            icon: Image.asset("assets/img/data-white.png", color: Colors.black),
+            flushbarPosition: FlushbarPosition.TOP,
+            title: 'Sorry!',
+            message: "Bitte akzeptiere unsere Datenschutzerklärung ⚖‍",
+            boxShadows: const [BoxShadow(color: Colors.grey, offset: Offset(0.0, 0.2), blurRadius: 10.0)],
+            duration: const Duration(milliseconds: 1500),
+          ).show(context);
           return;
         }
         controller.animateToPage(controller.page!.toInt() + 1, duration: const Duration(milliseconds: 200), curve: Curves.ease);
@@ -122,28 +144,20 @@ class IntroWelcomeScreen extends StatelessWidget {
               style: TextStyle(color: BottyColors.darkBlue, fontSize: 32),
             ),
           ),
-          RippleAnimation(
-            repeat: true,
-            color: BottyColors.darkBlue,
-            minRadius: 70,
-            duration: const Duration(seconds: 3),
-            delay: const Duration(seconds: 3),
-            ripplesCount: 2,
-            child: Material(
-              elevation: 20,
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(45))),
-              child: InkWell(
-                onTap: () {},
-                borderRadius: const BorderRadius.all(Radius.circular(45)),
-                child: Image.asset(
-                  "assets/img/data-white.png",
-                  height: 180,
-                  width: 180,
-                  color: BottyColors.darkBlue,
-                ),
+          Material(
+            elevation: 20,
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(45))),
+            child: InkWell(
+              onTap: () {},
+              borderRadius: const BorderRadius.all(Radius.circular(45)),
+              child: Image.asset(
+                "assets/img/data-white.png",
+                height: 180,
+                width: 180,
+                color: BottyColors.darkBlue,
               ),
-              color: Colors.white,
             ),
+            color: Colors.white,
           ),
           const Padding(
             padding: EdgeInsets.fromLTRB(8, 48, 8, 0),
@@ -167,6 +181,7 @@ class IntroWelcomeScreen extends StatelessWidget {
       ),
     ));
   }
+
 }
 
 // Second Screen
@@ -195,22 +210,20 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-      alignment: Alignment.center,
       color: BottyColors.greyWhite,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
-            child: Text(
-              "📝 Erstmal der Papierkram...",
-              style: TextStyle(color: BottyColors.darkBlue, fontSize: 24),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(8, 32, 8, 8),
+              child: Text(
+                "📝 Erstmal der Papierkram...",
+                style: TextStyle(color: BottyColors.darkBlue, fontSize: 24),
+              ),
             ),
-          ),
-          SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Stepper(
+            Stepper(
               physics: const ClampingScrollPhysics(),
               controlsBuilder: (BuildContext context, ControlsDetails details) {
                 return Padding(
@@ -385,9 +398,9 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                   ),
                 ),
               ],
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     ));
   }
