@@ -211,6 +211,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
     return Scaffold(
         body: Container(
       color: BottyColors.greyWhite,
+      height: double.infinity,
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
