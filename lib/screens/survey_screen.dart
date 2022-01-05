@@ -31,6 +31,8 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
                       if (result.finishReason == FinishReason.COMPLETED) {
                         await postResult(result);
                         goBack();
+                      } else {
+                        goBack();
                       }
                     },
                     task: task,

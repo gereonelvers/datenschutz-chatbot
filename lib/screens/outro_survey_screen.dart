@@ -32,6 +32,8 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
                       if (result.finishReason == FinishReason.COMPLETED) {
                         await postResult(result);
                         goBack();
+                      } else{
+                        goBack();
                       }
                     },
                     task: task,
