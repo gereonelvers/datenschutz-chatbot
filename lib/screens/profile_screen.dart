@@ -51,7 +51,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
       backgroundColor: BottyColors.darkBlue,
       body: Stack(
         children: [
-          Lottie.asset("assets/lottie/profile-background.json", ),
+          Lottie.asset("assets/lottie/profile-background.json"),
           SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Column(

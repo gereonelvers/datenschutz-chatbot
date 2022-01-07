@@ -4,7 +4,6 @@ import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
-import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 
 /// This is the screen that introduces the user to the app on first launch
 class IntroScreen extends StatefulWidget {
@@ -150,12 +149,15 @@ class IntroWelcomeScreen extends StatelessWidget {
             child: InkWell(
               onTap: () {},
               borderRadius: const BorderRadius.all(Radius.circular(45)),
-              child: Image.asset(
-                "assets/img/data-white.png",
-                height: 180,
-                width: 180,
-                color: BottyColors.darkBlue,
-              ),
+              child:
+              Padding(
+                padding: const EdgeInsets.fromLTRB(32,0,32,32),
+                child: Lottie.asset("assets/lottie/botty-float.json",
+                  height: 162,
+                  width: 130,
+                  repeat: true,
+                ),
+              )
             ),
             color: Colors.white,
           ),
