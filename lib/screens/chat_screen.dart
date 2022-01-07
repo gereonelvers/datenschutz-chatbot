@@ -33,7 +33,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   String sessionID = ""; // Unique, auto-generated session ID for Rasa. Auto-generated on first launch.
   bool freeInputEnabled = false; // Is the user allowed to input free text or are there still more quests to complete first?
   late ProgressModel progress; // This class holds a hashmap of progress "checkpoints"
-  List<String> chipStrings = ["Wer bist du?", "Weiter", "Hilfe", "DSGVO", "/clear", "/reset", "/refresh"];
+  List<String> chipStrings = ["Wer bist du?", "Weiter", "Hilfe", "Definitionen", "/clear", "/reset", "/refresh"];
   Color backgroundColor = BottyColors.blue;
   String username = "Spieler";
 
