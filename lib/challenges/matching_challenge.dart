@@ -46,76 +46,63 @@ class _MatchingChallengeState extends ChallengeState<MatchingChallenge> {
         ),
         color: BottyColors.greyWhite,
         child: Column(children: [
-          Flexible(
-            flex: 2,
-            child: Padding(
-                padding: const EdgeInsets.fromLTRB(4,2,4,2),
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Image.asset("assets/img/data-white.png", color: Colors.black, alignment: Alignment.centerLeft),
-                )
-            ),
-          ),
           Expanded(
-            flex: 8,
+            flex: 10,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(32, 0, 8, 0),
-              child: Align(alignment: Alignment.topRight, child: Bubble(
-                  nip: BubbleNip.leftTop,
-                  radius: const Radius.circular(20),
-                  nipHeight: 20,
-                  nipRadius: 2,
-                  elevation: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListView.builder(
-                        itemCount: answerStrings.length,
-                        itemBuilder: (context, index) {
-                          return Row(children: [
-                            Expanded(
-                                flex: 1,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: AutoSizeText(questionStrings[index]),
-                                )),
-                            Expanded(
-                              flex:1,
-                              child: Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Draggable<int>(
-                                  feedback: FloatingActionButton.extended(onPressed: (){}, label: Text(answerStrings[index]), backgroundColor: BottyColors.darkBlue,), data: index,
-                                  child: DragTarget(builder: (BuildContext context, List<Object?> candidateData, List<dynamic> rejectedData) {
-                                    return Card(
-                                        elevation: 2,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(15),
-                                        ),
-                                        color: candidateData.isNotEmpty ? BottyColors.darkBlue : BottyColors.lightBlue,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Wrap(children: [Text(answerStrings[index], style: const TextStyle(color: BottyColors.greyWhite),)]),
-                                        )
-                                    );
-                                  },
-                                    onAccept: (int data) {
-                                      setState(() {
-                                        String temp = answerStrings[index];
-                                        answerStrings[index] = answerStrings[data];
-                                        answerStrings[data] = temp;
-                                      });
-                                    },
-                                  ),
-                                ),
+              padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+              child: Align(alignment: Alignment.topRight, child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.builder(
+                    itemCount: answerStrings.length,
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Row(children: [
+                        Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: AutoSizeText(questionStrings[index], maxLines: 10,),
+                            )),
+                        Expanded(
+                          flex:1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Draggable<int>(
+                              feedback: FloatingActionButton.extended(onPressed: (){}, label: Text(answerStrings[index]), backgroundColor: BottyColors.darkBlue,), data: index,
+                              child: DragTarget(builder: (BuildContext context, List<Object?> candidateData, List<dynamic> rejectedData) {
+                                return Card(
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    color: candidateData.isNotEmpty ? BottyColors.darkBlue : BottyColors.lightBlue,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(6.0),
+                                        child: AutoSizeText(answerStrings[index], style: const TextStyle(color: BottyColors.greyWhite), maxLines: 1,),
+                                      ),
+                                    )
+                                );
+                              },
+                                onAccept: (int data) {
+                                  setState(() {
+                                    String temp = answerStrings[index];
+                                    answerStrings[index] = answerStrings[data];
+                                    answerStrings[data] = temp;
+                                  });
+                                },
                               ),
-                            )
+                            ),
+                          ),
+                        )
 
-                          ]);
-                        }),),
-                  ))),
+                      ]);
+                    }),))),
             ),
           const Expanded(
             flex: 1,
-              child: Text("Ordne die Texte den richtigen Sätzen zu")
+              child: Center(child: Text("Ordne die Texte den richtigen Sätzen zu"))
           ),
           Expanded(
               flex: 1,

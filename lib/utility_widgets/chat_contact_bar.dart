@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'botty_colors.dart';
 
 class ChatContactBar extends StatelessWidget {
@@ -24,8 +25,10 @@ class ChatContactBar extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(36, 4, 16, 4),
-                  child: Image.asset(
+                  padding: const EdgeInsets.fromLTRB(36, 2, 16, 12),
+                  child:
+                  //Lottie.asset("assets/lottie/botty-float.json")
+                  Image.asset(
                     "assets/img/data-white.png",
                     color: Colors.black,
                   ),

@@ -51,77 +51,48 @@ class _GapTextChallengeState extends ChallengeState<GapTextChallenge> {
         ),
         color: BottyColors.greyWhite,
         child: Column(children: [
-          Flexible(
-            flex: 2,
-            child: Padding(
-                padding: const EdgeInsets.fromLTRB(4,2,4,2),
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Image.asset("assets/img/data-white.png", color: Colors.black, alignment: Alignment.centerLeft),
-                )
-            ),
-          ),
           Expanded(
             flex: 7,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(32, 0, 8, 0),
-              child: Align(alignment: Alignment.topRight, child: Bubble(
-                  nip: BubbleNip.leftTop,
-                  radius: const Radius.circular(20),
-                  nipHeight: 20,
-                  nipRadius: 2,
-                  elevation: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Wrap(children: [
-                      for (int i = 0; i < gapText.length; i++)
-                        i < gapText.length - 1 // Makes sure that no input field is inserted after the last element of the gap text
-                            ? Wrap(children: [
-                          AutoSizeText(
-                            gapText[i],
-                          ),
-                          DragTarget(
-                            builder: (BuildContext context, List<Object?> candidateData, List<dynamic> rejectedData) {
-                              return Chip(
-                                backgroundColor: candidateData.isNotEmpty ? BottyColors.darkBlue : BottyColors.lightBlue,
-                                label: Text(providedAnswers[i]),
-                              );
-                            },
-                            onAccept: (item) {
-                              setState(() {
-                                providedAnswers[i] = item.toString();
-                              });
-                            },
-                          )
-                        ])
-                            : AutoSizeText(gapText[i])
-                    ]),
-
+            child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                      child: Wrap(children: getGapText())
                   ),
-                  ))),
-            ),
+                )),
+          ),
           Expanded(
-            flex: 2,
-            child: Wrap(
-              children: [
-                for (var answer in answerOptions)
-                  Draggable<String>(
-                    dragAnchorStrategy: pointerDragAnchorStrategy,
-                    data: answer,
-                    feedback: FloatingActionButton.extended(
-                      onPressed: () {},
-                      label: Text(answer),
-                      backgroundColor: BottyColors.darkBlue,
-                    ),
-                    child: AnswerOptionChip(answer: answer),
-                  )
-              ],
+            flex: 3,
+            child: SingleChildScrollView(
+              child: Wrap(
+                children: [
+                  for (var answer in answerOptions)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8,0,8,0),
+                      child: LongPressDraggable<String>(
+                        delay: const Duration(milliseconds: 100),
+                        dragAnchorStrategy: pointerDragAnchorStrategy,
+                        data: answer,
+                        feedback: FloatingActionButton.extended(
+                          onPressed: () {},
+                          label: AutoSizeText(answer, maxLines: 2,),
+                          backgroundColor: BottyColors.darkBlue,
+                        ),
+                        child: AnswerOptionChip(answer: answer),
+                      ),
+                    )
+                ],
+              ),
             ),
           ),
           const Padding(
             padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child:
-            Text("Vervöllständige den Text, indem du die Antworten auf die Felder ziehst", textAlign: TextAlign.center,),
+            child: Text(
+              "Vervöllständige den Text, indem du die Antworten auf die Felder ziehst",
+              textAlign: TextAlign.center,
+            ),
           ),
           Expanded(
               flex: 1,
@@ -171,6 +142,36 @@ class _GapTextChallengeState extends ChallengeState<GapTextChallenge> {
       ChallengeResultNotification(wasCorrect).dispatch(context);
     }
   }
+
+  // Generate a list of widgets, alternating between gapText and DragTargets containing providedAnswers
+  List<Widget> getGapText() {
+    List<Widget> items = [];
+    for (int i = 0; i < gapText.length; i++) {
+      gapText[i].split(" ").forEach((element) { items.add(Padding(
+        padding: const EdgeInsets.fromLTRB(0,12,0,0),
+        child: Text(element+" ", style: const TextStyle(fontSize: 16),),
+      )); }); // This is ugly but prevents issues with long text not wrapping properly
+      if (i < gapText.length - 1) {
+        items.add(Padding(
+          padding: const EdgeInsets.fromLTRB(8,0,8,0),
+          child: DragTarget(
+            builder: (BuildContext context, List<Object?> candidateData, List<dynamic> rejectedData) {
+              return Chip(
+                backgroundColor: candidateData.isNotEmpty ? BottyColors.darkBlue : BottyColors.lightBlue,
+                label: Text(providedAnswers[i]),
+              );
+            },
+            onAccept: (item) {
+              setState(() {
+                providedAnswers[i] = item.toString();
+              });
+            },
+          ),
+        ));
+      }
+    }
+    return items;
+  }
 }
 
 class AnswerOptionChip extends StatelessWidget {
@@ -186,7 +187,7 @@ class AnswerOptionChip extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
       child: Chip(
-        label: Text(answer),
+        label: AutoSizeText(answer, maxLines: 2,),
       ),
     );
   }
