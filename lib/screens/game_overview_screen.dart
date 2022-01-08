@@ -5,7 +5,6 @@ import 'package:datenschutz_chatbot/screens/intro_screen.dart';
 import 'package:datenschutz_chatbot/screens/survey_screen.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
-import 'package:datenschutz_chatbot/utility_widgets/quiz_dialog.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +44,6 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     });
   }
 
-  // TODO: Replace with final chapter names
   List<String> chapterNames = [
     "die Start-Umfrage",
     "das Treffen mit Meta",
@@ -55,7 +53,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   ];
   List<String> demoNames = [
     "Weitere Informationen",
-    "Challenge/Quiz",
+    "Erneut mit Meta treffen",
     "Intro Screen",
     "Survey Screen",
     "Unity Cube Demo",
@@ -64,7 +62,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   ];
   List<String> gameDescriptions = [
     "Vertiefende Informationen kannst du auf der Internetseite des Bundesbeauftragten für den Datenschutz und die Informationsfreiheit finden.",
-    "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
+    "Triff dich erneut mit Tante Meta um in 10 zufälligen Fragen dein Können unter Beweis zu stellen.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
     "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
@@ -74,7 +72,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
 
   List<Icon> bonusIcons = [
     const Icon(Icons.add),
-    const Icon(Icons.bug_report),
+    const Icon(Icons.coffee),
     const Icon(Icons.bug_report),
     const Icon(Icons.bug_report),
     const Icon(Icons.bug_report),
@@ -273,7 +271,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                     if (!progress.getBool("started" + index.toString())) progress.setValue("started" + index.toString(), true);
                     Navigator.of(context).pop();
                     // Start appropriate quest
-                    // TODO: set up finish-state once screens work (for all except QuizDialog)
+                    // TODO: Progress should only be incremented if chapter is actually finished!
                     switch (index) {
                       case 0: // Initial Survey
                         await Navigator.push(
@@ -286,7 +284,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                       case 1: // Challenges
                         bool finished = await Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ChallengeWrapper(100)),
+                          MaterialPageRoute(builder: (context) => const ChallengeWrapper(true)),
                         );
                         if (finished) {
                           if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
@@ -296,7 +294,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                       case 2: // Racing Game
                         await Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const GameScreen(3)),
+                          MaterialPageRoute(builder: (context) => const GameScreen(0)),
                         );
                         if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
                         updateProgress();
@@ -304,7 +302,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                       case 3: // Naninovel RPG
                         await Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const GameScreen(4)),
+                          MaterialPageRoute(builder: (context) => const GameScreen(1)),
                         );
                         if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
                         updateProgress();
@@ -337,14 +335,14 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
       case 0:
         await launch("https://www.bfdi.bund.de");
         break;
-      // TODO: Leaving these in to make content testing easier. Remove once no longer needed
       case 1:
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return QuizDialog(difficulty);
+              return const ChallengeWrapper(false);
             });
         break;
+      // TODO: Leaving these in to make content testing easier. Remove once no longer needed
       case 2:
         Navigator.push(
           context,

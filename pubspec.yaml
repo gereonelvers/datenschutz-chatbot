@@ -55,6 +55,7 @@ dependencies:
   mailto: ^2.0.0
   lottie: ^1.2.1
   rive: ^0.7.22
+  mccounting_text: ^1.0.0
 
 dev_dependencies:
   flutter_test:
