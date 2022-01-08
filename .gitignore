@@ -12,6 +12,7 @@
 # Unity Integration related
 unity/FlutterUnityDemo
 android/unityLibrary
+ios/UnityLibrary
 
 # IntelliJ related
 *.iml
