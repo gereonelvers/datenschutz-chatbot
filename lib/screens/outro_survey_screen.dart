@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:survey_kit/survey_kit.dart';
 
 /// This screen contains the survey the user takes at the end of the campaign/lesson
-/// TODO: Everything :)
 class OutroSurveyScreen extends StatefulWidget {
   const OutroSurveyScreen({Key? key}) : super(key: key);
 
@@ -137,7 +136,6 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
           buttonText: 'Los geht\'s!',
         ),
 
-        //TODO: Add survey questions here
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'time'),
           title: 'Wie lange hast du unsere App genutzt?',

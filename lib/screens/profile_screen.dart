@@ -7,7 +7,6 @@ import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 /// this is is the profile screen, which shows player progress and achievements
-/// TODO: Very much WIP, code is somewhat of a mess right now :)
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({Key? key}) : super(key: key);
 
@@ -128,7 +127,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            'Challenges',
+                            'Grundlagen mit Tante Meta',
                             textAlign: TextAlign.start,
                             style: TextStyle(fontSize: 18),
                           ),
@@ -238,7 +237,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                      child: Text(challengeValues[1].toString()),
+                                      child: Text(challengeValues[2].toString()),
                                     ),
                                   ],
                                 ),
@@ -252,7 +251,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            'Racing Game',
+                            'Fahrt zur Schule',
                             textAlign: TextAlign.start,
                             style: TextStyle(fontSize: 18),
                           ),
@@ -332,7 +331,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            'RPG',
+                            'Erster Schultag',
                             textAlign: TextAlign.start,
                             style: TextStyle(fontSize: 18),
                           ),

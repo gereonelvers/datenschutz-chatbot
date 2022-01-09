@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 
 /// This class manages the state of player progression throughout the main quests/campaign
 /// It does this by basically acting like a convenience wrapper around a Hive box containing all values.
-/// TODO: Make observable to make refreshing affected layouts easier?!
 ///
 /// Current checkpoint structure for chapter n:
 /// - "startedn" if player started chapter n

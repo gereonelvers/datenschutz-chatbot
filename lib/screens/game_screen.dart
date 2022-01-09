@@ -78,7 +78,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   // This works by telling the Scene Switchers item in the currently Unity Scene to load the correct scene
   loadScene(int id) async {
     print("Sending message telling Unity to load scene with id" + id.toString()); // TODO: Remove print once Unity scene loading works 100% (including nested scene layouts)
-    if (id==3) {
+    if (id==0) {
       //unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "IntroMenu");
       unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "MainScene");
 

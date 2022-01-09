@@ -135,8 +135,6 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
               'Mach dich bereit für einen Haufen interessanter Fragen, damit wir dich kennenlernen können!',
           buttonText: 'Los geht\'s!',
         ),
-
-        //TODO: Add survey questions here
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'age'),
           title: 'Wie alt bist du?',
@@ -219,7 +217,6 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
       ],
     );
 
-    //TODO: Add navigation rule
     task.addNavigationRule(
       forTriggerStepIdentifier: task.steps[6].stepIdentifier,
       navigationRule: ConditionalNavigationRule(

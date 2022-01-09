@@ -43,7 +43,7 @@ class ChatContactBar extends StatelessWidget {
                     style: TextStyle(fontSize: 16),
                   ),
                   Text(
-                    "⬤ online", // FIXME: The dot is broken on web. Fixable with custom font additions? Maybe add actual status indicator?
+                    "⬤ online",
                     style: TextStyle(color: Colors.green),
                   )
                 ],
