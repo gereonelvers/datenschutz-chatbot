@@ -1,14 +1,12 @@
 import 'package:datenschutz_chatbot/screens/chat_screen.dart';
 import 'package:datenschutz_chatbot/screens/game_overview_screen.dart';
 import 'package:datenschutz_chatbot/screens/profile_screen.dart';
-import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lifecycle/lifecycle.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 main() async {
   await Hive.initFlutter();

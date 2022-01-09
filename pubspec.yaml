@@ -57,6 +57,8 @@ dependencies:
   rive: ^0.7.22
   mccounting_text: ^1.0.0
   flutter_html: ^3.0.0-alpha.2
+  field_suggestion: ^0.2.2
+  expandable: ^5.0.1
 
 dev_dependencies:
   flutter_test:

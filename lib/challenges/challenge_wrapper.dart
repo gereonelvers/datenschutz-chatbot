@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:datenschutz_chatbot/challenges/challenge.dart';
 import 'package:datenschutz_chatbot/challenges/gap_text_challenge.dart';
 import 'package:datenschutz_chatbot/challenges/info_challenge.dart';
@@ -9,6 +11,9 @@ import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mccounting_text/mccounting_text.dart';
+
+import 'animation_challenge.dart';
+import 'filling_challenge.dart';
 
 class ChallengeWrapper extends StatefulWidget {
   final bool isCampaign;
@@ -27,6 +32,219 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
   bool generatedChallenges = false; // Notification variable used to display placeholder if challenge generation takes longer than expected
   Stopwatch stopwatch = Stopwatch()..start();
   int time = 0;
+  List<Challenge> challengeLibrary = [
+
+  const IntroAnimationChallenge(),
+
+  InfoChallenge(InfoChallenge.bottyImage, "Hallo Tante Meta! 👋", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Hallo Botty! 🤗 Schön, dich zu sehen! Bist du gut angekommen? Freust du dich schon auf morgen? Wir haben uns ja schon so lange nicht gesehen! Du bist wirklich groß geworden! Lass uns loslegen!", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.bottyImage, "Ja! 😃 Womit wollen wir anfangen?", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Mh, ich hab eine Idee… 🤔", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Wir fangen mal ganz vorne an: Unter Datenschutz versteht man eine Menge an Gesetzen und Rechten, die die Privatsphäre von jedem von uns in der heutigen so automatisierten, modernen und computerisierten Welt schützen 🦾", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "In Deutschland 🇩🇪 ist Datenschutz mit der Datenschutz-Grundverordnung geregelt. Die gilt für jeden, der personenbezogene Daten verarbeitet.", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Ich hab dir dazu mal ein paar Dinge mitgebracht! Schau mal 👀", key: UniqueKey()),
+
+  FillingChallenge("„Einwilligung“ der betroffenen Person:\nJede freiwillig für den bestimmten Fall, in informierter Weise und unmissverständlich abgegebene Willensbekundung in Form einer Erklärung oder einer sonstigen eindeutigen bestätigenden Handlung zur Einverständnis der Verarbeitung ihrer personenbezogenen Daten",
+    const ["betroffenen Person","freiwillig, für den bestimmten Fall, in informierter Weise, unmissverständlich","Willensbekundung, Erklärung, eindeutigen bestätigenden Handlung","zur Einverständnis der Verarbeitung ihrer personenbezogenen Daten"],
+    const ["Wer?", "Wie?", "Was?", "Warum?"],
+    5, key: UniqueKey(),),
+
+  // Demo MatchingChallenge
+  MatchingChallenge(const ["Die Person, auf die sich die Informationen in den personenbezogenen Daten bezieht und jede identifizierbare oder identifizierte Person, deren Daten erhoben und verarbeitet werden", " jede Person/ jede Einrichtung, die personenbezogene Daten für sich oder andere erhebt oder darüber entscheidet (der oder die was mit den Daten macht = Datenverarbeitung)", "jede Person/Einrichtung, außer der betroffenen Person, dem Verantwortlichen, dem Auftragsverarbeiter und den Personen, die unter der unmittelbaren Verantwortung des Verantwortlichen oder des Auftragsverarbeiters befugt sind, die personenbezogenen Daten zu verarbeiten"], const ["Betroffene Person", "Verantwortliche/r", "Dritte/r"], key: UniqueKey(),),
+
+  // Demo GapTextChallenge
+  GapTextChallenge(const ["Wähle Begriffe für die Lücken aus, nicht alle Begriffe gehören zu einer Lücke.", "hat das Recht, aus Gründen, die sich aus ihrer besonderen Situation ergeben,", "gegen die Verarbeitung","personenbezogener Daten Widerspruch einzulegen", "muss", "auf dieses Recht hingewiesen werden. Ausnahme: ", ""],
+    const ["Die betroffene Person", "jederzeit", "sie betreffender", "ausdrücklich","indirekt(Daten, welche nicht beim Betroffenen selbst erhoben werden) erhobene Daten","Verwendung für Werbezwecke","Der Dritte","Der Dritte","Die betroffene Person","Der Bundesgerichtshof","Der Bundesgerichtshof","allgemeingültiger, auf Nachfrage", "Erfüllung einer öffentlichen Aufgabe","nicht","nicht","Der Verantwortliche","Der Verantwortliche", "am Anfang eines Monats"],
+    const ["Die betroffene Person", "jederzeit", "sie betreffender", "Die betroffene Person", "ausdrücklich", "Erfüllung einer öffentlichen Aufgabe"],
+    5, key: UniqueKey(),),
+  GapTextChallenge(const ["Wähle Begriffe für die Lücken aus, nicht alle Begriffe gehören zu einer Lücke.", "hat das Recht, nicht einer ausschließlich auf einer", "Verarbeitung —","Profiling — beruhenden Entscheidung unterworfen zu werden, die ihr gegenüber rechtliche Wirkungentfaltet oder sie in ähnlicher Weise erheblich","."],
+    const ["Die betroffene Person", "Der Verantwortliche", "automatisierten", "Der Dritte", "einschließlich", "beeinträchtigt"," Der Bundesgerichtshof","außer bei","unterstützt", "in Ausnahmen beim","analoger"],
+    const ["Die betroffene Person", "automatisierten", "einschließlich","beeinträchtigt"],
+    5, key: UniqueKey(),),
+
+  QuizChallenge(
+    "Wer kann identifizierbar sein?",
+    const ["Unternehmen", "Natürliche Person", "Land", "Organisation"],
+    const [1],
+    5,
+    true,
+    key: UniqueKey(),
+  ),
+  QuizChallenge(
+    "Du gibst deine Adresse zur Zusendung einer einmalige Bestellungeines Online-Händler. Muss deine Adresse nach der Zusendung gelöscht werden?",
+    const [
+    "Nein, da der Online-Händler noch ein berechtigtes Interesse anmeinen Daten hat(z.B. für Werbezwecke)",
+    "Nein, da du deine Zustimmung zur Verarbeitung deiner Daten gegeben hast und diese weiter besteht",
+    "Ja, aber nach einer Haltefrist von 10 Jahren, da sie noch für steuerliche Zwecke benötigt werden",
+    "Ja, unverzüglich, da der Zweck der Erhebung nicht mehr besteht"
+    ],
+    const [2],
+    5,
+    true,
+    key: UniqueKey()),
+    QuizChallenge("Kannst du durch einen Widerruf deiner Einwilligung die unverzügliche Löschung deiner Daten erwirken?",
+    const ["Nein, da ich meine Einwilligung nicht widerrufen kann", "Ja, wenn sonst kein Recht die Verarbeitung meiner Daten rechtfertigt"], const [1], 5, true,
+    key: UniqueKey()),
+  QuizChallenge(
+    "Du hast bei einem Gewinnspiel teilgenommen und dein Name wird als Gewinner auf Instagram veröffentlicht. Muss der Verantwortliche sich, wenn du die Löschung deiner Daten forderst, sich auch um die unverzügliche Löschung aller Links & Backups der Daten kümmern?",
+    const [
+    "Ja, er ist schließlich für die Daten verantwortlich",
+    "Nein, das ist technisch nicht möglich",
+    "Jein, er muss zumindest die Verantwortlichen der Links & Backups über die Löschaufforderung informieren, falls technisch möglich und angemessen",
+    "Jein, er muss selbst, falls technisch möglich und angemessen, alle Links & Backups entfernen"
+    ],
+    const [2],
+    5,
+    true,
+    key: UniqueKey()),
+  QuizChallenge(
+    "Welche Merkmalszuordnung zu einer Person könnte sie identifizierbar machen?",
+    const [
+    "Namen",
+    "Kennnummer",
+    "Standortdaten",
+    "Online-Kennung (IP-Adresse)",
+    "physische Merkmale",
+    "physiologischen Merkmal",
+    "genetische Merkmale",
+    "psychischen Merkmale",
+    "wirtschaftliche Merkmale",
+    "kulturelle Identität",
+    "soziale Identität",
+    "randomisierte Nummer",
+    "fiktiver Avatar, den auch mehrere Spieler gleichzeitig spielen können"
+    ],
+    const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    5,
+    false,
+    key: UniqueKey(),
+  ),
+  QuizChallenge(
+    "Was muss dir bei der Erhebung deiner Daten alles mitgeteilt werden?",
+    const [
+    "Name und Kontakt des Verantwortlichen",
+    "Kontakt des Datenschutzbeauftragten",
+    "Zweck der Verarbeitung",
+    "Empfänger",
+    "Absicht des Verantwortlichen",
+    "Dauer der Speicherung",
+    "sämtliche Rechte",
+    "technische Verarbeitungsweise",
+    "Standort des Speichermediums",
+    "Hardwareinfo des Verantwortlichen",
+    "Kategorien der Daten",
+    "wenn sie indirekt von dir erhoben werden"
+    ],
+    const [0, 1, 2, 3, 4, 5, 6, 10, 11],
+    5,
+    false,
+    key: UniqueKey(),
+  ),
+  QuizChallenge(
+    "Über was muss dir vom Verantwortlichen Auskunft gegeben werden, wenn du das willst?",
+    const [
+    "Verarbeitungszweck",
+    "Kategorien der Daten",
+    "Dauer",
+    "Empfänger",
+    "bestehende Rechte",
+    "Bestätigung, ob betreffende Daten verarbeitet werden",
+    "Kopie der personenbezogenen Daten",
+    "technische Verarbeitungsweise",
+    "Standort des Speichermediums",
+    "Hardwareinfo des Verantwortlichen",
+    "Kategorien der Daten"
+    ],
+    const [0, 1, 2, 3, 4, 5, 6, 10],
+    5,
+    false,
+    key: UniqueKey(),
+  ),
+  QuizChallenge(
+    "Was wird alles unter Verarbeitung verstanden? ",
+    const [
+    "Erheben",
+    "Erfassen",
+    "Organisation",
+    "Ordnen",
+    "Speicherung",
+    "Anpassung",
+    "Veränderung",
+    "Auslesen",
+    "Abfragen",
+    "Verwendung",
+    "Offenlegung",
+    "Übermittlung",
+    "Bereitstellung",
+    "Abgleich",
+    "Verknüpfung",
+    "Einschränkung",
+    "das Löschen",
+    "Vernichtung"
+    ],
+    const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+    5,
+    false,
+    key: UniqueKey(),
+  ),
+
+  // Demo InfoChallenges
+  InfoChallenge(InfoChallenge.bottyImage, "Danke, Tante Meta! Aber eine Frage habe ich dann doch noch...", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.bottyImage, "Darf das denn einfach jeder? Meine Daten verarbeiten?", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Nein, natürlich nicht! Es gibt in der DSGVO sogenannte Erlaubnistatbestände, die das genau regeln.", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Nach dem sogenannten Artikel 6 der DSGVO ist eine Verarbeitung von personenbezogenen Daten nur dann rechtmäßig, wenn die von mir gleich erzählenden Bedingungen als Voraussetzung erfüllt sind.", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "1️⃣ Die erste Bedingung ist:\nDie betroffene Person hat ihre Einwilligung zu der Verarbeitung der sie betreffenden, personenbezogenen Daten für einen oder mehrere Zwecke erteilt.", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "2️⃣ Die zweite Bedigung ist:\nDie Verarbeitung ist für die Erfüllung eines Vertrags, dessen Vertragspartei die betroffene Person ist, oder zur Durchführung vorvertraglicher Maßnahmen erforderlich, die auf Anfrage der betroffenen Person erfolgen.", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "3️⃣ Die dritte Bedingung ist：\nDie Verarbeitung ist erforderlich, um lebenswichtige Interessen der betroffenen Person oder einer anderen natürlichen Person zu schützen. ", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "4️⃣ Die vierte Bedingung ist：\nDie Verarbeitung ist für die Wahrnehmung einer Aufgabe erforderlich, die im öffentlichen Interesse liegt oder in Ausübung öffentlicher Gewalt erfolgt, die dem Verantwortlichen übertragen wurde. ", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "5️⃣ Die fünfte Bedingung ist：\nDie Verarbeitung ist zur Wahrung der berechtigten Interessen des Verantwortlichen oder eines Dritten erforderlich, sofern nicht die Interessen oder Grundrechte oder Grundfreiheiten der betroffenen Person, die den Schutz personenbezogener Daten erfordern, überwiegen, insbesondere dann, wenn es sich bei der betroffenen Person um ein Kind handelt.", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Ich weiß, dass man sich diese fünf Bedingungen eher nur sehr schwer merken kann. Aber hast du das Thema DSGVO Erlaubnistatbestände mehr oder weniger verstanden?", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.bottyImage, "Ja! Ich finde das Thema schon sehr spannend. Danke dir! 😁", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Gut, dann können wir ja mit einer kleinen Fragerunde beginnen.", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Erlaubnistatbestände sind die Hauptbestandteile der DSGVO, weshalb du erst dann behaupten kannst, dieses Thema auch gut zu beherrschen, wenn du dir sie wirklich verinnerlicht hast!", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.bottyImage, "Gar kein Problem, schieß los!", key: UniqueKey()),
+
+  QuizChallenge(
+    "Zur Datenverarbeitung ist die Einwilligung der betroffenen Person notwendig.",
+    const ["richtig", "falsch"],
+    const [0],
+    5,
+    true,
+    key: UniqueKey(),
+  ),
+  QuizChallenge(
+    "Die Datenverarbeitung ist erlaubt, falls sie zur Erfüllung eines Vertrages notwendig ist.",
+    const ["richtig", "falsch"],
+    const [0],
+    5,
+    true,
+    key: UniqueKey(),
+  ),
+  QuizChallenge(
+    "Die Datenverarbeitung ist nicht erlaubt, falls lebenswichtige Interessen zu schützen sind.",
+    const ["richtig", "falsch"],
+    const [1],
+    5,
+    true,
+    key: UniqueKey(),
+  ),
+  QuizChallenge(
+    "Die Datenverarbeitung ist erlaubt, falls sie für eine Aufgabe im privaten Interesse notwendig ist.",
+    const ["richtig", "falsch"],
+    const [1],
+    5,
+    true,
+    key: UniqueKey(),
+  ),
+  QuizChallenge(
+    "Die Datenverarbeitung ist erlaubt, falls ein berechtigtes Interesse der Verantwortlichen vorliegt, solange die Grundrechte nicht überwiegen..",
+    const ["richtig", "falsch"],
+    const [1],
+    5,
+    true,
+    key: UniqueKey(),
+  )
+  ];
 
   @override
   initState() {
@@ -257,256 +475,23 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
   generateChallenges(bool isCampaign) {
     setState(() {
       if (isCampaign) {
-        // Demo MatchingChallenge
-        challenges.add(
-          MatchingChallenge(
-            const [
-              "Die Person, auf die sich die Informationen in den personenbezogenen Daten bezieht und jede identifizierbare oder identifizierte Person, deren Daten erhoben und verarbeitet werden",
-              "Jede Person/ jede Einrichtung, die personenbezogene Daten für sich oder andere erhebt oder darüber entscheidet (der oder die was mit den Daten macht = Datenverarbeitung)",
-              "Jede Person/Einrichtung, außer der betroffenen Person, dem Verantwortlichen, dem Auftragsverarbeiter und den Personen, die unter der unmittelbaren Verantwortung des Verantwortlichen oder des Auftragsverarbeiters befugt sind, die personenbezogenen Daten zu verarbeiten"
-            ],
-            const ["Betroffene Person", "Verantwortliche/r", "Dritte/r"],
-            key: UniqueKey(),
-          ),
-        );
-
-        // Demo GapTextChallenge
-        challenges.add(GapTextChallenge(
-          const ["", "hat das Recht, aus Gründen, die sich aus ihrer besonderen Situation ergeben,", "gegen die Verarbeitung", "personenbezogener Daten Widerspruch einzulegen", "muss", "auf dieses Recht hingewiesen werden. Ausnahme: ", ""],
-          const [
-            "Die betroffene Person",
-            "jederzeit",
-            "sie betreffender",
-            "ausdrücklich",
-            "indirekt (nicht beim Betroffenen selbst) erhobene Daten",
-            "Verwendung für Werbezwecke",
-            "Der Dritte",
-            "Der Dritte",
-            "Die betroffene Person",
-            "Der Bundesgerichtshof",
-            "Der Bundesgerichtshof",
-            "allgemeingültiger, auf Nachfrage",
-            "Erfüllung einer öffentlichen Aufgabe",
-            "nicht",
-            "nicht",
-            "Der Verantwortliche",
-            "Der Verantwortliche",
-            "am Anfang eines Monats"
-          ],
-          const ["Die betroffene Person", "jederzeit", "sie betreffender", "Die betroffene Person", "ausdrücklich", "Erfüllung einer öffentlichen Aufgabe"],
-          5,
-          key: UniqueKey(),
-        ));
-
-        challenges.add(GapTextChallenge(
-          const ["", "hat das Recht, nicht einer ausschließlich auf einer", "Verarbeitung —", "Profiling — beruhenden Entscheidung unterworfen zu werden, die ihr gegenüber rechtliche Wirkungentfaltet oder sie in ähnlicher Weise erheblich", "."],
-          const ["Die betroffene Person", "Der Verantwortliche", "automatisierten", "Der Dritte", "einschließlich", "beeinträchtigt", " Der Bundesgerichtshof", "außer bei", "unterstützt", "in Ausnahmen beim", "analoger"],
-          const ["Die betroffene Person", "automatisierten", "einschließlich", "beeinträchtigt"],
-          5,
-          key: UniqueKey(),
-        ));
-
-        // Demo InfoChallenges
-        challenges.add(InfoChallenge(InfoChallenge.auntImage, "Hallo Botty! Ich freue mich, dich zu sehen!", key: UniqueKey()));
-        challenges.add(InfoChallenge(InfoChallenge.bottyImage, "Hallo Meta! Schön, dass du da bist!!", key: UniqueKey()));
-
-        challenges.add(QuizChallenge(
-          "Wer kann identifizierbar sein? Wähle alle korrekten Antworten aus.",
-          const ["Natürliche Person", "Natürliche Person", "Land", "Organisation"],
-          const [0],
-          5,
-          false,
-          key: UniqueKey(),
-        ));
-        // Important: Every challenge must be added with a unique "key" identifier so Flutter knows to refresh the layout as the challenges are removed!
-
-        challenges.add(QuizChallenge(
-            "Du gibst deine Adresse zur Zusendung einer einmalige Bestellungeines Online-Händler. Muss deine Adresse nach der Zusendung gelöscht werden?",
-            const [
-              "Nein, da der Online-Händler noch ein berechtigtes Interesse anmeinen Daten hat (z.B. für Werbezwecke)",
-              "Nein, da du deine Zustimmung zur Verarbeitung deiner Daten gegeben hast und diese weiter besteht",
-              "Ja, aber nach einer Haltefrist von 10 Jahren, da sie noch für steuerliche Zwecke benötigt werden",
-              "Ja, unverzüglich, da der Zweck der Erhebung nicht mehr besteht"
-            ],
-            const [2],
-            5,
-            true,
-            key: UniqueKey()));
-        challenges.add(QuizChallenge("Kannst du durch einen Widerruf deiner Einwilligung die unverzügliche Löschung deiner Daten erwirken?",
-            const ["Nein, da ich meine Einwilligung nicht widerrufen kann", "Ja, wenn sonst kein Recht die Verarbeitung meiner Daten rechtfertigt"], const [1], 5, true,
-            key: UniqueKey()));
-        challenges.add(QuizChallenge(
-            "Du hast bei einem Gewinnspiel teilgenommen und dein Name wird als Gewinner auf Instagram veröffentlicht. Muss der Verantwortliche sich, wenn du die Löschung deiner Daten forderst, sich auch um die unverzügliche Löschung aller Links & Backups der Daten kümmern?",
-            const [
-              "Ja, er ist schließlich für die Daten verantwortlich",
-              "Nein, das ist technisch nicht möglich",
-              "Jein, er muss zumindest die Verantwortlichen der Links & Backups über die Löschaufforderung informieren, falls technisch möglich und angemessen",
-              "Jein, er muss selbst, falls technisch möglich und angemessen, alle Links & Backups entfernen"
-            ],
-            const [2],
-            5,
-            true,
-            key: UniqueKey()));
-
-        challenges.add(QuizChallenge(
-          "Welche Merkmalszuordnung zu einer Person könnte sie identifizierbar machen?",
-          const [
-            "Namen",
-            "Kennnummer",
-            "Standortdaten",
-            "Online-Kennung (IP-Adresse)",
-            "physische Merkmale",
-            "physiologischen Merkmal",
-            "genetische Merkmale",
-            "psychischen Merkmale",
-            "wirtschaftliche Merkmale",
-            "kulturelle Identität",
-            "soziale Identität",
-            "randomisierte Nummer",
-            "fiktiver Avatar, den auch mehrere Spieler gleichzeitig spielen können"
-          ],
-          const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          5,
-          false,
-          key: UniqueKey(),
-        ));
-        challenges.add(QuizChallenge(
-          "Was muss dir bei der Erhebung deiner Daten alles mitgeteilt werden?",
-          const [
-            "Name und Kontakt des Verantwortlichen",
-            "Kontakt des Datenschutzbeauftragten",
-            "Zweck der Verarbeitung",
-            "Empfänger",
-            "Absicht des Verantwortlichen",
-            "Dauer der Speicherung",
-            "sämtliche Rechte",
-            "technische Verarbeitungsweise",
-            "Standort des Speichermediums",
-            "Hardwareinfo des Verantwortlichen",
-            "Kategorien der Daten",
-            "wenn sie indirekt von dir erhoben werden"
-          ],
-          const [0, 1, 2, 3, 4, 5, 6, 10, 11],
-          5,
-          false,
-          key: UniqueKey(),
-        ));
-        challenges.add(QuizChallenge(
-          "Über was muss dir vom Verantwortlichen Auskunft gegeben werden, wenn du das willst?",
-          const [
-            "Verarbeitungszweck",
-            "Kategorien der Daten",
-            "Dauer",
-            "Empfänger",
-            "bestehende Rechte",
-            "Bestätigung, ob betreffende Daten verarbeitet werden",
-            "Kopie der personenbezogenen Daten",
-            "technische Verarbeitungsweise",
-            "Standort des Speichermediums",
-            "Hardwareinfo des Verantwortlichen",
-            "Kategorien der Daten"
-          ],
-          const [0, 1, 2, 3, 4, 5, 6, 10],
-          5,
-          false,
-          key: UniqueKey(),
-        ));
-        challenges.add(QuizChallenge(
-          "Was wird alles unter Verarbeitung verstanden? ",
-          const [
-            "Erheben",
-            "Erfassen",
-            "Organisation",
-            "Ordnen",
-            "Speicherung",
-            "Anpassung",
-            "Veränderung",
-            "Auslesen",
-            "Abfragen",
-            "Verwendung",
-            "Offenlegung",
-            "Übermittlung",
-            "Bereitstellung",
-            "Abgleich",
-            "Verknüpfung",
-            "Einschränkung",
-            "das Löschen",
-            "Vernichtung"
-          ],
-          const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
-          5,
-          false,
-          key: UniqueKey(),
-        ));
-
-        challenges.add(QuizChallenge(
-          "Zur Datenverarbeitung ist die Einwilligung der betroffenen Person notwendig.",
-          const ["richtig", "falsch"],
-          const [0],
-          5,
-          true,
-          key: UniqueKey(),
-        ));
-        challenges.add(QuizChallenge(
-          "Die Datenverarbeitung ist erlaubt, falls sie zur Erfüllung eines Vertrages notwendig ist.",
-          const ["richtig", "falsch"],
-          const [0],
-          5,
-          true,
-          key: UniqueKey(),
-        ));
-        challenges.add(QuizChallenge(
-          "Die Datenverarbeitung ist nicht erlaubt, falls lebenswichtige Interessen zu schützen sind.",
-          const ["richtig", "falsch"],
-          const [1],
-          5,
-          true,
-          key: UniqueKey(),
-        ));
-        challenges.add(QuizChallenge(
-          "Die Datenverarbeitung ist erlaubt, falls sie für eine Aufgabe im privaten Interesse notwendig ist.",
-          const ["richtig", "falsch"],
-          const [1],
-          5,
-          true,
-          key: UniqueKey(),
-        ));
-        challenges.add(QuizChallenge(
-          "Die Datenverarbeitung ist erlaubt, falls ein berechtigtes Interesse der Verantwortlichen vorliegt, solange die Grundrechte nicht überwiegen..",
-          const ["richtig", "falsch"],
-          const [1],
-          5,
-          true,
-          key: UniqueKey(),
-        ));
+        for (Challenge element in challengeLibrary) {
+          challenges.add(element);
+        }
         // challenges.shuffle(Random()); // Shuffle challenges after generation
         challengeCount = challenges.length;
       } else {
         // TODO: Randomize challenges (without InfoChallenges)
-        challenges.add(QuizChallenge(
-          "Zur Datenverarbeitung ist die Einwilligung der betroffenen Person notwendig.",
-          const ["richtig", "falsch"],
-          const [0],
-          5,
-          true,
-          key: UniqueKey(),
-        ));
-        challenges.add(QuizChallenge(
-          "Zur Datenverarbeitung ist die Einwilligung der betroffenen Person notwendig.",
-          const ["richtig", "falsch"],
-          const [0],
-          5,
-          true,
-          key: UniqueKey(),
-        ));
-        challenges.add(QuizChallenge(
-          "Zur Datenverarbeitung ist die Einwilligung der betroffenen Person notwendig.",
-          const ["richtig", "falsch"],
-          const [0],
-          5,
-          true,
-          key: UniqueKey(),
-        ));
+        challenges.add(InfoChallenge(InfoChallenge.auntImage, "Großartig, lass uns loslegen!", key: UniqueKey()));
+        Random r = Random();
+        for(int i=0;i<11;i++){
+          int j = 0;
+          while(challengeLibrary[j] is InfoChallenge || challengeLibrary[j] is IntroAnimationChallenge || challenges.contains(challengeLibrary[j])){
+            j = r.nextInt(challengeLibrary.length);
+          }
+          challenges.add(challengeLibrary[j]);
+        }
+        challengeCount = challenges.length;
       }
     });
   }
@@ -554,13 +539,6 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
                 Navigator.of(context).pop();
               },
             ),
-            TextButton(
-              child: const Text("Win", style: TextStyle(color: BottyColors.darkBlue)),
-              onPressed: () {
-                Navigator.of(context).pop();
-                finishChallenges();
-              },
-            ),
           ],
         );
       },
@@ -569,7 +547,6 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
 
   finishChallenges() async {
     ProgressModel p = await ProgressModel.getProgressModel();
-    // TODO: These are placeholders. Fix!
     p.setValue("challengeMaxStreak", streak);
     p.setValue("challengeFastestComplete", time);
     p.setValue("challengeTotalXP", p.getInt("challengeTotalXP") + ((isCampaign?360:120)-time)+streak*10);

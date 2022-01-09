@@ -52,32 +52,17 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "die Abschluss-Umfrage",
   ];
   List<String> demoNames = [
-    "Weitere Informationen",
     "Erneut mit Meta treffen",
-    "Intro Screen",
-    "Survey Screen",
-    "Unity Cube Demo",
-    "RPG Demo",
-    "Racing Game",
+    "Weitere Informationen",
   ];
   List<String> gameDescriptions = [
-    "Vertiefende Informationen kannst du auf der Internetseite des Bundesbeauftragten für den Datenschutz und die Informationsfreiheit finden.",
     "Triff dich erneut mit Tante Meta um in 10 zufälligen Fragen dein Können unter Beweis zu stellen.",
-    "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
-    "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
-    "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
-    "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
-    "Ich bin eine Kurzbeschreibung, welche final ca. 2-3 Sätze lang sein sollte. Bis die finalen Texte fertig sind, stehe ich hier als Platzhalter.",
+    "Vertiefende Informationen kannst du auf der Internetseite des Bundesbeauftragten für den Datenschutz und die Informationsfreiheit finden.",
   ];
 
   List<Icon> bonusIcons = [
-    const Icon(Icons.add),
     const Icon(Icons.coffee),
-    const Icon(Icons.bug_report),
-    const Icon(Icons.bug_report),
-    const Icon(Icons.bug_report),
-    const Icon(Icons.bug_report),
-    const Icon(Icons.bug_report),
+    const Icon(Icons.add),
   ];
 
   List<Image> questBackgrounds = [
@@ -333,34 +318,14 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   launchBonus(int index) async {
     switch (index) {
       case 0:
-        await launch("https://www.bfdi.bund.de");
-        break;
-      case 1:
         showDialog(
             context: context,
             builder: (BuildContext context) {
               return const ChallengeWrapper(false);
             });
         break;
-      // TODO: Leaving these in to make content testing easier. Remove once no longer needed
-      case 2:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const IntroScreen()),
-        );
-        break;
-      case 3:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const IntroSurveyScreen()),
-        );
-        break;
-      default:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => GameScreen(index)),
-          // MaterialPageRoute(builder: (context) => const UnityScreen()),
-        );
+      case 1:
+        await launch("https://www.bfdi.bund.de");
         break;
     }
   }

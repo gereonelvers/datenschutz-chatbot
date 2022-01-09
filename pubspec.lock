@@ -218,6 +218,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
+  expandable:
+    dependency: "direct main"
+    description:
+      name: expandable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -232,6 +239,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.2"
+  field_suggestion:
+    dependency: "direct main"
+    description:
+      name: field_suggestion
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.2"
   file:
     dependency: transitive
     description:
@@ -359,6 +373,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  highlightable:
+    dependency: transitive
+    description:
+      name: highlightable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   hive:
     dependency: "direct main"
     description:

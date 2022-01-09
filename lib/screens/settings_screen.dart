@@ -1,10 +1,13 @@
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:mailto/mailto.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:random_string/random_string.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'intro_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -99,6 +102,37 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
             elevation: 5,
             color: Colors.white,
             borderRadius: BorderRadius.circular(30),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(30),
+              onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const IntroScreen()),
+                  );
+                },
+              child: Container(
+                padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
+                width: double.infinity,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(Icons.refresh_outlined),
+                    ),
+                    Text("Intro erneut starten"),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
+          Material(
+            type: MaterialType.card,
+            elevation: 5,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
             child: Container(
               padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
               child: Column(
@@ -112,40 +146,43 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
                     ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 35),
                   ),
-                  const Text(
-                    "Es folgen einige technische Informationen, die uns beim finden von Fehlern helfen können:",
-                    textAlign: TextAlign.center,
-                  ),
+                  ExpandablePanel(
+                      header: const Text("Status-Informationen", style: TextStyle(fontWeight: FontWeight.bold),),
+                      collapsed: const Text("Debug-Prints, die uns beim Finden von Fehlern helfen können"),
+                      expanded: Column(children: [
+                    Text(
+                      "Rasa session-ID:\n" + sessionID,
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      started,
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      messagedStarted,
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      finished,
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      messagedFinished,
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      "Current Chapter: "+currentChapter.toString(),
+                      textAlign: TextAlign.left,
+                    ),
+                    ElevatedButton(onPressed: (){getInfo();}, child: const Text("force reload"))
+                    ],)),
+
                   const Padding(
                     padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                   ),
-                  Text(
-                    "Rasa session-ID:\n" + sessionID,
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    started,
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    messagedStarted,
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    finished,
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    messagedFinished,
-                    textAlign: TextAlign.left,
-                  ),
-                  Text(
-                    "Current Chapter: "+currentChapter.toString(),
-                    textAlign: TextAlign.left,
-                  ),
-                  ElevatedButton(onPressed: (){getInfo();}, child: const Text("force reload"))
+
 
                 ],
               ),
