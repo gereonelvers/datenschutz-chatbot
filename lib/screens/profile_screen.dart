@@ -22,17 +22,20 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
   int currentChapter = 0;
 
   // Unlockables
-  List<String> unlockableNames = ["goldenBackground", "freeTextInput"];
-  List<String> unlockableTitle = ["Goldener Hintergrund", "Freitext-Eingabe"];
-  List<Icon> unlockableIcons = [const Icon(Icons.wallpaper), const Icon(Icons.local_fire_department)];
-  List<bool> unlockablesAvailable = [false, false];
-  List<bool> unlockablesActive = [false, false];
+  List<String> unlockableNames = ["goldenBackground"];
+  List<String> unlockableTitle = ["Goldener Hintergrund"];
+  List<Icon> unlockableIcons = [const Icon(Icons.wallpaper)];
+  List<bool> unlockablesAvailable = [false];
+  List<bool> unlockablesActive = [false];
 
   List<int> challengeValues = [0,0,0];
 
-  // Racing Game (TODO)
+  // Racing Game
   Color carColor = Colors.white;
   int raceTime = 0;
+  List<String> hatTypes = ["NoHat", "PartyHat", "TopHat", "WizardHat"];
+  int currentHat = 0;
+  int currentCarSpeed = 0;
 
   // RPG (TODO)
 
@@ -93,34 +96,67 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                   margin: EdgeInsets.zero,
                   child: Column(
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            'Freischaltbare Inhalte',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 18),
+                      Visibility(
+                        visible: currentChapter == 5,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Row(
+                              children: [
+                                const Text(
+                                  'Belohnungen',
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                IconButton(icon: const Icon(Icons.info), onPressed: () {
+                                  showDialog(context: context, builder: (BuildContext context){
+                                    return AlertDialog(
+                                        title: const Text('Belohnungen 🎉'),
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(Radius.circular(30))),
+                                        content: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: const [
+                                              Text("Du hast das Spiel durchgespielt und dadurch einige Belohnungen freigeschaltet!"),
+                                            ]),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                            Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Okay', style: TextStyle(color: BottyColors.darkBlue)),
+                                            ),
+                                        ]
+                                    );
+                                  });
+                                },)
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 150,
-                        child: ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: unlockableNames.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return UnlockableCard(
-                                  unlocked: unlockablesAvailable[index],
-                                  active: unlockablesActive[index],
-                                  title: unlockableTitle[index],
-                                  icon: unlockableIcons[index],
-                                  update: () => toggleUnlockable(index)
-                              );
-                            },
-                        )
+                      Visibility(
+                        visible: currentChapter == 5,
+                        child: SizedBox(
+                          height: 150,
+                          child: ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: unlockableNames.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return UnlockableCard(
+                                    unlocked: unlockablesAvailable[index],
+                                    active: unlockablesActive[index],
+                                    title: unlockableTitle[index],
+                                    icon: unlockableIcons[index],
+                                    update: () => toggleUnlockable(index)
+                                );
+                              },
+                          )
+                        ),
                       ),
                       const Padding(
                         padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
@@ -299,25 +335,96 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                                 ),
                               ),
                             ),
-                            Card(
-                              elevation: 5,
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                              color: carColor,
-                              child: InkWell(
-                                splashColor: Colors.blue.withAlpha(30),
-                                borderRadius: BorderRadius.circular(30),
-                                onTap: pickCarColor,
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: Icon(Icons.color_lens, size: 48, color: ThemeData.estimateBrightnessForColor(carColor) == Brightness.dark?Colors.white:Colors.black,)
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                      child: Text('Fahrzeug-Farbe wählen', style: TextStyle(color: ThemeData.estimateBrightnessForColor(carColor) == Brightness.dark?Colors.white:Colors.black,)),
-                                    ),
-                                  ],
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                              child: Card(
+                                elevation: 5,
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                child: InkWell(
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(30),
+                                  onTap: pickCarHat,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: Icon(
+                                              Icons.compare,
+                                              color: BottyColors.darkBlue,
+                                              size: 64,
+                                            )),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text("Hut wählen"),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                              child: Card(
+                                elevation: 5,
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                child: InkWell(
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(30),
+                                  onTap: pickCarColor,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: Icon(
+                                              Icons.color_lens,
+                                              color: BottyColors.darkBlue,
+                                              size: 64,
+                                            )),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text("Auto-Farbe wählen"),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                              child: Card(
+                                elevation: 5,
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                child: InkWell(
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(30),
+                                  onTap: pickCarSpeed,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: Icon(
+                                              Icons.speed,
+                                              color: BottyColors.darkBlue,
+                                              size: 64,
+                                            )),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text("Geschwindigkeit wählen"),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -405,11 +512,6 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
     progress.setValue(unlockableNames[index]+"Active", unlockablesActive[index]);
   }
 
-  changeColor(Color color) {
-    progress.setValue("carColor", color.value);
-    setState(() => carColor = color);
-  }
-
   pickCarColor(){
     // raise the [showDialog] widget
     showDialog(
@@ -421,7 +523,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
         content: SingleChildScrollView(
           child: BlockPicker(
             pickerColor: carColor,
-            onColorChanged: changeColor,
+            onColorChanged: changeCarColor,
           ),
         ),
         actions: <Widget>[
@@ -434,6 +536,100 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
           ),
         ],
       );},);
+  }
+
+  changeCarColor(Color color) {
+    progress.setValue("carColor", color.value);
+    setState(() => carColor = color);
+  }
+
+  // TODO: Speed value doesn't properly update in dialog
+  pickCarSpeed(){
+    // raise the [showDialog] widget
+    showDialog(
+      context: context,
+      builder: (BuildContext context) { return AlertDialog(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(30))),
+        title: const Text('Geschwindigkeit wählen!'),
+        content: SingleChildScrollView(
+          child: Slider(
+            value: currentCarSpeed.toDouble(),
+            onChanged: (double value) {
+              changeCarSpeed(value.round());
+              },
+            divisions: 4,
+          )
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK', style: TextStyle(color: BottyColors.darkBlue),),
+            onPressed: () {
+              //setState(() => carColor = carColor);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );},);
+  }
+
+  changeCarSpeed(int speed) {
+    progress.setValue("carSpeed", speed);
+    setState(() => currentCarSpeed = speed);
+  }
+
+  // TODO: Hat value doesn't properly update in dialog
+  pickCarHat(){
+    // raise the [showDialog] widget
+    showDialog(
+      context: context,
+      builder: (BuildContext context) { return AlertDialog(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(30))),
+        title: const Text('Wähle einen Hut!'),
+        content: SizedBox(
+          height: 300,
+          child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: hatTypes.length,
+              itemBuilder: (BuildContext c, int index) {
+            return Card(
+              elevation: 5,
+                color: index==currentHat?BottyColors.darkBlue:Colors.white,
+                child: InkWell(
+                  onTap: () {
+                    changeCarHat(index);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.local_fire_department, color: index==currentHat?Colors.white:Colors.black,),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(hatTypes[index], style: TextStyle(color: index==currentHat?Colors.white:Colors.black),),
+                        ),
+                      ],
+                    ),
+                  ),
+                ));
+          }),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK', style: TextStyle(color: BottyColors.darkBlue),),
+            onPressed: () {
+              //setState(() => carColor = carColor);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );},);
+  }
+
+  changeCarHat(int index) {
+    progress.setValue("carHat", index);
+    setState(() => currentHat = index);
   }
 
   // TODO: This feels really ugly
