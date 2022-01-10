@@ -83,10 +83,46 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "MainScene");
 
       // Telling Unity to switch car color to preset value
-      int i = progressModel.getInt("carColor");
-      String carColor = i==0?"#ffffff":"#"+progressModel.getInt("carColor").toRadixString(16).substring(2);
+      int carColorId = progressModel.getInt("carColor");
+      String carColor = carColorId==0?"#ffffff":"#"+progressModel.getInt("carColor").toRadixString(16).substring(2);
       unityWidgetController.postMessage("AchievementCarColor", "AchievementChangeColor", carColor); // TODO: This currently only works if unity player is already loaded
+      int carSpeedId = progressModel.getInt("carSpeed");
+      String carSpeed;
+      switch(carSpeedId){
+        case 1:
+          carSpeed = "medium";
+          break;
+        case 2:
+          carSpeed = "fast";
+          break;
+        case 3:
+          carSpeed = "reallyFast";
+          break;
+        case 0:
+        default:
+          carSpeed = "slow";
+          break;
+      }
+      unityWidgetController.postMessage("AchievementMaxSpeed", "AchievementMaxSpeed", carSpeed);
 
+      int carHatId = progressModel.getInt("carHat");
+      String carHat;
+      switch(carHatId){
+        case 1:
+          carHat = "PartyHat";
+          break;
+        case 2:
+          carHat = "TopHat";
+          break;
+        case 3:
+          carHat = "WizardHat";
+          break;
+        case 0:
+        default:
+          carHat = "NoHat";
+          break;
+      }
+      unityWidgetController.postMessage("AchievementHats", "AchievementHats", carHat);
     } else {
       unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "GameScene4");
     }
