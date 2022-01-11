@@ -50,7 +50,6 @@ dependencies:
   another_flushbar: ^1.10.28
   bubble: ^1.2.1
   survey_kit: ^0.0.12
-  flutter_colorpicker: ^1.0.3
   url_launcher: ^6.0.17
   mailto: ^2.0.0
   lottie: ^1.2.1
@@ -59,6 +58,10 @@ dependencies:
   flutter_html: ^3.0.0-alpha.2
   field_suggestion: ^0.2.2
   expandable: ^5.0.1
+  bottom_picker: ^1.4.0
+  flutter_material_pickers: ^3.1.2
+  share_plus: ^3.0.4
+  animated_text_kit: ^4.2.1
 
 dev_dependencies:
   flutter_test:

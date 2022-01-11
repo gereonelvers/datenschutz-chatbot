@@ -3,8 +3,10 @@ import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:bottom_picker/bottom_picker.dart';
 
 /// this is is the profile screen, which shows player progress and achievements
 class ProgressScreen extends StatefulWidget {
@@ -22,22 +24,26 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
   int currentChapter = 0;
 
   // Unlockables
-  List<String> unlockableNames = ["goldenBackground"];
-  List<String> unlockableTitle = ["Goldener Hintergrund"];
-  List<Icon> unlockableIcons = [const Icon(Icons.wallpaper)];
-  List<bool> unlockablesAvailable = [false];
-  List<bool> unlockablesActive = [false];
+  List<String> unlockableNames = ["goldenBackground", "shareGameComplete"];
+  List<String> unlockableTitle = ["Goldener Hintergrund", "Erfolg teilen 🎉"];
+  List<Icon> unlockableIcons = [const Icon(Icons.wallpaper), const Icon(Icons.share)];
+  List<bool> unlockablesAvailable = [false, false];
+  List<bool> unlockablesActive = [false, false];
 
   List<int> challengeValues = [0,0,0];
 
   // Racing Game
   Color carColor = Colors.white;
   int raceTime = 0;
-  List<String> hatTypes = ["NoHat", "PartyHat", "TopHat", "WizardHat"];
+  List<String> carHatTypes = ["Kein Hut", "Partyhut", "Zylinder", "Zauberhut"];
   int currentHat = 0;
+  List<String> carSpeedTypes = ["Langsam", "Normal", "Schnell","Turbo"];
   int currentCarSpeed = 0;
 
   // RPG (TODO)
+  int rpgStarCount = 0;
+  int rpgLessonCount = 0;
+  bool rpgCameraUnlocked = false;
 
   @override
   void initState() {
@@ -71,7 +77,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                     backgroundColor: Colors.white,
                     progressColor: currentChapter == 5 ? Colors.amber : Colors.green,
                     center: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Image.asset(
                         "assets/img/data-white.png",
                         color: Colors.black,
@@ -446,35 +452,118 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                       ),
                       SizedBox(
                         height: 150,
-                        child: ListView.builder(
+                        child: ListView(
                           physics: const BouncingScrollPhysics(),
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          itemCount: 15,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Card(
-                              elevation: 5,
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 16, bottom: 16),
-                                    child: Image.asset("assets/img/data-white.png", color: Colors.black),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                              child: Card(
+                                elevation: 5,
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                child: InkWell(
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(30),
+                                  onTap: (){},
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: Icon(
+                                              Icons.star,
+                                              color: BottyColors.darkBlue,
+                                              size: 64,
+                                            )),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text("Verdiente Sterne"),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text(rpgStarCount.toString()),
+                                      ),
+                                    ],
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: const [
-                                        Text('Dummy Card Text'),
-                                        Text("Dummy Card Text"),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            );
-                          },
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                              child: Card(
+                                elevation: 5,
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                child: InkWell(
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(30),
+                                  onTap: (){},
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: Icon(
+                                              Icons.today,
+                                              color: BottyColors.darkBlue,
+                                              size: 64,
+                                            )),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text("Absolvierte Stunden"),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text(rpgLessonCount.toString()),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                              child: Card(
+                                elevation: 5,
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                child: InkWell(
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(30),
+                                  onTap: (){},
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: Icon(
+                                              Icons.video_camera_front_outlined,
+                                              color: BottyColors.darkBlue,
+                                              size: 64,
+                                            )),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text("Kamera freigeschaltet?"),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text(rpgCameraUnlocked?"Ja 😄":"Nein 😔"),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                          ],
                         ),
                       ),
                       const Padding(
@@ -545,32 +634,43 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
 
   // TODO: Speed value doesn't properly update in dialog
   pickCarSpeed(){
-    // raise the [showDialog] widget
     showDialog(
       context: context,
-      builder: (BuildContext context) { return AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30))),
-        title: const Text('Geschwindigkeit wählen!'),
-        content: SingleChildScrollView(
-          child: Slider(
-            value: currentCarSpeed.toDouble(),
-            onChanged: (double value) {
-              changeCarSpeed(value.round());
-              },
-            divisions: 4,
-          )
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('OK', style: TextStyle(color: BottyColors.darkBlue),),
-            onPressed: () {
-              //setState(() => carColor = carColor);
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );},);
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30))),
+              title: const Text('Geschwindigkeit wählen!'),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Slider(
+                      value: currentCarSpeed.toDouble(),
+                      onChanged: (double value) {
+                        setState(
+                            changeCarSpeed(value.round()),
+                        );
+                        },
+                      divisions: 4,
+                    ),
+                    Text("Geschwindigkeit: "+currentCarSpeed.toString()),
+                  ],
+                )
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('OK', style: TextStyle(color: BottyColors.darkBlue),),
+                  onPressed: () {
+                    //setState(() => carColor = carColor);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+      );
+          }
+        );},);
   }
 
   changeCarSpeed(int speed) {
@@ -580,7 +680,6 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
 
   // TODO: Hat value doesn't properly update in dialog
   pickCarHat(){
-    // raise the [showDialog] widget
     showDialog(
       context: context,
       builder: (BuildContext context) { return AlertDialog(
@@ -591,7 +690,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
           height: 300,
           child: ListView.builder(
               physics: const BouncingScrollPhysics(),
-              itemCount: hatTypes.length,
+              itemCount: carHatTypes.length,
               itemBuilder: (BuildContext c, int index) {
             return Card(
               elevation: 5,
@@ -607,7 +706,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                         Icon(Icons.local_fire_department, color: index==currentHat?Colors.white:Colors.black,),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(hatTypes[index], style: TextStyle(color: index==currentHat?Colors.white:Colors.black),),
+                          child: Text(carHatTypes[index], style: TextStyle(color: index==currentHat?Colors.white:Colors.black),),
                         ),
                       ],
                     ),
@@ -649,10 +748,12 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
       challengeValues[1] = progress.getInt("challengeFastestComplete");
       challengeValues[2] = progress.getInt("challengeTotalXP");
 
-      //print("Color: #"+progress.getInt("carColor").toRadixString(16));
-
       carColor = progress.getInt("carColor")==0?Colors.white:Color(progress.getInt("carColor"));
       raceTime = progress.getInt("racingTime");
+
+      rpgStarCount = progress.getInt("starCount");
+      rpgLessonCount = progress.getInt("lessonCount");
+      rpgCameraUnlocked = progress.getBool("cameraUnlocked");
     });
   }
 
@@ -684,7 +785,6 @@ class UnlockableCard extends StatelessWidget {
               Padding(
                   padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
                   child: icon
-                  //Image.asset("assets/img/data-white.png", color: Colors.black),
                   ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),

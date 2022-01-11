@@ -4,6 +4,7 @@ import 'package:datenschutz_chatbot/challenges/challenge.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 /// Implementation of Challenge that acts as a simple info screen (without any challenge at all)
 class InfoChallenge extends Challenge {
@@ -14,7 +15,7 @@ class InfoChallenge extends Challenge {
 
   // TODO: Replace with final assets
   static final Image bottyImage = Image.asset("assets/img/data-white.png", color: Colors.black, alignment: Alignment.centerLeft);
-  static final Image auntImage = Image.asset("assets/img/data-white.png", color: Colors.red, alignment: Alignment.centerLeft);
+  static final Image auntImage = Image.asset("assets/img/meta-grey.png", alignment: Alignment.centerRight);
 
   @override
   _InfoChallengeState createState() => _InfoChallengeState();
@@ -57,7 +58,7 @@ class _InfoChallengeState extends ChallengeState<InfoChallenge> {
               flex: 8,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(32, 0, 8, 0),
-                child: Align(alignment: Alignment.topRight, child: Bubble(
+                child: Align(alignment: Alignment.topLeft, child: Bubble(
                     nip: BubbleNip.leftTop,
                     radius: const Radius.circular(20),
                     nipHeight: 20,
@@ -65,7 +66,23 @@ class _InfoChallengeState extends ChallengeState<InfoChallenge> {
                     elevation: 1,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: AutoSizeText(info, style: const TextStyle(color: Colors.black, fontSize: 24)),
+                      child:
+                      AnimatedTextKit(
+                        animatedTexts: [
+                          TyperAnimatedText(
+                            info,
+                            textStyle: const TextStyle(
+                              fontSize: 24.0,
+                            ),
+                            speed: const Duration(milliseconds: 10),
+                          ),
+                        ],
+                        totalRepeatCount: 1,
+                        pause: const Duration(milliseconds: 10),
+                        displayFullTextOnTap: true,
+                        stopPauseOnTap: true,
+                      )
+                        // AutoSizeText(info, style: const TextStyle(color: Colors.black, fontSize: 24)),
                     ))),
               ),
             ),
