@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 
 class GameScreen extends StatefulWidget {
@@ -16,72 +19,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   initState() {
     gameID = widget.gameID;
     initProgressModel();
-    super.initState();
-  }
-
-  int gameID = -1;
-  late UnityWidgetController unityWidgetController;
-  late ProgressModel progressModel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-          child: Stack(
-        children: [
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: const Text("Zurück")),
-              )),
-          UnityWidget(
-            onUnityCreated: onUnityCreated,
-            onUnityMessage: onUnityMessage,
-            onUnitySceneLoaded: onUnitySceneLoaded,
-            fullscreen: true, // Setting this to false causes a bunch of issues in release builds
-            borderRadius: BorderRadius.zero,
-            placeholder: const Center(
-              child: Text("Unity loading..."),
-            ),
-          )
-        ],
-      )),
-    );
-  }
-
-  // Communication from Unity to Flutter
-  onUnityMessage(message) {
-    // TODO: Implement unity->flutter messaging. Remove print afterwards.
-    print('Received message from unity: $message');
-    if(message.contains("racingTime")){
-      int duration = int.parse(message.split(":")[1]);
-      print("Received duration: "+duration.toString());
-      progressModel.setValue("raceTime", duration);
-    }
-  }
-
-  // Callback that connects the created controller to the unity controller
-  onUnityCreated(controller) async {
-    unityWidgetController = controller;
-    // This is an awful fix: Keep widget paused for .1 second to prevent freezing
-    await unityWidgetController.pause();
-    Future.delayed(
-      const Duration(milliseconds: 100),
-      () async {
-        await unityWidgetController.resume();
-      },
-    );
-    loadScene(gameID);
-  }
-
-  // This works by telling the Scene Switchers item in the currently Unity Scene to load the correct scene
-  loadScene(int id) async {
-    print("Sending message telling Unity to load scene with id" + id.toString()); // TODO: Remove print once Unity scene loading works 100% (including nested scene layouts)
-    if (id==0) {
-      //unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "IntroMenu");
-      unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "MainScene");
-
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       // Telling Unity to switch car color to preset value
       int carColorId = progressModel.getInt("carColor");
       String carColor = carColorId==0?"#ffffff":"#"+progressModel.getInt("carColor").toRadixString(16).substring(2);
@@ -123,12 +62,87 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           break;
       }
       unityWidgetController.postMessage("AchievementHats", "AchievementHats", carHat);
-    } else {
-      unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "GameScene4");
+
+    });
+    super.initState();
+  }
+
+  int gameID = -1;
+  late UnityWidgetController unityWidgetController;
+  late ProgressModel progressModel;
+  late Timer timer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+          child: Stack(
+        children: [
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: const Text("Zurück")),
+              )),
+          UnityWidget(
+            onUnityCreated: onUnityCreated,
+            onUnityMessage: onUnityMessage,
+            onUnitySceneLoaded: onUnitySceneLoaded,
+            fullscreen: true, // Setting this to false causes a bunch of issues in release builds
+            borderRadius: BorderRadius.zero,
+            placeholder: const Center(
+              child: Text("Unity loading..."),
+            ),
+          )
+        ],
+      )),
+    );
+  }
+
+  // Communication from Unity to Flutter
+  onUnityMessage(message) {
+    print('Received message from unity: $message'); // Remove print once no longer required
+    if(message.contains("raceTime")){
+      int duration = int.parse(message.split(":")[1]);
+      progressModel.setValue("raceTime", duration);
+      Navigator.pop(context, true); // Race was completed, return success
+    } else if (message == "return") {
+      Navigator.pop(context, false); // Race was canceled early, return failure
+    } else if (message.contains("starCount")) {
+      int starCount = int.parse(message.split(":")[1]);
+      progressModel.setValue("starCount", starCount);
+    } else if (message.contains("lesson")) {
+      int lesson = int.parse(message.split(":")[1]);
+      progressModel.setValue("lessonCount", lesson);
+    } else if (message.contains("camera")) {
+      progressModel.setValue("cameraUnlocked", true);
     }
 
 
-    //unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", id.toString());
+  }
+
+  // Callback that connects the created controller to the unity controller
+  onUnityCreated(controller) async {
+    unityWidgetController = controller;
+    // This is an awful fix: Keep widget paused for .1 second to prevent freezing
+    await unityWidgetController.pause();
+    Future.delayed(
+      const Duration(milliseconds: 100),
+      () async {
+        await unityWidgetController.resume();
+      },
+    );
+    loadScene(gameID);
+  }
+
+  // This works by telling the Scene Switchers item in the currently Unity Scene to load the correct scene
+  loadScene(int id) async {
+    print("Sending message telling Unity to load scene with id" + id.toString()); // TODO: Remove print once Unity scene loading works 100% (including nested scene layouts)
+    if (id==0) {
+      unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "IntroMenu");
+    } else {
+      unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "GameScene4");
+    }
   }
 
   // Leaving callback method in here for now, not currently used for anything though
@@ -142,6 +156,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     // unityWidgetController.unload();  // Android only?!
     // unityWidgetController.quit();    // Quits app?
     // unityWidgetController.dispose();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
+    timer.cancel();
     super.dispose();
   }
 

@@ -1,13 +1,14 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:datenschutz_chatbot/challenges/challenge_wrapper.dart';
 import 'package:datenschutz_chatbot/screens/game_screen.dart';
-import 'package:datenschutz_chatbot/screens/intro_screen.dart';
 import 'package:datenschutz_chatbot/screens/survey_screen.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:mailto/mailto.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -51,18 +52,24 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     "den ersten Schultag",
     "die Abschluss-Umfrage",
   ];
-  List<String> demoNames = [
+
+  List<String> bonusNames = [
     "Erneut mit Meta treffen",
     "Weitere Informationen",
+    "Botty teilen",
+    "Fehler melden",
   ];
   List<String> gameDescriptions = [
     "Triff dich erneut mit Tante Meta um in 10 zufälligen Fragen dein Können unter Beweis zu stellen.",
     "Vertiefende Informationen kannst du auf der Internetseite des Bundesbeauftragten für den Datenschutz und die Informationsfreiheit finden.",
+    "Empfiehl Botty weiter und hilf deinen Freunden, mehr über Datenschutz zu lernen.",
+    "Du hast einen Fehler gefunden oder möchtest uns einfach Feedback geben? Schreib uns!",
   ];
-
   List<Icon> bonusIcons = [
     const Icon(Icons.coffee),
-    const Icon(Icons.add),
+    const Icon(Icons.launch),
+    const Icon(Icons.share),
+    const Icon(Icons.bug_report_outlined),
   ];
 
   List<Image> questBackgrounds = [
@@ -124,7 +131,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                 child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                  itemCount: demoNames.length,
+                  itemCount: bonusNames.length,
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
                     return Padding(
@@ -152,7 +159,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                                       Align(
                                         alignment: Alignment.topLeft,
                                         child: Text(
-                                          demoNames[index],
+                                          bonusNames[index],
                                           style: const TextStyle(fontSize: 20),
                                         ),
                                       ),
@@ -326,6 +333,16 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
         break;
       case 1:
         await launch("https://www.bfdi.bund.de");
+        break;
+      case 2:
+        await Share.share('Schau dir jetzt Botty, den Datenschutz-Chatbot an:\nhttps://botty-datenschutz.de', subject: 'Lade dir Botty runter ⬇️');
+        break;
+      case 3:
+        final mailtoLink = Mailto(
+          to: ['gereon.elvers@tum.de'],
+          subject: 'Botty: Feedback',
+        );
+        await launch('$mailtoLink');
         break;
     }
   }
