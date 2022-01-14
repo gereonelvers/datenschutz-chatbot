@@ -7,6 +7,7 @@ import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mailto/mailto.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -212,7 +213,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
         titleColor: Colors.black,
         messageColor: Colors.black,
         animationDuration: const Duration(milliseconds: 200),
-        icon: Image.asset("assets/img/data-white.png", color: Colors.black),
+        icon: Lottie.asset("assets/lottie/botty-float.json"),
         flushbarPosition: FlushbarPosition.TOP,
         title: 'Sorry!',
         message: "Du hast dieses Kapitel bereits erfolgreich beendet 😁",
@@ -227,7 +228,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
         titleColor: Colors.black,
         messageColor: Colors.black,
         animationDuration: const Duration(milliseconds: 200),
-        icon: Image.asset("assets/img/data-white.png", color: Colors.black),
+        icon: Lottie.asset("assets/lottie/botty-float.json"),
         flushbarPosition: FlushbarPosition.TOP,
         title: 'Sorry!',
         message: "Du hast dieses Kapitel noch nicht freigeschaltet 🔜🤔",
@@ -270,7 +271,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                             context,
                             MaterialPageRoute(builder: (context) => const IntroSurveyScreen())
                         );
-                        if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                        if (progress.getBool("classroomToggle")) progress.setValue("finished" + index.toString(), true);
                         updateProgress();
                         break;
                       case 1: // Challenges
@@ -279,7 +280,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                           MaterialPageRoute(builder: (context) => const ChallengeWrapper(true)),
                         );
                         if (finished) {
-                          if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                          if (progress.getBool("classroomToggle")) progress.setValue("finished" + index.toString(), true);
                         }
                         updateProgress();
                         break;
@@ -288,7 +289,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                           context,
                           MaterialPageRoute(builder: (context) => const GameScreen(0)),
                         );
-                        if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                        if (progress.getBool("classroomToggle")) progress.setValue("finished" + index.toString(), true);
                         updateProgress();
                         break;
                       case 3: // Naninovel RPG
@@ -296,7 +297,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                           context,
                           MaterialPageRoute(builder: (context) => const GameScreen(1)),
                         );
-                        if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                        if (progress.getBool("classroomToggle")) progress.setValue("finished" + index.toString(), true);
                         updateProgress();
                         break;
                       case 4: // Ending Survey
@@ -304,7 +305,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                             context,
                             MaterialPageRoute(builder: (context) => const OutroSurveyScreen())
                         );
-                        if (!progress.getBool("finished" + index.toString())) progress.setValue("finished" + index.toString(), true);
+                        if (progress.getBool("classroomToggle")) progress.setValue("finished" + index.toString(), true);
                         updateProgress();
                         break;
                     }

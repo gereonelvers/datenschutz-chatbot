@@ -1,7 +1,11 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
+import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
+import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mailto/mailto.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:random_string/random_string.dart';
@@ -32,11 +36,12 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
   String messagedFinished = "messagedFinished:\n";
   int currentChapter = -1;
   bool classroomToggle = false;
+  TextEditingController textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: BottyColors.darkBlue,),
+      appBar: AppBar(backgroundColor: BottyColors.darkBlue, title: const Text("Einstellungen", textAlign: TextAlign.center,)),
       backgroundColor: BottyColors.blue,
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
@@ -52,13 +57,24 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
               width: double.infinity,
               child: Column(
                 children: [
-                  const Text(
-                    "Botty",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      // color: Colors.white
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0,0,8,16),
+                        child: Image.asset("assets/img/data-white.png", width: 75, color: Colors.black,),
+                      ),
+                      const Text(
+                        "Botty",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 48,
+                          // color: Colors.white
+                        ),
+                      ),
+                      Container(width: 25,),
+                    ],
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
@@ -85,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
               width: double.infinity,
               child: Row(
                 children: [
-                  const Text("Spielst du in der Klasse?"),
+                  const Text("🏫 Spielst du in der Klasse?"),
                   Switch(value: classroomToggle, onChanged: (value){
                     setState(() {
                       classroomToggle = value;
@@ -121,9 +137,55 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
                       padding: EdgeInsets.all(8.0),
                       child: Icon(Icons.refresh_outlined),
                     ),
-                    Text("Intro erneut starten"),
+                    Text("Intro erneut starten", style: TextStyle(fontSize: 16,),)
                   ],
                 ),
+              ),
+            ),
+          ),
+          const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
+          Material(
+            type: MaterialType.card,
+            elevation: 5,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            child: Container(
+              padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("🕹️ Cheats", style: TextStyle(fontWeight: FontWeight.bold),),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 8, right: 8),
+                    child: Text("Hast du einen Code für uns?"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(children: [
+                      Expanded(
+                          flex: 8,
+                          child: TextField(
+                            controller: textEditingController,
+                            decoration: const InputDecoration(
+                              hintText: "Cheat-Code",// optional
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: BottyColors.darkBlue),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: BottyColors.darkBlue),
+                            ),
+                          ),)),
+                      Expanded(
+                        flex: 2,
+                          child: IconButton(onPressed: submitCheat, icon: const Icon(Icons.lock_open)))
+                    ],),
+                  )
+
+                ],
               ),
             ),
           ),
@@ -205,10 +267,10 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: const [
                     Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(12.0),
                       child: Icon(Icons.feedback_outlined),
                     ),
-                    Text("Gib uns Feedback!"),
+                    Text("Gib uns Feedback!", style: TextStyle(fontSize: 16),),
                   ],
                 ),
               ),
@@ -253,6 +315,77 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
       subject: 'Botty: Feedback',
     );
     await launch('$mailtoLink');
+  }
+
+
+  submitCheat() async {
+    String input = textEditingController.text;
+    if(input.contains(RegExp("Level:\\d"))||input=="Level:-1"){
+      int level = -1;
+      try {
+        level = int.parse(input.split(":")[1]);
+      } on FormatException catch (_, e){
+        invalidCheatFlushbar();
+        return;
+      }
+
+      if (level<5){
+        // Enable classroom mode
+        progress.setValue("classroomToggle", true);
+        // Reset progress
+        for(int i=0;i<5;i++){
+          progress.setValue("started"+i.toString(), false);
+          progress.setValue("messagedStarted"+i.toString(), false);
+          progress.setValue("finished"+i.toString(), false);
+          progress.setValue("messageFinished"+i.toString(), false);
+        }
+        // Progress to specified level
+        for(int i=0;i<=level;i++){
+          progress.setValue("started"+i.toString(), true);
+          progress.setValue("messagedStarted"+i.toString(), true);
+          progress.setValue("finished"+i.toString(), true);
+          if(!(i==level)) progress.setValue("messageFinished"+i.toString(), true);
+        }
+        // Tell the PageView...
+        UpdateProgressNotification().dispatch(context);
+        // ... and the user about it
+        await Flushbar(
+          margin: const EdgeInsets.fromLTRB(15,32,15,10),
+          borderRadius: BorderRadius.circular(20),
+          backgroundColor: Colors.white,
+          titleColor: Colors.black,
+          messageColor: Colors.black,
+          animationDuration: const Duration(milliseconds: 200),
+          icon: Lottie.asset("assets/lottie/botty-float.json"),
+          flushbarPosition: FlushbarPosition.TOP,
+          title: 'Cheat aktiviert!',
+          message: "Zu Level "+level.toString()+" gesprungen ⏩",
+          boxShadows: const [BoxShadow(color: Colors.grey, offset: Offset(0.0, 0.2), blurRadius: 6.0)],
+          duration: const Duration(milliseconds: 1500),
+        ).show(context);
+      } else {
+        invalidCheatFlushbar();
+      }
+    } else {
+      invalidCheatFlushbar();
+    }
+  }
+
+  invalidCheatFlushbar() async {
+    await Flushbar(
+      margin: const EdgeInsets.fromLTRB(15,32,15,10),
+      borderRadius: BorderRadius.circular(20),
+      backgroundColor: Colors.white,
+      titleColor: Colors.black,
+      messageColor: Colors.black,
+      animationDuration: const Duration(milliseconds: 200),
+      icon: Lottie.asset("assets/lottie/botty-float.json"),
+      flushbarPosition: FlushbarPosition.TOP,
+      title: 'Leider nein!',
+      message: "Der Code ist leider falsch",
+      boxShadows: const [BoxShadow(color: Colors.grey, offset: Offset(0.0, 0.2), blurRadius: 6.0)],
+      duration: const Duration(milliseconds: 1500),
+    ).show(context);
   }
 
 }
