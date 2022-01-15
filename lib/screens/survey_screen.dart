@@ -155,7 +155,7 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
         ),
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'knowledge'),
-          title: 'Wie hoch schätzt du deine Vorwissen über Datenschutz ein? (1 = niedrig, 10 = sehr hoch)',
+          title: 'Wie hoch schätzt du dein Vorwissen über Datenschutz ein? (1 = niedrig, 10 = sehr hoch)',
           answerFormat: const ScaleAnswerFormat(
               step: 1,
               minimumValue: 1,
