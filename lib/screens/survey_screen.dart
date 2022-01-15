@@ -1,3 +1,4 @@
+import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:survey_kit/survey_kit.dart';
@@ -147,7 +148,7 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
             textChoices: [
               TextChoice(text: 'Schülerin', value: 'female'),
               TextChoice(text: 'Schüler', value: 'male'),
-              TextChoice(text: 'Sonstige', value: 'divers'),
+              TextChoice(text: 'Sonstige', value: 'diverse'),
               TextChoice(text: 'Keine Angabe', value: 'n/a'),
             ],
           ),
@@ -193,7 +194,7 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
           answerFormat: const SingleChoiceAnswerFormat(
             textChoices: [
               TextChoice(text: 'ja', value: 'ja'),
-              TextChoice(text: 'nö', value: 'nö'),
+              TextChoice(text: 'nein', value: 'nein'),
             ],
           ),
         ),
@@ -236,7 +237,7 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
     return Future.value(task);
   }
 
-  Future<http.Response> postResult(SurveyResult result) {
+  Future<http.Response> postResult(SurveyResult result) async {
     var map = <String, dynamic>{};
     for (var res in result.results) {
       if (res.id != null &&
@@ -245,6 +246,9 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
         map[res.id!.id] = res.results[0].valueIdentifier;
       }
     }
+    ProgressModel p = await ProgressModel.getProgressModel();
+    map["sessionID"] = p.getString("sessionID");
+    print("Sending result: "+map.toString());
     return http.post(
         Uri.parse(
             'https://botty-datenschutz.de/wp-json/contact-form-7/v1/contact-forms/155/feedback'),

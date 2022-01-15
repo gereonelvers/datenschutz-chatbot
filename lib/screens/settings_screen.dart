@@ -1,7 +1,6 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
-import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification.dart';
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -324,7 +323,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
       int level = -1;
       try {
         level = int.parse(input.split(":")[1]);
-      } on FormatException catch (_, e){
+      } on FormatException catch (_){
         invalidCheatFlushbar();
         return;
       }

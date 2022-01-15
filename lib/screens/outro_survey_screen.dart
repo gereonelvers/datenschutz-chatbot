@@ -1,3 +1,4 @@
+import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:survey_kit/survey_kit.dart';
@@ -205,7 +206,7 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
               maximumValueDescription: 'viel zu komplex'),
         ),
         QuestionStep(
-          stepIdentifier: StepIdentifier(id: 'Erlaubnistatbestände'),
+          stepIdentifier: StepIdentifier(id: 'Erlaubnistatbestaende'),
           title: 'Könntest du jetzt erklären, was Erlaubnistatbestände sind?',
           answerFormat: const SingleChoiceAnswerFormat(
             textChoices: [
@@ -216,7 +217,7 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
           ),
         ),
         QuestionStep(
-          stepIdentifier: StepIdentifier(id: "Langzeitgedächtnis"),
+          stepIdentifier: StepIdentifier(id: "Langzeitgedaechtnis"),
           title: 'Glaubst du, dass du das erlernte Wissen auch in zwei Wochen noch abrufen kannst?',
           answerFormat: const SingleChoiceAnswerFormat(
               textChoices: [
@@ -310,7 +311,7 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
     return Future.value(task);
   }
 
-  Future<http.Response> postResult(SurveyResult result) {
+  Future<http.Response> postResult(SurveyResult result) async {
     var map = <String, dynamic>{};
     for (var res in result.results) {
       if (res.id != null &&
@@ -319,9 +320,11 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
         map[res.id!.id] = res.results[0].valueIdentifier;
       }
     }
+    ProgressModel p = await ProgressModel.getProgressModel();
+    map["sessionID"] = p.getString("sessionID");
     return http.post(
         Uri.parse(
-            'https://botty-datenschutz.de/wp-json/contact-form-7/v1/contact-forms/155/feedback'),
+            'https://botty-datenschutz.de/wp-json/contact-form-7/v1/contact-forms/231/feedback'),
         body: map);
   }
 
