@@ -50,5 +50,7 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>Die Integration unserer Spiele-Engine macht diese Berechtigung notwendig. Wir verwenden deine Fotos nicht.</string>
 </dict>
 </plist>
