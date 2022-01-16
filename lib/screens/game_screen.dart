@@ -76,26 +76,28 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-          child: Stack(
+        child:
+          Stack(
         children: [
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: const Text("Zurück")),
-              )),
-          UnityWidget(
-            onUnityCreated: onUnityCreated,
-            onUnityMessage: onUnityMessage,
-            onUnitySceneLoaded: onUnitySceneLoaded,
-            fullscreen: true, // Setting this to false causes a bunch of issues in release builds
-            borderRadius: BorderRadius.zero,
-            placeholder: const Center(
-              child: Text("Unity loading..."),
-            ),
-          )
-        ],
-      )),
+        UnityWidget(
+          onUnityCreated: onUnityCreated,
+          onUnityMessage: onUnityMessage,
+          onUnitySceneLoaded: onUnitySceneLoaded,
+          fullscreen: true, // Setting this to false causes a bunch of issues in release builds
+          borderRadius: BorderRadius.zero,
+          placeholder: const Center(
+            child: Text("Unity loading..."),
+          ),
+        ),
+            Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8,32,0,0),
+                  child: IconButton(onPressed: () => Navigator.of(context).pop(), icon: Icon(Icons.arrow_back)),
+                ))
+          ],
+        )
+      ),
     );
   }
 
@@ -103,11 +105,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   onUnityMessage(message) {
     print('Received message from unity: $message'); // Remove print once no longer required
     if(message.contains("raceTime")){
-      int duration = int.parse(message.split(":")[1]);
+      int duration = double.parse((message.split(":")[1].toString().replaceAll(",", "."))).round();
       progressModel.setValue("raceTime", duration);
-      Navigator.pop(context, true); // Race was completed, return success
+      if(duration==0) Navigator.pop(context, true); // Race was completed, return success
     } else if (message == "return") {
-      Navigator.pop(context, false); // Race was canceled early, return failure
+      Navigator.pop(context, true);
     } else if (message.contains("starCount")) {
       int starCount = int.parse(message.split(":")[1]);
       progressModel.setValue("starCount", starCount);
@@ -128,7 +130,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     await unityWidgetController.pause();
     Future.delayed(
       const Duration(milliseconds: 100),
-      () async {
+          () async {
         await unityWidgetController.resume();
       },
     );
@@ -141,6 +143,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     if (id==0) {
       unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "IntroMenu");
     } else {
+      //unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "GameScene4");
       unityWidgetController.postMessage("Scene Switcher", "Sceneswitcher", "GameScene4");
     }
   }

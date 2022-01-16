@@ -24,11 +24,11 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
   int currentChapter = 0;
 
   // Unlockables
-  List<String> unlockableNames = ["goldenBackground", "shareGameComplete"];
-  List<String> unlockableTitle = ["Goldener Hintergrund", "Erfolg teilen 🎉"];
-  List<Icon> unlockableIcons = [const Icon(Icons.wallpaper), const Icon(Icons.share)];
-  List<bool> unlockablesAvailable = [false, false];
-  List<bool> unlockablesActive = [false, false];
+  List<String> unlockableNames = ["goldenBackground"];
+  List<String> unlockableTitle = ["Goldener Hintergrund"];
+  List<Icon> unlockableIcons = [const Icon(Icons.wallpaper)];
+  List<bool> unlockablesAvailable = [false];
+  List<bool> unlockablesActive = [false];
 
   List<int> challengeValues = [0,0,0];
 
@@ -41,6 +41,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
   int currentCarSpeed = 0;
 
   // RPG (TODO)
+  bool rpgStarted = false;
   int rpgStarCount = 0;
   int rpgLessonCount = 0;
   bool rpgCameraUnlocked = false;
@@ -56,10 +57,10 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
     // Should not significantly impact performance though, as Hive heavily caches for this exact scenario
     initProgressModel();
     return Scaffold(
-      backgroundColor: BottyColors.darkBlue,
+      backgroundColor: BottyColors.greyWhite,
       body: Stack(
         children: [
-          Lottie.asset("assets/lottie/profile-background.json"),
+          Lottie.asset("assets/lottie/profile-background.json", height: double.infinity, fit: BoxFit.fitHeight),
           SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Column(
@@ -147,20 +148,23 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                         visible: currentChapter == 5,
                         child: SizedBox(
                           height: 150,
-                          child: ListView.builder(
-                              physics: const BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: unlockableNames.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return UnlockableCard(
-                                    unlocked: unlockablesAvailable[index],
-                                    active: unlockablesActive[index],
-                                    title: unlockableTitle[index],
-                                    icon: unlockableIcons[index],
-                                    update: () => toggleUnlockable(index)
-                                );
-                              },
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: ListView.builder(
+                                physics: const BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: unlockableNames.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return UnlockableCard(
+                                      unlocked: unlockablesAvailable[index],
+                                      active: unlockablesActive[index],
+                                      title: unlockableTitle[index],
+                                      icon: unlockableIcons[index],
+                                      update: () => toggleUnlockable(index)
+                                  );
+                                },
+                            ),
                           )
                         ),
                       ),
@@ -177,135 +181,47 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                       ),
                       SizedBox(
                         height: 160,
-                        child: ListView(
-                            physics: const BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal, children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                            child: Card(
-                              elevation: 5,
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                              child: InkWell(
-                                splashColor: Colors.blue.withAlpha(30),
-                                borderRadius: BorderRadius.circular(30),
-                                onTap: () {},
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Align(
-                                          alignment: Alignment.topRight,
-                                          child: Icon(
-                                            Icons.local_fire_department,
-                                            color: BottyColors.darkBlue,
-                                            size: 64,
-                                          )),
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                      child: Text("Maximale Streak"),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                      child: Text(challengeValues[0].toString()),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                            child: Card(
-                              elevation: 5,
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                              child: InkWell(
-                                splashColor: Colors.blue.withAlpha(30),
-                                borderRadius: BorderRadius.circular(30),
-                                onTap: () {},
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Align(
-                                          alignment: Alignment.topRight,
-                                          child: Icon(
-                                            Icons.timer,
-                                            color: BottyColors.darkBlue,
-                                            size: 64,
-                                          )),
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                      child: Text("Schnellster Run"),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                      child: Text(Duration(seconds: challengeValues[1]).toString().split(".").first.padLeft(8, "0")),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                            child: Card(
-                              elevation: 5,
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                              child: InkWell(
-                                splashColor: Colors.blue.withAlpha(30),
-                                borderRadius: BorderRadius.circular(30),
-                                onTap: () {},
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Align(
-                                          alignment: Alignment.topRight,
-                                          child: Icon(
-                                            Icons.celebration,
-                                            color: BottyColors.darkBlue,
-                                            size: 64,
-                                          )),
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                      child: Text("Gesamte XP"),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                      child: Text(challengeValues[2].toString()),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ]),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
                         child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            'Fahrt zur Schule',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 150,
-                        child: ListView(
-                          physics: const BouncingScrollPhysics(),
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          children: [
+                          alignment: Alignment.centerLeft,
+                          child: ListView(
+                              physics: const BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal, children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                              child: Card(
+                                elevation: 5,
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                child: InkWell(
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(30),
+                                  onTap: () {},
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: Icon(
+                                              Icons.local_fire_department,
+                                              color: BottyColors.darkBlue,
+                                              size: 64,
+                                            )),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text("Maximale Streak"),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text(challengeValues[0].toString()),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
                               child: Card(
@@ -334,7 +250,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text(Duration(seconds: raceTime).toString().split(".").first.padLeft(8, "0")),
+                                        child: Text(Duration(seconds: challengeValues[1]).toString().split(".").first.padLeft(8, "0")),
                                       ),
                                     ],
                                   ),
@@ -349,94 +265,188 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                                 child: InkWell(
                                   splashColor: Colors.blue.withAlpha(30),
                                   borderRadius: BorderRadius.circular(30),
-                                  onTap: pickCarHat,
+                                  onTap: () {},
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Padding(
+                                    children: [
+                                      const Padding(
                                         padding: EdgeInsets.all(8.0),
                                         child: Align(
                                             alignment: Alignment.topRight,
                                             child: Icon(
-                                              Icons.compare,
+                                              Icons.celebration,
                                               color: BottyColors.darkBlue,
                                               size: 64,
                                             )),
                                       ),
-                                      Padding(
+                                      const Padding(
                                         padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text("Hut wählen"),
+                                        child: Text("Gesamte XP"),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                        child: Text(challengeValues[2].toString()),
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                              child: Card(
-                                elevation: 5,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                                child: InkWell(
-                                  splashColor: Colors.blue.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(30),
-                                  onTap: pickCarColor,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: Icon(
-                                              Icons.color_lens,
-                                              color: BottyColors.darkBlue,
-                                              size: 64,
-                                            )),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text("Auto-Farbe wählen"),
-                                      ),
-                                    ],
+                          ]),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Fahrt zur Schule',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 150,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: ListView(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                                child: Card(
+                                  elevation: 5,
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                  child: InkWell(
+                                    splashColor: Colors.blue.withAlpha(30),
+                                    borderRadius: BorderRadius.circular(30),
+                                    onTap: () {},
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: Icon(
+                                                Icons.timer,
+                                                color: BottyColors.darkBlue,
+                                                size: 64,
+                                              )),
+                                        ),
+                                        const Padding(
+                                          padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                          child: Text("Schnellster Run"),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                          child: Text(Duration(seconds: raceTime).toString().split(".").first.padLeft(8, "0")),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                              child: Card(
-                                elevation: 5,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                                child: InkWell(
-                                  splashColor: Colors.blue.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(30),
-                                  onTap: pickCarSpeed,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: Icon(
-                                              Icons.speed,
-                                              color: BottyColors.darkBlue,
-                                              size: 64,
-                                            )),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text("Geschwindigkeit wählen"),
-                                      ),
-                                    ],
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                                child: Card(
+                                  elevation: 5,
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                  child: InkWell(
+                                    splashColor: Colors.blue.withAlpha(30),
+                                    borderRadius: BorderRadius.circular(30),
+                                    onTap: pickCarHat,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: const [
+                                        Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: Icon(
+                                                Icons.compare,
+                                                color: BottyColors.darkBlue,
+                                                size: 64,
+                                              )),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                          child: Text("Hut wählen"),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                                child: Card(
+                                  elevation: 5,
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                  child: InkWell(
+                                    splashColor: Colors.blue.withAlpha(30),
+                                    borderRadius: BorderRadius.circular(30),
+                                    onTap: pickCarColor,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: const [
+                                        Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: Icon(
+                                                Icons.color_lens,
+                                                color: BottyColors.darkBlue,
+                                                size: 64,
+                                              )),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                          child: Text("Auto-Farbe wählen"),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                                child: Card(
+                                  elevation: 5,
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                  child: InkWell(
+                                    splashColor: Colors.blue.withAlpha(30),
+                                    borderRadius: BorderRadius.circular(30),
+                                    onTap: pickCarSpeed,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: const [
+                                        Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: Icon(
+                                                Icons.speed,
+                                                color: BottyColors.darkBlue,
+                                                size: 64,
+                                              )),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                          child: Text("Geschwindigkeit wählen"),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
 
 
-                          ]
+                            ]
+                          ),
                         ),
                       ),
                       const Padding(
@@ -451,123 +461,175 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
                         ),
                       ),
                       SizedBox(
-                        height: 150,
-                        child: ListView(
-                          physics: const BouncingScrollPhysics(),
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                              child: Card(
-                                elevation: 5,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                                child: InkWell(
-                                  splashColor: Colors.blue.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(30),
-                                  onTap: (){},
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: Icon(
-                                              Icons.star,
-                                              color: BottyColors.darkBlue,
-                                              size: 64,
-                                            )),
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text("Verdiente Sterne"),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text(rpgStarCount.toString()),
-                                      ),
-                                    ],
+                        height: 100,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: ListView(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                                child: Card(
+                                  elevation: 5,
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                                  child: InkWell(
+                                    splashColor: Colors.blue.withAlpha(30),
+                                    borderRadius: BorderRadius.circular(30),
+                                    onTap: (){},
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: Icon(
+                                                Icons.school,
+                                                color: BottyColors.darkBlue,
+                                                size: 64,
+                                              )),
+                                        ),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                            child: Text("Schule besucht?"),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                            child: Text(rpgStarted?"Ja 👨‍🎓":"Nein 😔"),
+                                          ),
+                                        ],)
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                              child: Card(
-                                elevation: 5,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                                child: InkWell(
-                                  splashColor: Colors.blue.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(30),
-                                  onTap: (){},
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: Icon(
-                                              Icons.today,
-                                              color: BottyColors.darkBlue,
-                                              size: 64,
-                                            )),
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text("Absolvierte Stunden"),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text(rpgLessonCount.toString()),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                              child: Card(
-                                elevation: 5,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
-                                child: InkWell(
-                                  splashColor: Colors.blue.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(30),
-                                  onTap: (){},
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: Icon(
-                                              Icons.video_camera_front_outlined,
-                                              color: BottyColors.darkBlue,
-                                              size: 64,
-                                            )),
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text("Kamera freigeschaltet?"),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                        child: Text(rpgCameraUnlocked?"Ja 😄":"Nein 😔"),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                          ],
-                        ),
-                      ),
+                      ]
+                          ),
+                        ),),
+                      // SizedBox(
+                      //   height: 150,
+                      //   child: ListView(
+                      //     physics: const BouncingScrollPhysics(),
+                      //     shrinkWrap: true,
+                      //     scrollDirection: Axis.horizontal,
+                      //     children: [
+                      //       Padding(
+                      //         padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                      //         child: Card(
+                      //           elevation: 5,
+                      //           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                      //           child: InkWell(
+                      //             splashColor: Colors.blue.withAlpha(30),
+                      //             borderRadius: BorderRadius.circular(30),
+                      //             onTap: (){},
+                      //             child: Column(
+                      //               mainAxisAlignment: MainAxisAlignment.center,
+                      //               children: [
+                      //                 const Padding(
+                      //                   padding: EdgeInsets.all(8.0),
+                      //                   child: Align(
+                      //                       alignment: Alignment.topRight,
+                      //                       child: Icon(
+                      //                         Icons.star,
+                      //                         color: BottyColors.darkBlue,
+                      //                         size: 64,
+                      //                       )),
+                      //                 ),
+                      //                 const Padding(
+                      //                   padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                      //                   child: Text("Verdiente Sterne"),
+                      //                 ),
+                      //                 Padding(
+                      //                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                      //                   child: Text(rpgStarCount.toString()),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                      //         child: Card(
+                      //           elevation: 5,
+                      //           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                      //           child: InkWell(
+                      //             splashColor: Colors.blue.withAlpha(30),
+                      //             borderRadius: BorderRadius.circular(30),
+                      //             onTap: (){},
+                      //             child: Column(
+                      //               mainAxisAlignment: MainAxisAlignment.center,
+                      //               children: [
+                      //                 const Padding(
+                      //                   padding: EdgeInsets.all(8.0),
+                      //                   child: Align(
+                      //                       alignment: Alignment.topRight,
+                      //                       child: Icon(
+                      //                         Icons.today,
+                      //                         color: BottyColors.darkBlue,
+                      //                         size: 64,
+                      //                       )),
+                      //                 ),
+                      //                 const Padding(
+                      //                   padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                      //                   child: Text("Absolvierte Stunden"),
+                      //                 ),
+                      //                 Padding(
+                      //                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                      //                   child: Text(rpgLessonCount.toString()),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       Padding(
+                      //         padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                      //         child: Card(
+                      //           elevation: 5,
+                      //           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                      //           child: InkWell(
+                      //             splashColor: Colors.blue.withAlpha(30),
+                      //             borderRadius: BorderRadius.circular(30),
+                      //             onTap: (){},
+                      //             child: Column(
+                      //               mainAxisAlignment: MainAxisAlignment.center,
+                      //               children: [
+                      //                 const Padding(
+                      //                   padding: EdgeInsets.all(8.0),
+                      //                   child: Align(
+                      //                       alignment: Alignment.topRight,
+                      //                       child: Icon(
+                      //                         Icons.video_camera_front_outlined,
+                      //                         color: BottyColors.darkBlue,
+                      //                         size: 64,
+                      //                       )),
+                      //                 ),
+                      //                 const Padding(
+                      //                   padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                      //                   child: Text("Kamera freigeschaltet?"),
+                      //                 ),
+                      //                 Padding(
+                      //                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                      //                   child: Text(rpgCameraUnlocked?"Ja 😄":"Nein 😔"),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //
+                      //     ],
+                      //   ),
+                      // ),
                       const Padding(
-                        padding: EdgeInsets.only(top: 10, bottom: 30),
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
                       )
                     ],
                   ),
@@ -754,6 +816,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
       rpgStarCount = progress.getInt("starCount");
       rpgLessonCount = progress.getInt("lessonCount");
       rpgCameraUnlocked = progress.getBool("cameraUnlocked");
+      rpgStarted = progress.getBool("rpgStarted");
     });
   }
 

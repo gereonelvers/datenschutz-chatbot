@@ -293,6 +293,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
                         updateProgress();
                         break;
                       case 3: // Naninovel RPG
+                        progress.setValue("rpgStarted", true);
                         await Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const GameScreen(1)),
