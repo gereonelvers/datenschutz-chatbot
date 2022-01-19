@@ -3,6 +3,7 @@ import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
@@ -31,12 +32,12 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
   List<int> challengeValues = [0,0,0];
 
   // Racing Game
-  Color carColor = Colors.white;
+  Color raceCarColor = Colors.white;
   int raceTime = 0;
-  List<String> carHatTypes = ["Kein Hut", "Partyhut", "Zylinder", "Zauberhut"];
-  int currentHat = 0;
+  List<String> raceCarHatTypes = ["Kein Hut", "Partyhut", "Zylinder", "Zauberhut"];
+  int raceCarHat = 0;
   List<String> carSpeedTypes = ["Langsam", "Normal", "Schnell","Turbo"];
-  int currentCarSpeed = 0;
+  int raceCarSpeed = 0;
 
   // RPG (TODO)
   bool rpgStarted = false;
@@ -671,8 +672,11 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
         title: const Text('Wähle eine Farbe!'),
         content: SingleChildScrollView(
           child: BlockPicker(
-            pickerColor: carColor,
-            onColorChanged: changeCarColor,
+            pickerColor: raceCarColor,
+            onColorChanged: (color){
+              progress.setValue("carColor", color.value);
+              setState(() => raceCarColor = color);
+            },
           ),
         ),
         actions: <Widget>[
@@ -687,108 +691,89 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
       );},);
   }
 
-  changeCarColor(Color color) {
-    progress.setValue("carColor", color.value);
-    setState(() => carColor = color);
-  }
-
-  // TODO: Speed value doesn't properly update in dialog
+  // This isn't particularly pretty
   pickCarSpeed(){
-    showDialog(
+    int speed = progress.getInt("carSpeed");
+    showMaterialScrollPicker(
       context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-              title: const Text('Geschwindigkeit wählen!'),
-              content: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Slider(
-                      value: currentCarSpeed.toDouble(),
-                      onChanged: (double value) {
-                        setState(
-                            changeCarSpeed(value.round()),
-                        );
-                        },
-                      divisions: 4,
-                    ),
-                    Text("Geschwindigkeit: "+currentCarSpeed.toString()),
-                  ],
-                )
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('OK', style: TextStyle(color: BottyColors.darkBlue),),
-                  onPressed: () {
-                    //setState(() => carColor = carColor);
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-      );
-          }
-        );},);
+      title: 'Geschwindkeit wählen',
+      items: carSpeedTypes,
+      headerColor: BottyColors.darkBlue,
+      backgroundColor: BottyColors.greyWhite,
+      selectedItem: carSpeedTypes[speed],
+      onChanged: (String value) {
+        int speed = (carSpeedTypes.indexOf(value));
+        progress.setValue("carSpeed", speed);
+        setState(() => raceCarSpeed = speed);
+      },
+    );
   }
 
-  changeCarSpeed(int speed) {
-    progress.setValue("carSpeed", speed);
-    setState(() => currentCarSpeed = speed);
-  }
-
-  // TODO: Hat value doesn't properly update in dialog
+  // This isn't particularly pretty
   pickCarHat(){
-    showDialog(
+    int carHat = progress.getInt("carHat");
+    showMaterialScrollPicker(
       context: context,
-      builder: (BuildContext context) { return AlertDialog(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30))),
-        title: const Text('Wähle einen Hut!'),
-        content: SizedBox(
-          height: 300,
-          child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              itemCount: carHatTypes.length,
-              itemBuilder: (BuildContext c, int index) {
-            return Card(
-              elevation: 5,
-                color: index==currentHat?BottyColors.darkBlue:Colors.white,
-                child: InkWell(
-                  onTap: () {
-                    changeCarHat(index);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Icon(Icons.local_fire_department, color: index==currentHat?Colors.white:Colors.black,),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(carHatTypes[index], style: TextStyle(color: index==currentHat?Colors.white:Colors.black),),
-                        ),
-                      ],
-                    ),
-                  ),
-                ));
-          }),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('OK', style: TextStyle(color: BottyColors.darkBlue),),
-            onPressed: () {
-              //setState(() => carColor = carColor);
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );},);
+      title: 'Hut wählen',
+      items: raceCarHatTypes,
+      headerColor: BottyColors.darkBlue,
+      backgroundColor: BottyColors.greyWhite,
+      selectedItem: raceCarHatTypes[carHat],
+      onChanged: (String value) {
+        int hat = (raceCarHatTypes.indexOf(value));
+        progress.setValue("carHat", hat);
+        setState(() => raceCarHat = hat);
+      },
+    );
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) { return AlertDialog(
+    //     shape: const RoundedRectangleBorder(
+    //         borderRadius: BorderRadius.all(Radius.circular(30))),
+    //     title: const Text('Wähle einen Hut!'),
+    //     content: SizedBox(
+    //       height: 300,
+    //       child: ListView.builder(
+    //           physics: const BouncingScrollPhysics(),
+    //           itemCount: carHatTypes.length,
+    //           itemBuilder: (BuildContext c, int index) {
+    //         return Card(
+    //           elevation: 5,
+    //             color: index==currentHat?BottyColors.darkBlue:Colors.white,
+    //             child: InkWell(
+    //               onTap: () {
+    //                 changeCarHat(index);
+    //               },
+    //               child: Padding(
+    //                 padding: const EdgeInsets.all(16.0),
+    //                 child: Row(
+    //                   children: [
+    //                     Icon(Icons.local_fire_department, color: index==currentHat?Colors.white:Colors.black,),
+    //                     Padding(
+    //                       padding: const EdgeInsets.all(8.0),
+    //                       child: Text(carHatTypes[index], style: TextStyle(color: index==currentHat?Colors.white:Colors.black),),
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ),
+    //             ));
+    //       }),
+    //     ),
+    //     actions: <Widget>[
+    //       TextButton(
+    //         child: const Text('OK', style: TextStyle(color: BottyColors.darkBlue),),
+    //         onPressed: () {
+    //           //setState(() => carColor = carColor);
+    //           Navigator.of(context).pop();
+    //         },
+    //       ),
+    //     ],
+    //   );},);
   }
 
   changeCarHat(int index) {
     progress.setValue("carHat", index);
-    setState(() => currentHat = index);
+    setState(() => raceCarHat = index);
   }
 
   // TODO: This feels really ugly
@@ -804,11 +789,13 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
       }
 
       currentChapter = progress.getCurrentChapter();
+
       challengeValues[0] = progress.getInt("challengeMaxStreak");
       challengeValues[1] = progress.getInt("challengeFastestComplete");
       challengeValues[2] = progress.getInt("challengeTotalXP");
 
-      carColor = progress.getInt("carColor")==0?Colors.white:Color(progress.getInt("carColor"));
+      raceCarColor = progress.getInt("carColor")==0?Colors.white:Color(progress.getInt("carColor"));
+      raceCarHat = progress.getInt("carHat");
       raceTime = 300-progress.getInt("raceTime");
 
       rpgStarCount = progress.getInt("starCount");

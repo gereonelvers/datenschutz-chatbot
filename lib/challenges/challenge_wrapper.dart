@@ -243,7 +243,8 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     5,
     true,
     key: UniqueKey(),
-  )
+  ),
+    InfoChallenge(InfoChallenge.auntImage, "Das war's! Gute Arbeit! 🥳", key: UniqueKey()),
   ];
 
   @override
@@ -265,6 +266,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
             child: Row(
               children: [
                 IconButton(onPressed: showCancelDialog, icon: const Icon(Icons.close)),
+                IconButton(onPressed: skipChallenge, icon: const Icon(Icons.fast_forward_rounded)),
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -481,7 +483,6 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
         // challenges.shuffle(Random()); // Shuffle challenges after generation
         challengeCount = challenges.length;
       } else {
-        // TODO: Randomize challenges (without InfoChallenges)
         challenges.add(InfoChallenge(InfoChallenge.auntImage, "Großartig, lass uns loslegen!", key: UniqueKey()));
         Random r = Random();
         for(int i=0;i<11;i++){
@@ -491,6 +492,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
           }
           challenges.add(challengeLibrary[j]);
         }
+        InfoChallenge(InfoChallenge.auntImage, "Das war's! Gute Arbeit! 🥳", key: UniqueKey());
         challengeCount = challenges.length;
       }
     });
@@ -545,6 +547,11 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     );
   }
 
+  skipChallenge() {
+    streak = 0;
+    updateChallenge(true);
+  }
+
   finishChallenges() async {
     ProgressModel p = await ProgressModel.getProgressModel();
     p.setValue("challengeMaxStreak", streak);
@@ -552,4 +559,5 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     p.setValue("challengeTotalXP", p.getInt("challengeTotalXP") + ((isCampaign?360:120)-time)+streak*10);
     Navigator.pop(context, true);
   }
+
 }
