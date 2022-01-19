@@ -96,7 +96,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
             color: Colors.white,
             borderRadius: BorderRadius.circular(30),
             child: Container(
-              padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
+              padding: const EdgeInsets.only(left: 20, bottom: 20, top: 20, right: 20),
               width: double.infinity,
               child: Row(
                 children: [
@@ -112,6 +112,76 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
             ),
           ),
           const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0,0,4,0),
+                  child: Material(
+                    type: MaterialType.card,
+                    elevation: 5,
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(30),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const IntroScreen()),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Icon(Icons.replay),
+                            ),
+                            Text("Intro wiederholen", style: TextStyle(fontSize: 16,), textAlign: TextAlign.center,)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(4,0,0,0),
+                  child: Material(
+                    type: MaterialType.card,
+                    elevation: 5,
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(30),
+                      onTap: () => progress.setValue("sessionID", randomString(32)),
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Icon(Icons.refresh_outlined),
+                            ),
+                            Text("Neue Session-ID generieren", style: TextStyle(fontSize: 16,), textAlign: TextAlign.center)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
           Material(
             type: MaterialType.card,
             elevation: 5,
@@ -119,14 +189,9 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
             borderRadius: BorderRadius.circular(30),
             child: InkWell(
               borderRadius: BorderRadius.circular(30),
-              onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const IntroScreen()),
-                  );
-                },
+              onTap: () => progress.reset(),
               child: Container(
-                padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
+                padding: const EdgeInsets.only(left: 20, bottom: 20, top: 20, right: 20),
                 width: double.infinity,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -134,9 +199,9 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
                   children: const [
                     Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Icon(Icons.refresh_outlined),
+                      child: Icon(Icons.delete_forever_outlined),
                     ),
-                    Text("Intro erneut starten", style: TextStyle(fontSize: 16,),)
+                    Text("Spielstand löschen", style: TextStyle(fontSize: 16,),)
                   ],
                 ),
               ),
@@ -237,7 +302,13 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
                       "Current Chapter: "+currentChapter.toString(),
                       textAlign: TextAlign.left,
                     ),
-                    ElevatedButton(onPressed: (){getInfo();}, child: const Text("force reload"))
+                    ElevatedButton(onPressed: (){getInfo();}, child: const Text("neu laden"), style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          BottyColors.darkBlue,
+                        ),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ))))
                     ],)),
 
                   const Padding(

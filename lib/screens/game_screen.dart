@@ -19,7 +19,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   initState() {
     gameID = widget.gameID;
     initProgressModel();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       // Telling Unity to switch car color to preset value
       int carColorId = progressModel.getInt("carColor");
@@ -71,6 +71,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   late UnityWidgetController unityWidgetController;
   late ProgressModel progressModel;
   late Timer timer;
+  int duration = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -105,10 +106,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   onUnityMessage(message) {
     print('Received message from unity: $message'); // Remove print once no longer required
     if(message.contains("raceTime")){
-      int duration = double.parse((message.split(":")[1].toString().replaceAll(",", "."))).round();
-      progressModel.setValue("raceTime", duration);
-      if(duration==0) Navigator.pop(context, true); // Race was completed, return success
+      int d = double.parse((message.split(":")[1].toString().replaceAll(",", "."))).round();
+      duration = d;
     } else if (message == "return") {
+      if (duration>progressModel.getInt("raceTime")){
+        progressModel.setValue("raceTime", duration);
+      }
       Navigator.pop(context, true);
     } else if (message.contains("starCount")) {
       int starCount = int.parse(message.split(":")[1]);

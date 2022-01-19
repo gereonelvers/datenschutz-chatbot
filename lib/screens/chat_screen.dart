@@ -33,7 +33,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   String sessionID = ""; // Unique, auto-generated session ID for Rasa. Auto-generated on first launch.
   bool freeInputEnabled = false; // Is the user allowed to input free text or are there still more quests to complete first?
   late ProgressModel progress; // This class holds a hashmap of progress "checkpoints"
-  List<String> chipStrings = ["Wer bist du?", "Weiter", "Hilfe", "Definitionen", "/clear", "/reset", "/refresh"];
+  List<String> defaultChipStrings = ["Wer bist du?", "Weiter", "Hilfe", "Definitionen"];
   Color backgroundColor = BottyColors.blue;
   String username = "Spieler";
 
@@ -80,11 +80,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
                       child: ListView.builder(
                           physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
-                          itemCount: chipStrings.length,
+                          itemCount: defaultChipStrings.length,
                           itemBuilder: (context, index) {
                             return GestureDetector(
-                              child: ChatChip(chipStrings[index]),
-                              onTap: () => sendMessageChip(chipStrings[index]),
+                              child: ChatChip(defaultChipStrings[index]),
+                              onTap: () => sendMessageChip(defaultChipStrings[index]),
                             );
                           }),
                     ),
@@ -149,8 +149,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     if (freeInputEnabled) {
       setState(() {
         String message = textEditingController.text.trim();
-        if (message.isEmpty) {
-          if (checkCommand(message)) return;
+        if (message.isNotEmpty) {
           // New messages are appended to front to make storing&displaying large amounts of messages economical
           messages.insert(0, ChatMessage(textEditingController.text, SenderType.user));
           messages.insert(0, const ChatMessage("...", SenderType.bot));
@@ -164,7 +163,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   }
 
   sendMessageChip(String message) {
-    if (checkCommand(message)) return;
     setState(() {
       // New messages are appended to front to make storing&displaying large amounts of messages economical
       messages.insert(0, ChatMessage(message, SenderType.user));
@@ -173,30 +171,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     });
   }
 
-  bool checkCommand(String message) {
-    if (message == "/clear") {
-      setState(() {
-        messages.clear();
-        textEditingController.clear();
-      });
-      return true;
-    }
-    if (message == "/reset") {
-      setState(() {
-        progress.reset();
-        textEditingController.clear();
-      });
-      return true;
-    }
-    if (message == "/refresh") {
-      setState(() {
-        setProgressState();
-        textEditingController.clear();
-      });
-      return true;
-    }
-    return false;
-  }
 
   // This is the method actually sending the message to the rasa instance and fetching a response
   getResponse(String request) async {
@@ -391,7 +365,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
         insertMessageFixed(ChatMessage("Hi "+username+", ich bin Botty. Ich freue mich, dich kennenzulernen!", SenderType.bot), const Duration(milliseconds: 100));
         insertMessageFixed(const ChatMessage("Heute werden wir uns zusammen mit dem Thema Datenschutz auseinandersetzen. Ich freue mich schon 😊", SenderType.bot), const Duration(milliseconds: 1000));
         insertMessageFixed(const ChatMessage("Bevor wir loslegen können, haben meine Eltern mich darum gebeten, dass du bitte noch eine kleine Umfrage ausfüllst. Keine Sorge, es ist auch kein Test 😊", SenderType.bot), const Duration(milliseconds: 2000));
-        insertMessageFixed(const ChatMessage("Wische einfach nach links oder drücke auf den Knopf und wähle auf der Karte das Testzentrum aus!", SenderType.bot), const Duration(milliseconds: 3000));
+        insertMessageFixed(const ChatMessage("Wische einfach zur Karte links oder drücke auf den Knopf und wähle auf der Karte das Testzentrum aus!", SenderType.bot), const Duration(milliseconds: 3000));
         if (!progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Übrigens: Falls du die Inhalte der App strukturiert durcharbeiten und gleichzeitig ein Abenteuer mit mir erleben willst, kannst du jederzeit in den Einstellungen den Klassenraum-Modus einschalten!", SenderType.bot), const Duration(milliseconds: 4000));
         progress.setValue("messagedIntro", true);
       }

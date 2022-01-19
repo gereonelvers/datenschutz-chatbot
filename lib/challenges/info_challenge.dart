@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bubble/bubble.dart';
 import 'package:datenschutz_chatbot/challenges/challenge.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
@@ -24,7 +23,7 @@ class InfoChallenge extends Challenge {
 class _InfoChallengeState extends ChallengeState<InfoChallenge> {
   @override
   void initState() {
-    character = widget.character; // This can be set to
+    character = widget.character;
     info = widget.info;
     super.initState();
   }
@@ -67,20 +66,23 @@ class _InfoChallengeState extends ChallengeState<InfoChallenge> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child:
-                      AnimatedTextKit(
-                        animatedTexts: [
-                          TyperAnimatedText(
-                            info,
-                            textStyle: const TextStyle(
-                              fontSize: 24.0,
+                      SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: AnimatedTextKit(
+                          animatedTexts: [
+                            TyperAnimatedText(
+                              info,
+                              textStyle: const TextStyle(
+                                fontSize: 24.0,
+                              ),
+                              speed: const Duration(milliseconds: 10),
                             ),
-                            speed: const Duration(milliseconds: 10),
-                          ),
-                        ],
-                        totalRepeatCount: 1,
-                        pause: const Duration(milliseconds: 10),
-                        displayFullTextOnTap: true,
-                        stopPauseOnTap: true,
+                          ],
+                          totalRepeatCount: 1,
+                          pause: const Duration(milliseconds: 10),
+                          displayFullTextOnTap: true,
+                          stopPauseOnTap: true,
+                        ),
                       )
                         // AutoSizeText(info, style: const TextStyle(color: Colors.black, fontSize: 24)),
                     ))),

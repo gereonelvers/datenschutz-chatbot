@@ -38,21 +38,24 @@ class _IntroScreenState extends State<IntroScreen> {
               physics: const NeverScrollableScrollPhysics(),
               children: const <Widget>[IntroWelcomeScreen(), IntroConsentScreen(), IntroFinishScreen()],
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                children: [
-                  Expanded(
-                      child: TextButton(
-                        onPressed: backward,
-                        child: const Text("Zurück", style: TextStyle(color: Colors.black)),
-                      )),
-                  Expanded(
-                      child: TextButton(
-                    onPressed: forward,
-                    child: const Text("Weiter", style: TextStyle(color: Colors.black)),
-                  )),
-                ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0,0,0,16),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: TextButton(
+                          onPressed: backward,
+                          child: const Text("Zurück", style: TextStyle(color: Colors.black)),
+                        )),
+                    Expanded(
+                        child: TextButton(
+                      onPressed: forward,
+                      child: const Text("Weiter", style: TextStyle(color: Colors.black)),
+                    )),
+                  ],
+                ),
               ),
             )
           ],
@@ -360,7 +363,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.fromLTRB(8, 32, 8, 8),
+              padding: EdgeInsets.fromLTRB(8, 64, 8, 0),
               child: Text(
                 "📝 Erstmal der Papierkram...",
                 style: TextStyle(color: BottyColors.darkBlue, fontSize: 24),
@@ -464,7 +467,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                     content: Column(
                       children: [
                         SizedBox(
-                            height: 250,
+                            height: 230,
                             child: SingleChildScrollView(
                                 physics: const BouncingScrollPhysics(),
                                 child: Html(data: privacyPolicy)),

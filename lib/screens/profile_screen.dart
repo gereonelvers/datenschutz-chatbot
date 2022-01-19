@@ -3,10 +3,8 @@ import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:bottom_picker/bottom_picker.dart';
 
 /// this is is the profile screen, which shows player progress and achievements
 class ProgressScreen extends StatefulWidget {
@@ -640,7 +638,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
           Align(
               alignment: Alignment.topRight,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(8,24,8,8),
+                padding: const EdgeInsets.fromLTRB(8,48,8,8),
                 child: IconButton(
                     onPressed: () {
                       Navigator.push(
@@ -811,7 +809,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
       challengeValues[2] = progress.getInt("challengeTotalXP");
 
       carColor = progress.getInt("carColor")==0?Colors.white:Color(progress.getInt("carColor"));
-      raceTime = progress.getInt("racingTime");
+      raceTime = 300-progress.getInt("raceTime");
 
       rpgStarCount = progress.getInt("starCount");
       rpgLessonCount = progress.getInt("lessonCount");
