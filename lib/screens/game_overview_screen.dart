@@ -8,7 +8,6 @@ import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification
 import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mailto/mailto.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -56,18 +55,26 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
 
   List<String> bonusNames = [
     "Erneut mit Meta treffen",
+    "Racing Game wiederholen",
+    "Zurück zur Schule",
     "Weitere Informationen",
     "Botty teilen",
-    "Fehler melden",
+    "Feedback geben",
   ];
+
   List<String> gameDescriptions = [
     "Triff dich erneut mit Tante Meta um in 10 zufälligen Fragen dein Können unter Beweis zu stellen.",
+    "Stell deine Fahrkünste erneut unter Beweis - neue Fragen, gleiche Strecke.",
+    "Kehre zur Schule zurück und wiederhole Bottys ersten Schultag",
     "Vertiefende Informationen kannst du auf der Internetseite des Bundesbeauftragten für den Datenschutz und die Informationsfreiheit finden.",
     "Empfiehl Botty weiter und hilf deinen Freunden, mehr über Datenschutz zu lernen.",
     "Du hast einen Fehler gefunden oder möchtest uns einfach Feedback geben? Schreib uns!",
   ];
+
   List<Icon> bonusIcons = [
     const Icon(Icons.coffee),
+    const Icon(Icons.emoji_transportation),
+    const Icon(Icons.school),
     const Icon(Icons.launch),
     const Icon(Icons.share),
     const Icon(Icons.bug_report_outlined),
@@ -80,6 +87,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
     Image.asset("assets/img/map-item-3.png"),
     Image.asset("assets/img/map-item-4.png"),
   ];
+
   List<Image> questBackgroundsMarked = [
     Image.asset("assets/img/map-item-0-marked.png"),
     Image.asset("assets/img/map-item-1-marked.png"),
@@ -334,17 +342,27 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
             });
         break;
       case 1:
-        await launch("https://www.bfdi.bund.de");
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const GameScreen(0);
+            });
         break;
       case 2:
-        await Share.share('Schau dir jetzt Botty, den Datenschutz-Chatbot an:\nhttps://botty-datenschutz.de', subject: 'Lade dir Botty runter ⬇️');
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const GameScreen(1);
+            });
         break;
       case 3:
-        final mailtoLink = Mailto(
-          to: ['gereon.elvers@tum.de'],
-          subject: 'Botty: Feedback',
-        );
-        await launch('$mailtoLink');
+        await launch("https://www.bfdi.bund.de");
+        break;
+      case 4:
+        await Share.share('Schau dir jetzt Botty, den Datenschutz-Chatbot an:\nhttps://botty-datenschutz.de', subject: 'Lade dir Botty runter ⬇️');
+        break;
+      case 5:
+        await launch("https://botty-datenschutz.de/botty-app-feedback/");
         break;
     }
   }

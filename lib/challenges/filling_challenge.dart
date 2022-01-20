@@ -1,10 +1,10 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:bubble/bubble.dart';
 import 'package:datenschutz_chatbot/challenges/challenge.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
-import 'package:field_suggestion/field_suggestion.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 /// Implementation of Challenge that asks the user to fill input fields
 class FillingChallenge extends Challenge {
@@ -30,6 +30,9 @@ class _FillingChallengeState extends ChallengeState<FillingChallenge> {
     correctAnswers = widget.correctAnswers;
     difficulty = widget.difficulty;
     hintTexts = widget.hintTexts;
+    for(int i=0;i<hintTexts.length;i++) {
+      textEditingControllers.add(TextEditingController());
+    }
     super.initState();
   }
 
@@ -42,7 +45,7 @@ class _FillingChallengeState extends ChallengeState<FillingChallenge> {
   bool hasSubmitted = false; // User may only submit once
   String buttonText = "Überprüfen";
   Color buttonColor = BottyColors.darkBlue;
-  List<TextEditingController> textEditingControllers = [TextEditingController(), TextEditingController(), TextEditingController(), TextEditingController()];
+  List<TextEditingController> textEditingControllers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +77,10 @@ class _FillingChallengeState extends ChallengeState<FillingChallenge> {
             for (int index = 0; index < textEditingControllers.length; index++)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                child: FieldSuggestion(
-                  fieldDecoration: InputDecoration(
+                child: TextField(
+                  enabled: !hasSubmitted,
+                  style: TextStyle(color: hasSubmitted?Colors.amber:Colors.black),
+                  decoration: InputDecoration(
                     hintText: hintTexts[index], // optional
                     enabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: BottyColors.darkBlue),
@@ -84,28 +89,13 @@ class _FillingChallengeState extends ChallengeState<FillingChallenge> {
                       borderSide: BorderSide(color: BottyColors.darkBlue),
                     ),
                   ),
-                  suggestionList: text.split(" "),
-                  textController: textEditingControllers[index],
-                  wOpacityAnimation: true,
-                  boxStyle: SuggestionBoxStyle(
-                    backgroundColor: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    padding: const EdgeInsets.fromLTRB(64, 0, 64, 0),
-                    boxShadow: [
-                      const BoxShadow(
-                        color: Colors.grey,
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(0, 0.2),
-                      ),
-                    ],
-                  ),
+                  controller: textEditingControllers[index],
                 ),
               ),
             const Padding(
               padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: Text(
-                "Trage die richtigen Begriffe aus dem Text in die Felder ein",
+                "Trage die richtigen Wörter aus dem Text in die Felder ein",
                 textAlign: TextAlign.center,
               ),
             ),
@@ -137,26 +127,44 @@ class _FillingChallengeState extends ChallengeState<FillingChallenge> {
 
   @override
   void submit() {
+    for (int i=0;i<textEditingControllers.length;i++) {
+      if (!text.contains(textEditingControllers[i].text)&&!hasSubmitted) {
+        Flushbar(
+            margin: const EdgeInsets.fromLTRB(15,32,15,10),
+            borderRadius: BorderRadius.circular(20),
+            backgroundColor: BottyColors.greyWhite,
+            titleColor: Colors.black,
+            messageColor: Colors.black,
+            animationDuration: const Duration(milliseconds: 200),
+            icon: Lottie.asset("assets/lottie/botty-float.json"),
+            flushbarPosition: FlushbarPosition.TOP,
+            title: 'Achtung!',
+            message: "Das "+i.toString()+". Feld enthält Text, der so nicht im Text vorkommt 😁",
+            boxShadows: const [BoxShadow(color: Colors.grey, offset: Offset(0.0, 0.2), blurRadius: 10.0)],
+            duration: const Duration(milliseconds: 2500),
+            ).show(context);
+        return;
+      }
+    }
+
     if (!hasSubmitted) {
       setState(() {
         wasCorrect = true;
         for (int i = 0; i < correctAnswers.length; i++) {
-          bool answerCorrect = false;
-          if (textEditingControllers[i].text.trim() != "" && (correctAnswers[i].contains(textEditingControllers[i].text) || textEditingControllers[i].text.contains(correctAnswers[i]))) {
-            answerCorrect = true;
-          }
-          if (!answerCorrect) {
+          print("correctAnswer:"+correctAnswers[i]+", provided answer: "+textEditingControllers[i].text);
+          if (textEditingControllers[i].text.trim() == "" // Answer is incorrect, if it is empty,...
+              || (!correctAnswers[i].contains(textEditingControllers[i].text) // ... or the input is not found in the correctAnswers or vice versa
+                  && !textEditingControllers[i].text.contains(correctAnswers[i]))) {
             wasCorrect = false;
+            print("Which was incorrect");
           }
+          textEditingControllers[i].text=correctAnswers[i];
         }
+
         hasSubmitted = true;
+        buttonText = "Weiter";
+        buttonColor = wasCorrect?Colors.green:Colors.red;
       });
-      buttonText = "Weiter";
-      if (wasCorrect) {
-        buttonColor = Colors.green;
-      } else {
-        buttonColor = Colors.red;
-      }
     } else {
       // Dispatch notification to let ChallengeWrapper know of challenge result
       ChallengeResultNotification(wasCorrect).dispatch(context);

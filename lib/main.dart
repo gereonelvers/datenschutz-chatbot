@@ -32,29 +32,28 @@ class BottyMainStatelessWidget extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return MaterialApp(
       title: _title,
-      home: MaterialApp(
-          debugShowCheckedModeBanner: false, // Hiding this as all PageView-children already display one
-          navigatorObservers: [defaultLifecycleObserver],
-          theme: ThemeData(fontFamily: 'Nexa'),
-          home: NotificationListener<ScrollPageViewNotification>(
-            onNotification: (n) {
-              controller.animateToPage(n.page, duration: const Duration(milliseconds: 200), curve: Curves.ease);
-              return true;
-            },
-            child: NotificationListener<UpdateProgressNotification>(
-              onNotification: (n) {
-                g = GameOverviewScreen(key: UniqueKey());
-                c = ChatScreen(key: UniqueKey());
-                p = ProgressScreen(key: UniqueKey());
-                return true;
-              },
-              child: PageView(
-                  scrollDirection: Axis.horizontal,
-                  controller: controller,
-                  children: <Widget>[g,c,p],
-                ),
-            ),
+      debugShowCheckedModeBanner: false,
+      // Hiding this as all PageView-children already display one
+      navigatorObservers: [defaultLifecycleObserver],
+      theme: ThemeData(fontFamily: 'Nexa'),
+      home: NotificationListener<ScrollPageViewNotification>(
+        onNotification: (n) {
+          controller.animateToPage(n.page, duration: const Duration(milliseconds: 200), curve: Curves.ease);
+          return true;
+        },
+        child: NotificationListener<UpdateProgressNotification>(
+          onNotification: (n) {
+            g = GameOverviewScreen(key: UniqueKey());
+            c = ChatScreen(key: UniqueKey());
+            p = ProgressScreen(key: UniqueKey());
+            return true;
+          },
+          child: PageView(
+            scrollDirection: Axis.horizontal,
+            controller: controller,
+            children: <Widget>[g, c, p],
           ),
+        ),
       ),
     );
   }

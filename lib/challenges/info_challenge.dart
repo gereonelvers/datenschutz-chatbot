@@ -12,7 +12,6 @@ class InfoChallenge extends Challenge {
 
   const InfoChallenge(this.character, this.info, {Key? key}) : super(key: key);
 
-  // TODO: Replace with final assets
   static final Image bottyImage = Image.asset("assets/img/data-white.png", color: Colors.black, alignment: Alignment.centerLeft);
   static final Image auntImage = Image.asset("assets/img/meta-grey.png", alignment: Alignment.centerRight);
 

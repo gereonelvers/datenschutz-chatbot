@@ -10,7 +10,10 @@ enum SenderType {
   user,
 
   @HiveField(1)
-  bot
+  bot,
+
+  @HiveField(2)
+  padding
 }
 
 /// this widget is used to show a single chat message
@@ -22,55 +25,76 @@ class ChatMessage extends StatelessWidget {
   @HiveField(1)
   final SenderType type;
 
-  const ChatMessage(this.message, this.type, {Key? key}) : super(key: key);
+  @HiveField(2)
+  final List<String> suggestions;
+
+  const ChatMessage(this.message, this.type, this.suggestions, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: type == SenderType.user
-          ?
-          // Layout if message is from user
-          Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: DecoratedBox(
-                  // chat bubble decoration
-                  decoration: BoxDecoration(
-                    color: BottyColors.darkBlue,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      message, style: const TextStyle(color: Colors.white)
-                    ),
-                  ),
+    // Layout if message is from user
+    if (type == SenderType.user) {
+      return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+              child: DecoratedBox(
+                // chat bubble decoration
+                decoration: BoxDecoration(
+                  color: BottyColors.darkBlue,
+                  borderRadius: BorderRadius.circular(16),
                 ),
-              ),
-            )
-          :
-          // Layout if message is from bot
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                child: DecoratedBox(
-                  // chat bubble decoration
-                  decoration: BoxDecoration(
-                    color: BottyColors.greyWhite,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      message, style: const TextStyle(color: Colors.black)
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                      message, style: const TextStyle(color: Colors.white)
                   ),
                 ),
               ),
             ),
+          )
+      );
+    } else if (type == SenderType.bot) {
+      // Layout if message is from bot
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+            child: DecoratedBox(
+              // chat bubble decoration
+              decoration: BoxDecoration(
+                color: BottyColors.greyWhite,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(
+                    message, style: const TextStyle(color: Colors.black)
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    // Layout if message padding
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 64, 16, 8),
+      child: Align(
+        alignment: Alignment.center,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Text(
+              message, style: const TextStyle(color: Colors.white)
+          ),
+        ),
+      ),
     );
+
+
   }
 }

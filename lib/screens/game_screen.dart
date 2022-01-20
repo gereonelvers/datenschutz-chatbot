@@ -21,10 +21,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     initProgressModel();
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-      // Telling Unity to switch car color to preset value
       int carColorId = progressModel.getInt("carColor");
       String carColor = carColorId==0?"#ffffff":"#"+progressModel.getInt("carColor").toRadixString(16).substring(2);
-      unityWidgetController.postMessage("AchievementCarColor", "AchievementChangeColor", carColor); // TODO: This currently only works if unity player is already loaded
+      unityWidgetController.postMessage("AchievementCarColor", "AchievementChangeColor", carColor);
       int carSpeedId = progressModel.getInt("carSpeed");
       String carSpeed;
       switch(carSpeedId){
@@ -94,7 +93,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 alignment: Alignment.topLeft,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(8,32,0,0),
-                  child: IconButton(onPressed: () => Navigator.of(context).pop(), icon: Icon(Icons.arrow_back)),
+                  child: IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.arrow_back)),
                 ))
           ],
         )

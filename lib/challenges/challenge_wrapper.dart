@@ -32,6 +32,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
   bool generatedChallenges = false; // Notification variable used to display placeholder if challenge generation takes longer than expected
   Stopwatch stopwatch = Stopwatch()..start();
   int time = 0;
+  int skipVisible = 0; // The skip button is visible if more than 4 questions were answered incorrectly (can be same question 4 times)
   List<Challenge> challengeLibrary = [
 
   const IntroAnimationChallenge(),
@@ -105,41 +106,58 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     "Standortdaten",
     "Online-Kennung (IP-Adresse)",
     "physische Merkmale",
-    "physiologischen Merkmal",
-    "genetische Merkmale",
-    "psychischen Merkmale",
-    "wirtschaftliche Merkmale",
-    "kulturelle Identität",
-    "soziale Identität",
-    "randomisierte Nummer",
-    "fiktiver Avatar, den auch mehrere Spieler gleichzeitig spielen können"
+    "physiologische Merkmale",
     ],
-    const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    const [0, 1, 2, 3, 4, 5],
     5,
     false,
     key: UniqueKey(),
   ),
+    QuizChallenge(
+      "Und nochmal:\nWelche Merkmalszuordnung zu einer Person könnte sie identifizierbar machen?",
+      const [
+        "genetische Merkmale",
+        "psychischen Merkmale",
+        "wirtschaftliche Merkmale",
+        "kulturelle Identität",
+        "soziale Identität",
+        "randomisierte Nummer",
+      ],
+      const [0, 1, 2, 3, 4],
+      5,
+      false,
+      key: UniqueKey(),
+    ),
   QuizChallenge(
     "Was muss dir bei der Erhebung deiner Daten alles mitgeteilt werden?",
     const [
-    "Name und Kontakt des Verantwortlichen",
-    "Kontakt des Datenschutzbeauftragten",
-    "Zweck der Verarbeitung",
-    "Empfänger",
-    "Absicht des Verantwortlichen",
-    "Dauer der Speicherung",
-    "sämtliche Rechte",
-    "technische Verarbeitungsweise",
-    "Standort des Speichermediums",
-    "Hardwareinfo des Verantwortlichen",
-    "Kategorien der Daten",
-    "wenn sie indirekt von dir erhoben werden"
+      "alle Rechte",
+      "technische Verarbeitungsweise",
+      "Standort des Speichermediums",
+      "Hardwareinfo des Verantwortlichen",
+      "Kategorien der Daten",
+      "wenn sie indirekt von dir erhoben werden",
     ],
-    const [0, 1, 2, 3, 4, 5, 6, 10, 11],
+    const [0, 4, 5],
     5,
     false,
     key: UniqueKey(),
   ),
+    QuizChallenge(
+      "Und nochmal: Was muss dir bei der Erhebung deiner Daten alles mitgeteilt werden?",
+      const [
+        "Name und Kontakt des Verantwortlichen",
+        "Kontakt des Datenschutzbeauftragten",
+        "Zweck der Verarbeitung",
+        "Empfänger",
+        "Absicht des Verantwortlichen",
+        "Dauer der Speicherung",
+      ],
+      const [0, 1, 2, 3, 4, 5],
+      5,
+      false,
+      key: UniqueKey(),
+    ),
   QuizChallenge(
     "Über was muss dir vom Verantwortlichen Auskunft gegeben werden, wenn du das willst?",
     const [
@@ -149,19 +167,28 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     "Empfänger",
     "bestehende Rechte",
     "Bestätigung, ob betreffende Daten verarbeitet werden",
-    "Kopie der personenbezogenen Daten",
-    "technische Verarbeitungsweise",
-    "Standort des Speichermediums",
-    "Hardwareinfo des Verantwortlichen",
-    "Kategorien der Daten"
     ],
-    const [0, 1, 2, 3, 4, 5, 6, 10],
+    const [0, 1, 2, 3, 4, 5],
     5,
     false,
     key: UniqueKey(),
   ),
+    QuizChallenge(
+      "Und nochmal: Über was muss dir vom Verantwortlichen Auskunft gegeben werden, wenn du das willst?",
+      const [
+        "Kopie der personenbezogenen Daten",
+        "technische Verarbeitungsweise",
+        "Standort des Speichermediums",
+        "Hardwareinfo des Verantwortlichen",
+        "Kategorien der Daten"
+      ],
+      const [0, 4],
+      5,
+      false,
+      key: UniqueKey(),
+    ),
   QuizChallenge(
-    "Was wird alles unter Verarbeitung verstanden? ",
+    "Was wird alles unter Verarbeitung verstanden?",
     const [
     "Erheben",
     "Erfassen",
@@ -169,40 +196,59 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     "Ordnen",
     "Speicherung",
     "Anpassung",
-    "Veränderung",
-    "Auslesen",
-    "Abfragen",
-    "Verwendung",
-    "Offenlegung",
-    "Übermittlung",
-    "Bereitstellung",
-    "Abgleich",
-    "Verknüpfung",
-    "Einschränkung",
-    "das Löschen",
-    "Vernichtung"
     ],
-    const [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+    const [0, 1, 2, 3, 4, 5],
     5,
     false,
     key: UniqueKey(),
   ),
+    QuizChallenge(
+      "Nochmal: Was wird alles unter Verarbeitung verstanden?",
+      const [
+        "Veränderung",
+        "Auslesen",
+        "Abfragen",
+        "Verwendung",
+        "Offenlegung",
+        "Übermittlung",
+      ],
+      const [0, 1, 2, 3, 4, 5],
+      5,
+      false,
+      key: UniqueKey(),
+    ),
+    QuizChallenge(
+      "Und zum Abschluss: Was wird alles unter Verarbeitung verstanden?",
+      const [
+        "Bereitstellung",
+        "Abgleich",
+        "Verknüpfung",
+        "Einschränkung",
+        "das Löschen",
+        "Vernichtung"
+      ],
+      const [0, 1, 2, 3, 4, 5],
+      5,
+      false,
+      key: UniqueKey(),
+    ),
 
   // Demo InfoChallenges
   InfoChallenge(InfoChallenge.bottyImage, "Danke, Tante Meta! Aber eine Frage habe ich dann doch noch...", key: UniqueKey()),
   InfoChallenge(InfoChallenge.bottyImage, "Darf das denn einfach jeder? Meine Daten verarbeiten?", key: UniqueKey()),
   InfoChallenge(InfoChallenge.auntImage, "Nein, natürlich nicht! Es gibt in der DSGVO sogenannte Erlaubnistatbestände, die das genau regeln.", key: UniqueKey()),
-  InfoChallenge(InfoChallenge.auntImage, "Nach dem sogenannten Artikel 6 der DSGVO ist eine Verarbeitung von personenbezogenen Daten nur dann rechtmäßig, wenn die von mir gleich erzählenden Bedingungen als Voraussetzung erfüllt sind.", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Nach Artikel 6 der DSGVO ist eine Verarbeitung von personenbezogenen Daten nur dann rechtmäßig, wenn eine der folgenden 5 Bedingungen als Voraussetzung erfüllt ist.", key: UniqueKey()),
   InfoChallenge(InfoChallenge.auntImage, "Die erste Bedingung ist:\nDie betroffene Person hat ihre Einwilligung zu der Verarbeitung der sie betreffenden, personenbezogenen Daten für einen oder mehrere Zwecke erteilt.", key: UniqueKey()),
   InfoChallenge(InfoChallenge.auntImage, "Die zweite Bedigung ist:\nDie Verarbeitung ist für die Erfüllung eines Vertrags, dessen Vertragspartei die betroffene Person ist, oder zur Durchführung vorvertraglicher Maßnahmen erforderlich, die auf Anfrage der betroffenen Person erfolgen.", key: UniqueKey()),
   InfoChallenge(InfoChallenge.auntImage, "Die dritte Bedingung ist：\nDie Verarbeitung ist erforderlich, um lebenswichtige Interessen der betroffenen Person oder einer anderen natürlichen Person zu schützen. ", key: UniqueKey()),
   InfoChallenge(InfoChallenge.auntImage, "Die vierte Bedingung ist：\nDie Verarbeitung ist für die Wahrnehmung einer Aufgabe erforderlich, die im öffentlichen Interesse liegt oder in Ausübung öffentlicher Gewalt erfolgt, die dem Verantwortlichen übertragen wurde. ", key: UniqueKey()),
   InfoChallenge(InfoChallenge.auntImage, "Die fünfte Bedingung ist：\nDie Verarbeitung ist zur Wahrung der berechtigten Interessen des Verantwortlichen oder eines Dritten erforderlich, sofern nicht die Interessen oder Grundrechte oder Grundfreiheiten der betroffenen Person, die den Schutz personenbezogener Daten erfordern, überwiegen, insbesondere dann, wenn es sich bei der betroffenen Person um ein Kind handelt.", key: UniqueKey()),
-  InfoChallenge(InfoChallenge.auntImage, "Ich weiß, dass man sich diese fünf Bedingungen eher nur sehr schwer merken kann. Aber hast du das Thema DSGVO Erlaubnistatbestände mehr oder weniger verstanden?", key: UniqueKey()),
-  InfoChallenge(InfoChallenge.bottyImage, "Ja! Ich finde das Thema schon sehr spannend. Danke dir! 😁", key: UniqueKey()),
-  InfoChallenge(InfoChallenge.auntImage, "Gut, dann können wir ja mit einer kleinen Fragerunde beginnen.", key: UniqueKey()),
-  InfoChallenge(InfoChallenge.auntImage, "Erlaubnistatbestände sind die Hauptbestandteile der DSGVO, weshalb du erst dann behaupten kannst, dieses Thema auch gut zu beherrschen, wenn du dir sie wirklich verinnerlicht hast!", key: UniqueKey()),
-  InfoChallenge(InfoChallenge.bottyImage, "Gar kein Problem, schieß los!", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.bottyImage, "Okay, also:", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.bottyImage, "Direkt Einwilligung, Vertrag, lebenswichtige Interessen oder öffentliches Interesse... richtig? 😁", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Genau! Dann können wir ja mit einer kleinen Fragerunde beginnen.", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Ich weiß, dass das erstmal nicht super spannend ist..", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.auntImage, "Aber Erlaubnistatbestände sind ein Hauptbestandteil der DSGVO. Du kannst das Thema erst wirklich gut beherrschen, wenn du sie wirklich verinnerlicht hast!", key: UniqueKey()),
+  InfoChallenge(InfoChallenge.bottyImage, "Na dann, los geht's!", key: UniqueKey()),
 
   QuizChallenge(
     "Zur Datenverarbeitung ist die Einwilligung der betroffenen Person notwendig.",
@@ -244,7 +290,6 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     true,
     key: UniqueKey(),
   ),
-    InfoChallenge(InfoChallenge.auntImage, "Das war's! Gute Arbeit! 🥳", key: UniqueKey()),
   ];
 
   @override
@@ -266,7 +311,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
             child: Row(
               children: [
                 IconButton(onPressed: showCancelDialog, icon: const Icon(Icons.close)),
-                IconButton(onPressed: skipChallenge, icon: const Icon(Icons.fast_forward_rounded)),
+                Visibility(visible: skipVisible>4, child: IconButton(onPressed: skipChallenge, icon: const Icon(Icons.fast_forward_rounded))),
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -492,7 +537,6 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
           }
           challenges.add(challengeLibrary[j]);
         }
-        InfoChallenge(InfoChallenge.auntImage, "Das war's! Gute Arbeit! 🥳", key: UniqueKey());
         challengeCount = challenges.length;
       }
     });
@@ -500,12 +544,19 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
 
   updateChallenge(wasCorrect) {
     setState(() {
+      print("Dismissing challenge, challengeCount:"+challengeCount.toString());
+      if(challenges.length==1&&!wasCorrect){
+        // This is an ugly fix to make sure that challenges reset properly if theres only one left
+        challenges.insert(0,InfoChallenge(InfoChallenge.auntImage, "Gleich hast du's geschafft!"));
+        challengeCount++;
+      }
       if (wasCorrect) {
         streak++;
       } else {
         streak = 0;
         challenges.add(challenges.first);
         challengeCount++;
+        skipVisible++;
       }
       challenges.remove(challenges.first); // Remove current challenge
       if(challenges.isEmpty) {
@@ -548,8 +599,10 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
   }
 
   skipChallenge() {
-    streak = 0;
-    updateChallenge(true);
+    if(challenges.isNotEmpty){
+      streak = 0;
+      updateChallenge(true);
+    }
   }
 
   finishChallenges() async {

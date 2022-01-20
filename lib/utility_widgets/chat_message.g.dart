@@ -19,17 +19,20 @@ class ChatMessageAdapter extends TypeAdapter<ChatMessage> {
     return ChatMessage(
       fields[0] as String,
       fields[1] as SenderType,
+      (fields[2] as List).cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ChatMessage obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.message)
       ..writeByte(1)
-      ..write(obj.type);
+      ..write(obj.type)
+      ..writeByte(2)
+      ..write(obj.suggestions);
   }
 
   @override
@@ -54,6 +57,8 @@ class SenderTypeAdapter extends TypeAdapter<SenderType> {
         return SenderType.user;
       case 1:
         return SenderType.bot;
+      case 2:
+        return SenderType.padding;
       default:
         return SenderType.user;
     }
@@ -67,6 +72,9 @@ class SenderTypeAdapter extends TypeAdapter<SenderType> {
         break;
       case SenderType.bot:
         writer.writeByte(1);
+        break;
+      case SenderType.padding:
+        writer.writeByte(2);
         break;
     }
   }

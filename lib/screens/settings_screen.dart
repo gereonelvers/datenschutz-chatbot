@@ -5,7 +5,6 @@ import 'package:datenschutz_chatbot/utility_widgets/update_progress_notification
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mailto/mailto.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:random_string/random_string.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -328,7 +327,7 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
             borderRadius: BorderRadius.circular(30),
             child: InkWell(
               borderRadius: BorderRadius.circular(30),
-              onTap: () { sendFeedback(); },
+              onTap: () async { await launch("https://botty-datenschutz.de/botty-app-feedback/"); },
               child: Container(
                 padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
                 width: double.infinity,
@@ -341,6 +340,32 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
                       child: Icon(Icons.feedback_outlined),
                     ),
                     Text("Gib uns Feedback!", style: TextStyle(fontSize: 16),),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
+          Material(
+            type: MaterialType.card,
+            elevation: 5,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(30),
+              onTap: () async { await launch("https://botty-datenschutz.de/app-datenschutzerklarung/"); },
+              child: Container(
+                padding: const EdgeInsets.only(left: 20, bottom: 20, top: 10, right: 20),
+                width: double.infinity,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: Icon(Icons.lock),
+                    ),
+                    Text("Datenschutzerklärung", style: TextStyle(fontSize: 16),),
                   ],
                 ),
               ),
@@ -378,15 +403,6 @@ class _SettingsScreenState extends State<SettingsScreen> with TickerProviderStat
     });
 
   }
-
-  sendFeedback() async {
-    final mailtoLink = Mailto(
-      to: ['gereon.elvers@tum.de'],
-      subject: 'Botty: Feedback',
-    );
-    await launch('$mailtoLink');
-  }
-
 
   submitCheat() async {
     String input = textEditingController.text;

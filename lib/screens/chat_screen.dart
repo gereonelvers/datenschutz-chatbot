@@ -55,7 +55,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             messages.isEmpty
                 ? const MessageListEmptyView()
                 : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 115),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 135),
                     itemCount: messages.length,
                     reverse: true,
                     scrollDirection: Axis.vertical,
@@ -71,8 +71,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                padding: const EdgeInsets.only(left: 0, bottom: 10, top: 0, right: 0),
-                height: 115,
+                padding: const EdgeInsets.only(left: 0, bottom: 30, top: 0, right: 0),
+                height: 135,
                 width: double.infinity,
                 child: Column(
                   children: [
@@ -80,11 +80,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
                       child: ListView.builder(
                           physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
-                          itemCount: defaultChipStrings.length,
+                          itemCount: (messages.isNotEmpty&&messages.first.suggestions.isNotEmpty)?messages.first.suggestions.length:defaultChipStrings.length,
                           itemBuilder: (context, index) {
                             return GestureDetector(
-                              child: ChatChip(defaultChipStrings[index]),
-                              onTap: () => sendMessageChip(defaultChipStrings[index]),
+                              child: ChatChip((messages.isNotEmpty&&messages.first.suggestions.isNotEmpty)?messages.first.suggestions[index]:defaultChipStrings[index]),
+                              onTap: () => sendMessageChip((messages.isNotEmpty&&messages.first.suggestions.isNotEmpty)?messages.first.suggestions[index]:defaultChipStrings[index]),
                             );
                           }),
                     ),
@@ -151,8 +151,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
         String message = textEditingController.text.trim();
         if (message.isNotEmpty) {
           // New messages are appended to front to make storing&displaying large amounts of messages economical
-          messages.insert(0, ChatMessage(textEditingController.text, SenderType.user));
-          messages.insert(0, const ChatMessage("...", SenderType.bot));
+          messages.insert(0, ChatMessage(textEditingController.text, SenderType.user, []));
+          messages.insert(0, const ChatMessage("...", SenderType.bot, []));
           getResponse(message);
         }
         textEditingController.clear();
@@ -165,8 +165,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
   sendMessageChip(String message) {
     setState(() {
       // New messages are appended to front to make storing&displaying large amounts of messages economical
-      messages.insert(0, ChatMessage(message, SenderType.user));
-      messages.insert(0, const ChatMessage("...", SenderType.bot));
+      messages.insert(0, ChatMessage(message, SenderType.user, const []));
+      messages.insert(0, const ChatMessage("...", SenderType.bot, []));
       getResponse(message);
     });
   }
@@ -183,7 +183,16 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
         for (var element in responseItems) {
           var map = Map<String, dynamic>.from(element);
           if (map.containsKey('text')) {
-            insertMessageRandom(ChatMessage(map['text'], SenderType.bot));
+            if (map.containsKey('buttons')) {
+              List<dynamic> buttons = map["buttons"];
+              List<String> buttonStrings = [];
+              for (var element in buttons) {
+                buttonStrings.add(element["title"]);
+              }
+              insertMessageRandom(ChatMessage(map['text'], SenderType.bot, buttonStrings));
+            } else {
+              insertMessageRandom(ChatMessage(map['text'], SenderType.bot, const []));
+            }
             // Remove '...' after first message is added
             // This needs to be done here instead of above so artificial delay works correctly
             setState(() {
@@ -197,15 +206,15 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
       } else {
         // FIXME: better error handling here
         messages.removeAt(0);
-        messages.insert(0, const ChatMessage("Tut mir leid, mein Server hat gerade leider Probleme :(", SenderType.bot));
-        messages.insert(0, ChatMessage("Falls du einen Admin sehen solltest, kannst du ihm das hier ausrichten:\nStatus Code:" + response.statusCode.toString() + ": " + response.reasonPhrase.toString(), SenderType.bot));
+        messages.insert(0, const ChatMessage("Tut mir leid, mein Server hat gerade leider Probleme :(", SenderType.bot, []));
+        messages.insert(0, ChatMessage("Falls du einen Admin sehen solltest, kannst du ihm das hier ausrichten:\nStatus Code:" + response.statusCode.toString() + ": " + response.reasonPhrase.toString(), SenderType.bot, const []));
       }
     } on TimeoutException catch (_) {
       messages.removeAt(0);
-      messages.insert(0, const ChatMessage("Tut mir leid, ich kann meinen Server gerade leider nicht erreichen :(", SenderType.bot));
+      messages.insert(0, const ChatMessage("Tut mir leid, ich kann meinen Server gerade leider nicht erreichen :(", SenderType.bot, []));
     } on SocketException catch (_) {
       messages.removeAt(0);
-      messages.insert(0, const ChatMessage("Tut mir leid, ich kann meinen Server gerade leider nicht erreichen :(", SenderType.bot));
+      messages.insert(0, const ChatMessage("Tut mir leid, ich kann meinen Server gerade leider nicht erreichen :(", SenderType.bot, []));
     }
   }
 
@@ -278,10 +287,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             // Player finished last chapter and was already messaged about it
             return;
           } else {
-            insertMessageFixed(const ChatMessage("Woah, du hast es echt geschafft!", SenderType.bot), const Duration(milliseconds: 100));
-            insertMessageFixed(const ChatMessage("Du hast alle Kapitel durchgespielt und bist jetzt ein echter Datenschutz-Experte!", SenderType.bot), const Duration(milliseconds: 1000));
-            insertMessageFixed(const ChatMessage("Ich übrigens auch 😄", SenderType.bot), const Duration(milliseconds: 2000));
-            insertMessageFixed(const ChatMessage("Solltest du doch noch mal eine Rückfrage haben, kannst du mich jederzeit über das Textfeld unten erreichen!", SenderType.bot), const Duration(milliseconds: 3000));
+            insertMessageFixed(const ChatMessage("Jetzt", SenderType.padding, []), const Duration(milliseconds: 10));
+            insertMessageFixed(const ChatMessage("Woah, du hast es echt geschafft!", SenderType.bot, []), const Duration(milliseconds: 100));
+            insertMessageFixed(const ChatMessage("Du hast alle Kapitel durchgespielt und bist jetzt ein echter Datenschutz-Experte!", SenderType.bot, []), const Duration(milliseconds: 1000));
+            insertMessageFixed(const ChatMessage("Ich übrigens auch 😄", SenderType.bot, []), const Duration(milliseconds: 2000));
+            insertMessageFixed(const ChatMessage("Solltest du doch noch mal eine Rückfrage haben, kannst du mich jederzeit über das Textfeld unten erreichen!", SenderType.bot, []), const Duration(milliseconds: 3000));
             progress.setValue("messagedFinished4", true);
           }
         }
@@ -296,9 +306,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             // Player finished chapter 3 and was already told about it
             return;
           } else {
-            insertMessageFixed(const ChatMessage("Großartige Arbeit! Wir haben den ersten Schultag gemeistert!", SenderType.bot), const Duration(milliseconds: 100));
-            insertMessageFixed(const ChatMessage("Meine Eltern haben noch eine zweite kleine Umfrage... Könntest du die vielleicht auch noch ausfüllen?", SenderType.bot), const Duration(milliseconds: 1000));
-            insertMessageFixed(const ChatMessage("Damit ich weiß, wie ich in Zukunft noch besser werden kann 😅", SenderType.bot), const Duration(milliseconds: 2000));
+            insertMessageFixed(const ChatMessage("16:36", SenderType.padding, []), const Duration(milliseconds: 10));
+            insertMessageFixed(const ChatMessage("Großartige Arbeit! Wir haben den ersten Schultag gemeistert!", SenderType.bot, []), const Duration(milliseconds: 100));
+            insertMessageFixed(const ChatMessage("Meine Eltern haben noch eine zweite kleine Umfrage... Könntest du die vielleicht auch noch ausfüllen?", SenderType.bot, []), const Duration(milliseconds: 1000));
+            insertMessageFixed(const ChatMessage("Damit ich weiß, wie ich in Zukunft noch besser werden kann 😅", SenderType.bot, []), const Duration(milliseconds: 2000));
             progress.setValue("messagedFinished3", true);
           }
         }
@@ -313,9 +324,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             // Player finished chapter 2 and was already told about it
             return;
           } else {
-            insertMessageFixed(const ChatMessage("Was für ein Trip!", SenderType.bot), const Duration(milliseconds: 100));
-            insertMessageFixed(const ChatMessage("Und jetzt noch einmal durchatmen und dann rein ins Abenteuer!", SenderType.bot), const Duration(milliseconds: 1000));
-            insertMessageFixed(const ChatMessage("Starte den Schultag über die Kapitelübersicht, sobald du bereit bist.", SenderType.bot), const Duration(milliseconds: 2000));
+            insertMessageFixed(ChatMessage(DateTime.now().hour.toString() + ":" + DateTime.now().minute.toString(), SenderType.padding, const []), const Duration(milliseconds: 10));
+            insertMessageFixed(const ChatMessage("Was für ein Trip!", SenderType.bot, []), const Duration(milliseconds: 100));
+            insertMessageFixed(const ChatMessage("Und jetzt noch einmal durchatmen und dann rein ins Abenteuer!", SenderType.bot, []), const Duration(milliseconds: 1000));
+            insertMessageFixed(const ChatMessage("Starte den Schultag über die Kapitelübersicht, sobald du bereit bist.", SenderType.bot, []), const Duration(milliseconds: 2000));
             progress.setValue("messagedFinished2", true);
           }
         }
@@ -330,10 +342,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             // Player finished chapter 1 and was already told about it
             return;
           } else {
-            insertMessageFixed(const ChatMessage("Guten Morgen!☀️", SenderType.bot), const Duration(milliseconds: 100));
-            insertMessageFixed(ChatMessage("Oh nein, es ist schon " + DateTime.now().hour.toString() + ":" + DateTime.now().minute.toString() + "! Dabei wollte ich doch noch meine Notizen von gestern anschauen...", SenderType.bot), const Duration(milliseconds: 1000));
-            insertMessageFixed(const ChatMessage("Das muss ich dann wohl unterwegs machen 🤷", SenderType.bot), const Duration(milliseconds: 4000));
-            insertMessageFixed(const ChatMessage("Starte die Fahrt über die Kapitelübersicht", SenderType.bot), const Duration(milliseconds: 4500));
+            insertMessageFixed(const ChatMessage("08:55", SenderType.padding, []), const Duration(milliseconds: 10));
+            insertMessageFixed(const ChatMessage("Guten Morgen!☀️", SenderType.bot, []), const Duration(milliseconds: 100));
+            insertMessageFixed(const ChatMessage("Oh nein, es ist schon kurz vor 9 Uhr! 😲 Dabei wollte ich doch noch meine Notizen von gestern anschauen...", SenderType.bot, []), const Duration(milliseconds: 1000));
+            insertMessageFixed(const ChatMessage("Das muss ich dann wohl unterwegs machen 🤷", SenderType.bot, []), const Duration(milliseconds: 4000));
+            insertMessageFixed(const ChatMessage("Starte die Fahrt über die Kapitelübersicht", SenderType.bot, []), const Duration(milliseconds: 4500));
             progress.setValue("messagedFinished1", true);
           }
         }
@@ -348,10 +361,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             // Player finished chapter 0 and was already told about it
             return;
           } else {
-            insertMessageFixed(const ChatMessage("Danke! Weißt du, ich bin besonders aufgeregt, weil ich morgen den ersten Tag an meiner neuen Schule habe. Wir sind nämlich gerade erst nach Smartphoningen gezogen.", SenderType.bot), const Duration(milliseconds: 100));
-            insertMessageFixed(const ChatMessage("In der neuen Schule soll ich Datenschutz sogar als Profilfach belegen - wie spannend 🤩", SenderType.bot), const Duration(milliseconds: 1000));
-            insertMessageFixed(const ChatMessage("Deshalb kommt gleich auch noch Tante Meta vorbei. Die arbeitet nämlich als Datenschutz-Chatbot und hat mir versprochen, mich auf morgen vorzubereiten.", SenderType.bot), const Duration(milliseconds: 2000));
-            insertMessageFixed(const ChatMessage("Ah, da kommt sie ja auch schon. Starte in der Kapitelübersicht das Treffen!", SenderType.bot), const Duration(milliseconds: 4000));
+            insertMessageFixed(ChatMessage(DateTime.now().hour.toString() + ":" + DateTime.now().minute.toString(), SenderType.padding, const []), const Duration(milliseconds: 10));
+            insertMessageFixed(const ChatMessage("Danke! Weißt du, ich bin besonders aufgeregt, weil ich morgen den ersten Tag an meiner neuen Schule habe. Wir sind nämlich gerade erst nach Smartphoningen gezogen.", SenderType.bot, []), const Duration(milliseconds: 100));
+            insertMessageFixed(const ChatMessage("In der neuen Schule soll ich Datenschutz sogar als Profilfach belegen - wie spannend 🤩", SenderType.bot, []), const Duration(milliseconds: 1000));
+            insertMessageFixed(const ChatMessage("Deshalb kommt gleich auch noch Tante Meta vorbei. Die arbeitet nämlich als Datenschutz-Chatbot und hat mir versprochen, mich auf morgen vorzubereiten.", SenderType.bot, []), const Duration(milliseconds: 2000));
+            insertMessageFixed(ChatMessage((DateTime.now().hour+1).toString() + ":" + DateTime.now().minute.toString(), SenderType.padding, const []), const Duration(milliseconds: 4000));
+            insertMessageFixed(const ChatMessage("Ah, da kommt sie ja auch schon. Starte in der Kapitelübersicht das Treffen!", SenderType.bot, []), const Duration(milliseconds: 4100));
             progress.setValue("messagedFinished0", true);
           }
         }
@@ -362,11 +377,15 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     // Check if player finished the intro
     if (progress.getBool("finishedIntro")) {
       if (!progress.getBool("messagedIntro")) {
-        insertMessageFixed(ChatMessage("Hi "+username+", ich bin Botty. Ich freue mich, dich kennenzulernen!", SenderType.bot), const Duration(milliseconds: 100));
-        insertMessageFixed(const ChatMessage("Heute werden wir uns zusammen mit dem Thema Datenschutz auseinandersetzen. Ich freue mich schon 😊", SenderType.bot), const Duration(milliseconds: 1000));
-        insertMessageFixed(const ChatMessage("Bevor wir loslegen können, haben meine Eltern mich darum gebeten, dass du bitte noch eine kleine Umfrage ausfüllst. Keine Sorge, es ist auch kein Test 😊", SenderType.bot), const Duration(milliseconds: 2000));
-        insertMessageFixed(const ChatMessage("Wische einfach zur Karte links oder drücke auf den Knopf und wähle auf der Karte das Testzentrum aus!", SenderType.bot), const Duration(milliseconds: 3000));
-        if (!progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Übrigens: Falls du die Inhalte der App strukturiert durcharbeiten und gleichzeitig ein Abenteuer mit mir erleben willst, kannst du jederzeit in den Einstellungen den Klassenraum-Modus einschalten!", SenderType.bot), const Duration(milliseconds: 4000));
+        insertMessageFixed(ChatMessage(DateTime.now().hour.toString() + ":" + DateTime.now().minute.toString(), SenderType.padding, const []), const Duration(milliseconds: 10));
+        insertMessageFixed(ChatMessage("Hi "+username+", ich bin Botty. Ich freue mich, dich kennenzulernen!", SenderType.bot, const []), const Duration(milliseconds: 100));
+
+        if (progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Heute werden wir uns zusammen mit dem Thema Datenschutz auseinandersetzen. Ich freue mich schon 😊", SenderType.bot, []), const Duration(milliseconds: 1000));
+        if (progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Bevor wir loslegen können, haben meine Eltern mich darum gebeten, dass du bitte noch eine kleine Umfrage ausfüllst. Keine Sorge, es ist auch kein Test 😊", SenderType.bot, []), const Duration(milliseconds: 2000));
+        if (progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Wische einfach zur Karte links oder drücke auf den Knopf und wähle auf der Karte das Testzentrum aus!", SenderType.bot, []), const Duration(milliseconds: 3000));
+
+        if (!progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Aktuell befinde ich mich noch in der Entwicklung. Wenn du mich also von meiner besten Seite sehen möchtest, solltest du in den Einstellungen den Klassenraum-Modus einschalten!", SenderType.bot, []), const Duration(milliseconds: 1000));
+        if (!progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Ansonsten kann ich dir keine Tipps geben. So würdest du nie erfahren, dass du die Spielkarte links und für dein Profil rechts von mir finden kannst 😊!", SenderType.bot, []), const Duration(milliseconds: 2000));
         progress.setValue("messagedIntro", true);
       }
     }
