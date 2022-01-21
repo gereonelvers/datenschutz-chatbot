@@ -275,6 +275,7 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'tellus'),
           title: 'Wir freuen uns über weiteres Feedback!',
+          isOptional: true,
           answerFormat: const TextAnswerFormat(
             maxLines: 5,
             // ignore: unnecessary_string_escapes
