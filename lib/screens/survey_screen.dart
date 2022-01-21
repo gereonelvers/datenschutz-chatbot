@@ -189,7 +189,7 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
             )
         ),
         QuestionStep(
-          stepIdentifier: StepIdentifier(id: 'playedBefore'),
+          stepIdentifier: StepIdentifier(id: 'playedBefore, 7'),
           title: 'Hast du je ein (Lern-)Spiel mit einem Chatbot gespielt?',
           answerFormat: const SingleChoiceAnswerFormat(
             textChoices: [
@@ -199,8 +199,9 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
           ),
         ),
         QuestionStep(
-          stepIdentifier: StepIdentifier(id: 'tellus'),
-          title: 'Bitte erzähle uns mehr über dieses Spiel;D',
+          stepIdentifier: StepIdentifier(id: 'tellus, 8'),
+          title: 'Du hast in der letzten Frage ja angekreuzt. Erzähle uns gerne mehr über dieses Chatbot-Spiel :D',
+          isOptional: true,
           answerFormat: const TextAnswerFormat(
             maxLines: 5,
             // ignore: unnecessary_string_escapes
@@ -225,7 +226,7 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
           switch (input) {
             case 'ja':
               return task.steps[7].stepIdentifier;
-            case 'nö':
+            case 'nein':
               return task.steps[8].stepIdentifier;
             default:
               return null;

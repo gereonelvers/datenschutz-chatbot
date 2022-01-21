@@ -180,8 +180,8 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
               minimumValue: 1,
               maximumValue: 6,
               defaultValue: 3,
-              minimumValueDescription: 'sehr unwahrscheinlich',
-              maximumValueDescription: 'sehr wahrscheinlich'),
+              minimumValueDescription: 'sehr wahrscheinlich',
+              maximumValueDescription: 'sehr unwahrscheinlich'),
         ),
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'Botty_advice'),
@@ -191,6 +191,7 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
               TextChoice(text: 'ja', value: 'ja'),
               TextChoice(text: 'nein', value: 'nein'),
               TextChoice(text: 'vielleicht', value: 'vielleicht'),
+              TextChoice(text: 'weiß ich nicht', value: 'weiß ich nicht'),
             ],
           ),
         ),
@@ -275,6 +276,7 @@ class _OutroSurveyScreenState extends State<OutroSurveyScreen> {
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'tellus'),
           title: 'Wir freuen uns über weiteres Feedback!',
+          isOptional: true,
           answerFormat: const TextAnswerFormat(
             maxLines: 5,
             // ignore: unnecessary_string_escapes
