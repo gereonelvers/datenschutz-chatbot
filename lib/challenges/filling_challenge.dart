@@ -139,7 +139,7 @@ class _FillingChallengeState extends ChallengeState<FillingChallenge> {
             icon: Lottie.asset("assets/lottie/botty-float.json"),
             flushbarPosition: FlushbarPosition.TOP,
             title: 'Achtung!',
-            message: "Das "+i.toString()+". Feld enthält Text, der so nicht im Text vorkommt 😁",
+            message: "Das "+(i+1).toString()+". Feld enthält Text, der so nicht im Text vorkommt 😁",
             boxShadows: const [BoxShadow(color: Colors.grey, offset: Offset(0.0, 0.2), blurRadius: 10.0)],
             duration: const Duration(milliseconds: 2500),
             ).show(context);

@@ -56,7 +56,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
       const ["Die betroffene Person", "jederzeit", "sie betreffender", "ausdrücklich","indirekt(Daten, welche nicht beim Betroffenen selbst erhoben werden) erhobene Daten","Verwendung für Werbezwecke","Der Dritte","Der Dritte","Die betroffene Person","Der Bundesgerichtshof","Der Bundesgerichtshof","allgemeingültiger, auf Nachfrage", "Erfüllung einer öffentlichen Aufgabe","nicht","nicht","Der Verantwortliche","Der Verantwortliche", "am Anfang eines Monats"],
       const ["Die betroffene Person", "jederzeit", "sie betreffender", "Die betroffene Person", "ausdrücklich", "Erfüllung einer öffentlichen Aufgabe"],
       5, key: UniqueKey(),),
-    GapTextChallenge(const ["Wähle Begriffe für die Lücken aus, nicht alle Begriffe gehören zu einer Lücke.", "hat das Recht, nicht einer ausschließlich auf einer", "Verarbeitung —","Profiling — beruhenden Entscheidung unterworfen zu werden, die ihr gegenüber rechtliche Wirkungentfaltet oder sie in ähnlicher Weise erheblich","."],
+    GapTextChallenge(const ["Wähle Begriffe für die Lücken aus, nicht alle Begriffe gehören zu einer Lücke.", "hat das Recht, nicht einer ausschließlich auf einer", "Verarbeitung —","Profiling — beruhenden Entscheidung unterworfen zu werden, die ihr gegenüber rechtliche Wirkung entfaltet oder sie in ähnlicher Weise erheblich","."],
       const ["Die betroffene Person", "Der Verantwortliche", "automatisierten", "Der Dritte", "einschließlich", "beeinträchtigt"," Der Bundesgerichtshof","außer bei","unterstützt", "in Ausnahmen beim","analoger"],
       const ["Die betroffene Person", "automatisierten", "einschließlich","beeinträchtigt"],
       5, key: UniqueKey(),),
@@ -70,9 +70,9 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
       key: UniqueKey(),
     ),
     QuizChallenge(
-        "Du gibst deine Adresse zur Zusendung einer einmalige Bestellungeines Online-Händler. Muss deine Adresse nach der Zusendung gelöscht werden?",
+        "Du gibst deine Adresse zur Zusendung einer einmalige Bestellung eines Online-Händler. Muss deine Adresse nach der Zusendung gelöscht werden?",
         const [
-          "Nein, da der Online-Händler noch ein berechtigtes Interesse anmeinen Daten hat(z.B. für Werbezwecke)",
+          "Nein, da der Online-Händler noch ein berechtigtes Interesse an meinen Daten hat(z.B. für Werbezwecke)",
           "Nein, da du deine Zustimmung zur Verarbeitung deiner Daten gegeben hast und diese weiter besteht",
           "Ja, aber nach einer Haltefrist von 10 Jahren, da sie noch für steuerliche Zwecke benötigt werden",
           "Ja, unverzüglich, da der Zweck der Erhebung nicht mehr besteht"
