@@ -213,22 +213,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
   launchQuest(int index) async {
     bool started = progress.getBool("started" + index.toString());
     bool classroomToggle = progress.getBool("classroomToggle");
-    if(index<currentChapter && classroomToggle ) {
-      await Flushbar(
-        margin: const EdgeInsets.fromLTRB(15,32,15,10),
-        borderRadius: BorderRadius.circular(20),
-        backgroundColor: BottyColors.greyWhite,
-        titleColor: Colors.black,
-        messageColor: Colors.black,
-        animationDuration: const Duration(milliseconds: 200),
-        icon: Lottie.asset("assets/lottie/botty-float.json"),
-        flushbarPosition: FlushbarPosition.TOP,
-        title: 'Sorry!',
-        message: "Du hast dieses Kapitel bereits erfolgreich beendet 😁",
-        boxShadows: const [BoxShadow(color: Colors.grey, offset: Offset(0.0, 0.2), blurRadius: 10.0)],
-        duration: const Duration(milliseconds: 1500),
-      ).show(context);
-    } else if (index>currentChapter && classroomToggle) {
+    if (index>currentChapter && classroomToggle) {
       await Flushbar(
         margin: const EdgeInsets.fromLTRB(15,32,15,10),
         borderRadius: BorderRadius.circular(30),
@@ -255,7 +240,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
               content: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [if (started) Text("Möchtest du " + chapterNames[index] + " fortsetzen?") else
+                  children: [if (started) Text("Möchtest du " + chapterNames[index] + " wiederholen?") else
                     Text("Möchtest du " + chapterNames[index] + " starten?")
                   ]),
               actions: [

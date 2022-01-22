@@ -178,9 +178,9 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
         "technische Verarbeitungsweise",
         "Standort des Speichermediums",
         "Hardwareinfo des Verantwortlichen",
-        "Kategorien der Daten"
+        "Wieviel Geld verdient wurde"
       ],
-      const [0, 4],
+      const [0],
       5,
       false,
       key: UniqueKey(),
@@ -473,7 +473,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
                                             padding: const EdgeInsets.fromLTRB(4,4,24,4),
                                             child: McCountingText(
                                               begin: 0,
-                                              end: ((isCampaign?360:120)-time)+streak*10.toDouble(),
+                                              end: (((isCampaign?500:300)-time)+streak*10.toDouble()>0)?((isCampaign?500:300)-time)+streak*10.toDouble():10,
                                               //end: 5,
                                               style: const TextStyle(fontSize: 28),
                                               duration: const Duration(seconds: 3),
