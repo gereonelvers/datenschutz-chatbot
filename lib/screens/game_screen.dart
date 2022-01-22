@@ -74,29 +74,32 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child:
-          Stack(
-        children: [
-        UnityWidget(
-          onUnityCreated: onUnityCreated,
-          onUnityMessage: onUnityMessage,
-          onUnitySceneLoaded: onUnitySceneLoaded,
-          fullscreen: false, // Setting this to false causes a bunch of issues in release builds
-          borderRadius: BorderRadius.zero,
-          placeholder: const Center(
-            child: Text("Unity loading..."),
+    return Container(
+      color: Colors.black,
+      child: Scaffold(
+        body: SafeArea(
+          child:
+            Stack(
+          children: [
+          UnityWidget(
+            onUnityCreated: onUnityCreated,
+            onUnityMessage: onUnityMessage,
+            onUnitySceneLoaded: onUnitySceneLoaded,
+            fullscreen: false, // Setting this to false causes a bunch of issues in release builds
+            borderRadius: BorderRadius.zero,
+            placeholder: const Center(
+              child: Text("Unity loading..."),
+            ),
           ),
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8,32,0,0),
+                    child: IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.arrow_back)),
+                  ))
+            ],
+          )
         ),
-            Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8,32,0,0),
-                  child: IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.arrow_back)),
-                ))
-          ],
-        )
       ),
     );
   }

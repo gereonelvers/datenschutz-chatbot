@@ -555,6 +555,10 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
         challenges.add(challenges.first);
         challengeCount++;
         skipVisible++;
+        if(skipVisible==5) {
+          challenges.insert(1,InfoChallenge(InfoChallenge.auntImage, "Falls du eine Frage überspringen möchtest, drück den Skip-Button neben dem X oben"));
+          challengeCount++;
+        }
       }
       challenges.remove(challenges.first); // Remove current challenge
       if(challenges.isEmpty) {

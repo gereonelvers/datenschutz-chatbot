@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:datenschutz_chatbot/challenges/challenge.dart';
 import 'package:datenschutz_chatbot/utility_widgets/botty_colors.dart';
 import 'package:datenschutz_chatbot/utility_widgets/challenge_result_notification.dart';
+import 'package:datenschutz_chatbot/utility_widgets/progress_model.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -92,11 +93,51 @@ class _FillingChallengeState extends ChallengeState<FillingChallenge> {
                   controller: textEditingControllers[index],
                 ),
               ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-              child: Text(
-                "Trage die richtigen Wörter aus dem Text in die Felder ein",
-                textAlign: TextAlign.center,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: Row(
+                children: [
+                  const Expanded(
+                    flex: 7,
+                    child: Text(
+                      "Trage die richtigen Wörter aus dem Text in die Felder ein",
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                      child: IconButton(icon: const Icon(Icons.info), onPressed: () async {
+                        ProgressModel p = await ProgressModel.getProgressModel();
+                        showDialog(context: context, builder: (BuildContext context){
+                          return AlertDialog(
+                              title: const Text('Beispiel'),
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(30))),
+                              content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("\""+p.getString("username")+" gibt eine freiwillige Einwilligung zur Verwendung personenbezogener Daten\""),
+                                    Container(height: 10,),
+                                    Text("Wer: "+p.getString("username")),
+                                    const Text("Wie: \"freiwillige\""),
+                                    const Text("Was: \"Einwilligung\""),
+                                    const Text("Warum: \"Verwendung personenbezogener Daten\""),
+                                    Container(height: 10,),
+                                    const Text("Achtung: Dein Text muss mit dem Aufgabentext 1:1 übereinstimmen!")
+                                  ]),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Okay', style: TextStyle(color: BottyColors.darkBlue)),
+                                ),
+                              ]
+                          );
+                        });
+                      },))
+                ],
               ),
             ),
             Align(

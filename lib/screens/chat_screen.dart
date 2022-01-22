@@ -312,6 +312,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             insertMessageFixed(const ChatMessage("16:36", SenderType.padding, []), const Duration(milliseconds: 10));
             insertMessageFixed(const ChatMessage("Großartige Arbeit! Wir haben den ersten Schultag gemeistert!", SenderType.bot, []), const Duration(milliseconds: 100));
             insertMessageFixed(const ChatMessage("Meine Eltern haben noch eine zweite kleine Umfrage... Könntest du die vielleicht auch noch ausfüllen?", SenderType.bot, []), const Duration(milliseconds: 1000));
+            insertMessageFixed(const ChatMessage("Wähle dafür einfach auf der Karte das Testzentrum ganz unten aus. Es kann sein, dass du dafür nach unten wischen musst!", SenderType.bot, []), const Duration(milliseconds: 1500));
             insertMessageFixed(const ChatMessage("Damit ich weiß, wie ich in Zukunft noch besser werden kann 😅", SenderType.bot, []), const Duration(milliseconds: 2000));
             Future.delayed(const Duration(milliseconds: 2100), (){
               progress.setValue("messagedFinished3", true);

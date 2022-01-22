@@ -539,7 +539,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                         ],
                       ),
                       const Text(
-                          "Falls du in die App im Unterricht verwendest, wird Botty dich Schritt-für-Schritt durch die Inhalte führen ☺\nTipp: Natürlich kannst du den Haken natürlich auch einfach so auswählen 🙃")
+                          "Falls du in die App im Unterricht verwendest, wird Botty dich Schritt-für-Schritt durch die Inhalte führen ☺\nTipp: Natürlich kannst du den Haken auch einfach so auswählen 🙃")
                     ],
                   ),
                 ),

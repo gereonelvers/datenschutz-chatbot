@@ -25,6 +25,7 @@ class GameOverviewScreen extends StatefulWidget {
 class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProviderStateMixin {
   late ProgressModel progress;
   PanelController panelController = PanelController();
+  ScrollController questScrollController = ScrollController();
   double difficulty = 100;
   int currentChapter = 0;
 
@@ -98,6 +99,9 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
 
   @override
   Widget build(BuildContext context) {
+    if (currentChapter == 4) {
+      questScrollController.animateTo(questScrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 600), curve: Curves.ease);
+    }
     return Scaffold(
       body: Material(
         elevation: 5,
@@ -194,6 +198,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> with TickerProv
               child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   itemCount: questBackgrounds.length,
+                  controller: questScrollController,
                   padding: const EdgeInsets.fromLTRB(0, 50, 0, 130), // Making sure the last element isn't stuck behind the sliding panel
                   itemBuilder: (context, index) {
                     return GestureDetector(onTap: () => launchQuest(index), child: AspectRatio(
