@@ -33,6 +33,7 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
   Stopwatch stopwatch = Stopwatch()..start();
   int time = 0;
   int skipVisible = 0; // The skip button is visible if more than 4 questions were answered incorrectly (can be same question 4 times)
+  bool firstMistake = true;
   List<Challenge> challengeLibrary = [
 
     const IntroAnimationChallenge(),
@@ -556,7 +557,12 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
         challengeCount++;
         skipVisible++;
         if(skipVisible==5) {
-          challenges.insert(1,InfoChallenge(InfoChallenge.auntImage, "Falls du eine Frage überspringen möchtest, drück den Skip-Button neben dem X oben"));
+          challenges.insert(1,InfoChallenge(InfoChallenge.auntImage, "Mit dem Skip-Button neben dem X oben kannst du Fragen überspringen, wenn du möchtest 🙃"));
+          challengeCount++;
+        }
+        if(firstMistake) {
+          firstMistake = false;
+          challenges.insert(1,InfoChallenge(InfoChallenge.auntImage, "Mh, das stimmt so nicht ganz. Keine Sorge, falsch beantwortete Fragen werde ich dir am Ende noch einmal stellen 😊"));
           challengeCount++;
         }
       }

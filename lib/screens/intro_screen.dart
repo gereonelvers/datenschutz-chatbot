@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:lottie/lottie.dart';
+import 'package:http/http.dart' as http;
 
 /// This is the screen that introduces the user to the app on first launch
 class IntroScreen extends StatefulWidget {
@@ -210,9 +211,10 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
 
   String name = "Name";
   late ProgressModel progress;
+  bool initialized = false;
   bool classroomToggle = true; // defaults to true (since we dont want the user to accidentally fail to select)
   int _index = 0; // index for stepper
-  final String privacyPolicy = r"""
+  Html get privacyPolicy => initialized&&progress.getString("privacyPolicy")!=""?Html(data: progress.getString("privacyPolicy"), key: UniqueKey(),):Html(data: """
                                 <p>Zuletzt aktualisiert: Januar 08, 2022</p>
                                 <p>Diese Datenschutzrichtlinie beschreibt unsere Richtlinien und Verfahren für die Erfassung, Verwendung und Offenlegung Ihrer Daten, wenn Sie den Dienst nutzen, und informiert Sie über Ihre Datenschutzrechte und darüber, wie das Gesetz Sie schützt.</p>
                                 <p>Wir verwenden Ihre persönlichen Daten zur Bereitstellung und Verbesserung des Dienstes. Durch die Nutzung des Dienstes erklären Sie sich mit der Erfassung und Nutzung von Informationen in Übereinstimmung mit dieser Datenschutzrichtlinie einverstanden. Diese Datenschutzrichtlinie wurde mit Hilfe einer <a href="https://www.privacypolicies.com/blog/privacy-policy-template/" target="_blank">Vorlage für Datenschutzrichtlinien</a> erstellt.</p>
@@ -298,7 +300,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                                 </ul>
                                 <p>Wir können Ihre personenbezogenen Daten in den folgenden Situationen weitergeben:</p>
                                 <ul>
-                                <li><strong>Mit Dienstanbietern:</strong> Wir können Ihre persönlichen Daten an Dienstanbieter weitergeben, um die Nutzung unseres Dienstes zu überwachen und zu analysieren und um Sie zu kontaktieren.</li>                                
+                                <li><strong>Mit Dienstanbietern:</strong> Wir können Ihre persönlichen Daten an Dienstanbieter weitergeben, um die Nutzung unseres Dienstes zu überwachen und zu analysieren und um Sie zu kontaktieren.</li>
                                 <li><strong>Für Geschäftsübertragungen:</strong> Wir können Ihre persönlichen Daten in Verbindung mit oder während der Verhandlungen über eine Fusion, den Verkauf von Unternehmensvermögen, eine Finanzierung oder die Übernahme unseres gesamten oder eines Teils unseres Unternehmens durch ein anderes Unternehmen weitergeben oder übertragen.</li>
                                 <li><strong>Mit verbundenen Unternehmen:</strong> Wir können Ihre Daten an unsere verbundenen Unternehmen weitergeben; in diesem Fall verpflichten wir diese verbundenen Unternehmen, diese Datenschutzrichtlinie einzuhalten. Zu den verbundenen Unternehmen gehören unsere Muttergesellschaft und alle anderen Tochtergesellschaften, Joint-Venture-Partner oder andere Unternehmen, die wir kontrollieren oder die unter gemeinsamer Kontrolle mit uns stehen.</li>
                                 <li><strong>Mit Geschäftspartnern:</strong> Wir können Ihre Daten an unsere Geschäftspartner weitergeben, um Ihnen bestimmte Produkte, Dienstleistungen oder Werbeaktionen anzubieten.</li>
@@ -348,7 +350,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                                 <p>Via Telefon: 015204446662</p>
                                 </li>
                                 </ul>
-                               """;
+                               """,key: UniqueKey(),);
 
 
   @override
@@ -470,7 +472,7 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                             height: 230,
                             child: SingleChildScrollView(
                                 physics: const BouncingScrollPhysics(),
-                                child: Html(data: privacyPolicy)),
+                                child: privacyPolicy),
                         ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
@@ -561,7 +563,14 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
 
   initProgressModel() async {
     progress = await ProgressModel.getProgressModel();
-    progress.setValue("classroomToggle", true);
+    http.Response result = await http.get(Uri.parse("https://cdn.botty-datenschutz.de/privacy-policy.html"));
+    setState(() {
+      progress.setValue("classroomToggle", true);
+      if(result.statusCode == 200 && result.body.contains("Zuletzt aktualisiert")){
+        progress.setValue("privacyPolicy", result.body);
+      }
+      initialized = true;
+    });
   }
 }
 

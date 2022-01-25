@@ -85,7 +85,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             onUnityCreated: onUnityCreated,
             onUnityMessage: onUnityMessage,
             onUnitySceneLoaded: onUnitySceneLoaded,
-            fullscreen: false, // Setting this to false causes a bunch of issues in release builds
+            fullscreen: true, // Setting this to false causes a bunch of issues in release builds
             borderRadius: BorderRadius.zero,
             placeholder: const Center(
               child: Text("Unity loading..."),

@@ -200,7 +200,7 @@ class _IntroSurveyScreenState extends State<IntroSurveyScreen> {
         ),
         QuestionStep(
           stepIdentifier: StepIdentifier(id: 'tellus, 8'),
-          title: 'Du hast in der letzten Frage ja angekreuzt. Erzähle uns gerne mehr über dieses Chatbot-Spiel :D',
+          title: 'Du hast in der letzten Frage ja angekreuzt. Erzähle uns gerne mehr über dieses Chatbot-Spiel 😃',
           isOptional: true,
           answerFormat: const TextAnswerFormat(
             maxLines: 5,
