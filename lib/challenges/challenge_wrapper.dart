@@ -13,7 +13,6 @@ import 'package:lottie/lottie.dart';
 import 'package:mccounting_text/mccounting_text.dart';
 
 import 'animation_challenge.dart';
-import 'filling_challenge.dart';
 
 class ChallengeWrapper extends StatefulWidget {
   final bool isCampaign;
@@ -44,12 +43,14 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
     InfoChallenge(InfoChallenge.auntImage, "Mh, ich hab eine Idee… 🤔", key: UniqueKey()),
     InfoChallenge(InfoChallenge.auntImage, "Wir fangen mal ganz vorne an: Unter Datenschutz versteht man eine Menge an Gesetzen und Rechten, die die Privatsphäre von jedem von uns in der heutigen so automatisierten, modernen und computerisierten Welt schützen 🦾", key: UniqueKey()),
     InfoChallenge(InfoChallenge.auntImage, "In Deutschland 🇩🇪 ist Datenschutz mit der Datenschutz-Grundverordnung geregelt. Die gilt für jeden, der personenbezogene Daten verarbeitet.", key: UniqueKey()),
-    InfoChallenge(InfoChallenge.auntImage, "Ich hab dir dazu mal ein paar Dinge mitgebracht! Schau mal 👀", key: UniqueKey()),
+    InfoChallenge(InfoChallenge.auntImage, "Ich hab dir dazu mal ein paar Dinge mitgebracht! Schau mal, ob du dir aus den Aufgaben einige Konzepte erschließen kannst 👀", key: UniqueKey()),
 
-    FillingChallenge("„Einwilligung“ der betroffenen Person:\nJede freiwillig für den bestimmten Fall, in informierter Weise und unmissverständlich abgegebene Willensbekundung in Form einer Erklärung oder einer sonstigen eindeutigen bestätigenden Handlung zur Einverständnis der Verarbeitung ihrer personenbezogenen Daten",
-      const ["betroffenen Person","freiwillig, für den bestimmten Fall, in informierter Weise, unmissverständlich","Willensbekundung, Erklärung, eindeutigen bestätigenden Handlung","zur Einverständnis der Verarbeitung ihrer personenbezogenen Daten"],
-      const ["Wer?", "Wie?", "Was?", "Warum?"],
-      5, key: UniqueKey(),),
+
+    InfoChallenge(InfoChallenge.auntImage, "Zum Anfang ein einfaches Beispiel: Die DSGVO definiert die „Einwilligung“ einer betroffenen Person so:", key: UniqueKey()),
+    InfoChallenge(InfoChallenge.auntImage, "Jede freiwillig für den bestimmten Fall, in informierter Weise und unmissverständlich abgegebene Willensbekundung in Form einer Erklärung oder einer sonstigen eindeutigen bestätigenden Handlung zur Einverständnis der Verarbeitung ihrer personenbezogenen Daten", key: UniqueKey()),
+    InfoChallenge(InfoChallenge.auntImage, "Versuche, die Fragewörter den Teilen der Definition richtig zuzuordnen!", key: UniqueKey()),
+
+    MatchingChallenge(const ["betroffenen Person","freiwillig, für den bestimmten Fall, in informierter Weise, unmissverständlich","Willensbekundung, Erklärung, eindeutigen bestätigenden Handlung","zur Einverständnis der Verarbeitung ihrer personenbezogenen Daten"], const ["Wer?", "Wie?", "Was?", "Warum?"], key: UniqueKey(),),
 
     MatchingChallenge(const ["Die Person, auf die sich die Informationen in den personenbezogenen Daten bezieht und jede identifizierbare oder identifizierte Person, deren Daten erhoben und verarbeitet werden", " jede Person/ jede Einrichtung, die personenbezogene Daten für sich oder andere erhebt oder darüber entscheidet (der oder die was mit den Daten macht = Datenverarbeitung)", "jede Person/Einrichtung, außer der betroffenen Person, dem Verantwortlichen, dem Auftragsverarbeiter und den Personen, die unter der unmittelbaren Verantwortung des Verantwortlichen oder des Auftragsverarbeiters befugt sind, die personenbezogenen Daten zu verarbeiten"], const ["Betroffene Person", "Verantwortliche/r", "Dritte/r"], key: UniqueKey(),),
 
@@ -553,16 +554,24 @@ class _ChallengeWrapperState extends State<ChallengeWrapper> with TickerProvider
         streak++;
       } else {
         streak = 0;
-        challenges.add(challenges.first);
+        if(challenges.length>1){
+          challenges.insert(2, challenges.first);
+          challengeCount++;
+        } else {
+          challenges.insert(0, InfoChallenge(InfoChallenge.auntImage, "Mh, das stimmt leider nicht wirklich 🙃"));
+          challenges.insert(1, challenges.first);
+          challengeCount=challengeCount+2;
+        }
+
         challengeCount++;
         skipVisible++;
         if(skipVisible==5) {
           challenges.insert(1,InfoChallenge(InfoChallenge.auntImage, "Mit dem Skip-Button neben dem X oben kannst du Fragen überspringen, wenn du möchtest 🙃"));
           challengeCount++;
         }
-        if(firstMistake) {
+        if(firstMistake){
           firstMistake = false;
-          challenges.insert(1,InfoChallenge(InfoChallenge.auntImage, "Mh, das stimmt so nicht ganz. Keine Sorge, falsch beantwortete Fragen werde ich dir am Ende noch einmal stellen 😊"));
+          challenges.insert(1,InfoChallenge(InfoChallenge.auntImage, "Keine Sorge! Wenn du eine Frage falsch beantwortest, stelle ich sie dir später erneut ☺"));
           challengeCount++;
         }
       }

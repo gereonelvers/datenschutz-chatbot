@@ -14,6 +14,7 @@ import 'package:datenschutz_chatbot/utility_widgets/scroll_pageview_notification
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lifecycle/lifecycle.dart';
@@ -331,10 +332,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             // Player finished chapter 2 and was already told about it
             return;
           } else {
-            insertMessageFixed(ChatMessage(DateTime.now().hour.toString() + ":" + DateTime.now().minute.toString(), SenderType.padding, const []), const Duration(milliseconds: 10));
+            insertMessageFixed(ChatMessage(DateFormat('HH:mm').format(DateTime.now()), SenderType.padding, const []), const Duration(milliseconds: 10));
             insertMessageFixed(const ChatMessage("Was für ein Trip!", SenderType.bot, []), const Duration(milliseconds: 100));
             insertMessageFixed(const ChatMessage("Und jetzt noch einmal durchatmen und dann rein ins Abenteuer!", SenderType.bot, []), const Duration(milliseconds: 1000));
             insertMessageFixed(const ChatMessage("Starte den Schultag über die Kapitelübersicht, sobald du bereit bist.", SenderType.bot, []), const Duration(milliseconds: 2000));
+            insertMessageFixed(const ChatMessage("Übrigens: Wenn du die Strecke erneut fahren möchstest, kannst du in deinem Profil andere Geschwindigkeiten, Auto-Farben und Hüte wählen 🤠", SenderType.bot, []), const Duration(milliseconds: 2500));
+            insertMessageFixed(const ChatMessage("Wische dafür einfach nach rechts! ", SenderType.bot, []), const Duration(milliseconds: 2600));
             Future.delayed(const Duration(milliseconds: 2100), (){
               progress.setValue("messagedFinished2", true);
               saveData();
@@ -374,7 +377,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
             // Player finished chapter 0 and was already told about it
             return;
           } else {
-            insertMessageFixed(ChatMessage(DateTime.now().hour.toString() + ":" + DateTime.now().minute.toString(), SenderType.padding, const []), const Duration(milliseconds: 10));
+            insertMessageFixed(ChatMessage(DateFormat('HH:mm').format(DateTime.now()), SenderType.padding, const []), const Duration(milliseconds: 10));
             insertMessageFixed(const ChatMessage("Danke! Weißt du, ich bin besonders aufgeregt, weil ich morgen den ersten Tag an meiner neuen Schule habe. Wir sind nämlich gerade erst nach Smartphoningen gezogen.", SenderType.bot, []), const Duration(milliseconds: 100));
             insertMessageFixed(const ChatMessage("In der neuen Schule soll ich Datenschutz sogar als Profilfach belegen - wie spannend 🤩", SenderType.bot, []), const Duration(milliseconds: 1000));
             insertMessageFixed(const ChatMessage("Deshalb kommt gleich auch noch Tante Meta vorbei. Die arbeitet nämlich als Datenschutz-Chatbot und hat mir versprochen, mich auf morgen vorzubereiten.", SenderType.bot, []), const Duration(milliseconds: 2000));
@@ -393,12 +396,13 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin, 
     // Check if player finished the intro
     if (progress.getBool("finishedIntro")) {
       if (!progress.getBool("messagedIntro")) {
-        insertMessageFixed(ChatMessage(DateTime.now().hour.toString() + ":" + DateTime.now().minute.toString(), SenderType.padding, const []), const Duration(milliseconds: 10));
+        insertMessageFixed(ChatMessage(DateFormat('HH:mm').format(DateTime.now()), SenderType.padding, const []), const Duration(milliseconds: 10));
         insertMessageFixed(ChatMessage("Hi "+username+", ich bin Botty. Ich freue mich, dich kennenzulernen!", SenderType.bot, const []), const Duration(milliseconds: 100));
 
         if (progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Heute werden wir uns zusammen mit dem Thema Datenschutz auseinandersetzen. Ich freue mich schon 😊", SenderType.bot, []), const Duration(milliseconds: 1000));
         if (progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Bevor wir loslegen können, haben meine Eltern mich darum gebeten, dass du bitte noch eine kleine Umfrage ausfüllst. Keine Sorge, es ist auch kein Test 😊", SenderType.bot, []), const Duration(milliseconds: 2000));
-        if (progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Wische einfach zur Karte links oder drücke auf den Knopf und wähle auf der Karte das Testzentrum aus!", SenderType.bot, []), const Duration(milliseconds: 3000));
+        if (progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Wische einfach zur Karte links oder drücke auf den Knopf unten und wähle auf der Karte das Testzentrum aus! Ich habe es mit einem roten Marker versehen!", SenderType.bot, []), const Duration(milliseconds: 3000));
+        if (progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Neben der Karte links und dem Chat mit mir in der Mitte kannst du übrigens auch nach rechts wischen um dir dein Profil anzuschauen!", SenderType.bot, []), const Duration(milliseconds: 4000));
 
         if (!progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Aktuell befinde ich mich noch in der Entwicklung. Wenn du mich also von meiner besten Seite sehen möchtest, solltest du in den Einstellungen den Klassenraum-Modus einschalten!", SenderType.bot, []), const Duration(milliseconds: 1000));
         if (!progress.getBool("classroomToggle")) insertMessageFixed(const ChatMessage("Ansonsten kann ich dir keine Tipps geben. So würdest du nie erfahren, dass du die Spielkarte links und für dein Profil rechts von mir finden kannst 😊!", SenderType.bot, []), const Duration(milliseconds: 2000));

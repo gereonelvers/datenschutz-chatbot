@@ -796,7 +796,7 @@ class _ProgressScreenState extends State<ProgressScreen> with TickerProviderStat
 
       raceCarColor = progress.getInt("carColor")==0?Colors.white:Color(progress.getInt("carColor"));
       raceCarHat = progress.getInt("carHat");
-      raceTime = 300-progress.getInt("raceTime");
+      raceTime = progress.getInt("raceTime");
 
       rpgStarCount = progress.getInt("starCount");
       rpgLessonCount = progress.getInt("lessonCount");

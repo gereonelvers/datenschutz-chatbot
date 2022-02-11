@@ -429,10 +429,51 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
               },
               onStepTapped: (int index) {
                 setState(() {
-                  _index = index;
+                  if (index < _index){
+                    _index = index;
+                  }
                 });
               },
               steps: [
+                Step(
+                    title: const Text("📜 Datenschutzerklärung", style: TextStyle(fontSize: 18)),
+                    content: Column(
+                      children: [
+                        SizedBox(
+                          height: 230,
+                          child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: privacyPolicy),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
+                          child: Row(children: [
+                            Expanded(
+                              flex: 1,
+                              child: Checkbox(
+                                value: IntroConsentScreen.dataConsent,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    IntroConsentScreen.dataConsent = !IntroConsentScreen.dataConsent;
+                                  });
+                                },
+                                activeColor: BottyColors.darkBlue,
+                              ),
+                            ),
+                            Flexible(
+                              flex: 4,
+                              child: Wrap(
+                                children: const [
+                                  Text(
+                                    "Ich habe die Datenschutzerklärung gelesen und stimme ihr zu.",
+                                  ),
+                                ],
+                              ),
+                            )
+                          ]),
+                        )
+                      ],
+                    )),
                 Step(
                   title: const Text("💻 Name", style: TextStyle(fontSize: 18)),
                   content: Column(
@@ -464,45 +505,6 @@ class _IntroConsentScreenState extends State<IntroConsentScreen> {
                   ),
                   //state: StepState.complete
                 ),
-                Step(
-                    title: const Text("📜 Datenschutzerklärung", style: TextStyle(fontSize: 18)),
-                    content: Column(
-                      children: [
-                        SizedBox(
-                            height: 230,
-                            child: SingleChildScrollView(
-                                physics: const BouncingScrollPhysics(),
-                                child: privacyPolicy),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-                          child: Row(children: [
-                            Expanded(
-                              flex: 1,
-                              child: Checkbox(
-                                value: IntroConsentScreen.dataConsent,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    IntroConsentScreen.dataConsent = !IntroConsentScreen.dataConsent;
-                                  });
-                                },
-                                activeColor: BottyColors.darkBlue,
-                              ),
-                            ),
-                            Flexible(
-                              flex: 4,
-                              child: Wrap(
-                                children: const [
-                                  Text(
-                                    "Ich habe die Datenschutzerklärung gelesen und stimme ihr zu.",
-                                  ),
-                                ],
-                              ),
-                            )
-                          ]),
-                        )
-                      ],
-                    )),
                 Step(
                   title: const Text("🎮 Spielmodus", style: TextStyle(fontSize: 18)),
                   content: Column(

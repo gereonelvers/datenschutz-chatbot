@@ -95,7 +95,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   alignment: Alignment.topLeft,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(8,32,0,0),
-                    child: IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.arrow_back)),
+                    child: IconButton(onPressed: () {
+                      if (duration>progressModel.getInt("raceTime")){
+                        progressModel.setValue("raceTime", duration);
+                      }
+                      Navigator.pop(context, true);
+                    }, icon: const Icon(Icons.arrow_back)),
                   ))
             ],
           )
